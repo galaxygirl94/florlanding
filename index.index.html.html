@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Flor - The nursing job platform built by nurses, for nurses. Direct connection, no agencies, transparent pay. Join our waitlist for January 2026 launch.">
+    <title>Flor - Join the Waitlist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo-image {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .tagline {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h2 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .launch-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .countdown-container {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .countdown-title {
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 70px;
+        }
+        
+        .countdown-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+        
+        .countdown-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .value-props {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .value-prop {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .value-prop:last-child {
+            margin-bottom: 0;
+        }
+        
+        .value-prop-icon {
+            font-size: 24px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .value-prop-text {
+            color: #2c3e50;
+            font-size: 15px;
+        }
+        
+        .value-prop-text strong {
+            display: block;
+            margin-bottom: 3px;
+            color: #5B9BD5;
+        }
+        
+        .founder-note {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .founder-note p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .founder-note .signature {
+            color: #5B9BD5;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #2c3e50;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #5B9BD5;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #5B9BD5;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            margin-top: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .checkbox-container label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+        
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .privacy-note {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        
+        .contact-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .contact-section h3 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .contact-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #5B9BD5;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .contact-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .contact-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-message h2 {
+            color: #2c3e50;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .success-message p {
+            color: #666;
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .share-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+        
+        .share-section h3 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .share-button {
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+        
+        .share-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .share-tiktok {
+            background: #000000;
+        }
+        
+        .share-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .header h2 {
+                font-size: 24px;
+            }
+            
+            .logo-image {
+                max-width: 240px;
+            }
+            
+            .countdown-number {
+                font-size: 28px;
+            }
+            
+            .countdown-item {
+                min-width: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <!-- Your logo - make sure flor_logo.jpeg is in same folder -->
+            <img src="flor_logo.jpeg" alt="Flor Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <!-- Fallback if logo doesn't load -->
+            <div style="display: none; text-align: center;">
+                <div style="font-size: 72px; margin-bottom: 10px;">🌸</div>
+                <h1 style="color: #667eea; font-size: 48px; font-weight: bold; margin: 0;">Flor</h1>
+            </div>
+        </div>
+        <p class="tagline">Built by nurses, for nurses</p>
+        
+        <div class="header">
+            <h2>Tired of Agency Markups & Recruiter Spam?</h2>
+            <p>Join 500+ nurses creating a better way to find work.</p>
+        </div>
+        
+        <div class="launch-badge">
+            🚀 Launching January 1, 2026 in Rhode Island
+        </div>
+        
+        <div class="countdown-container">
+            <div class="countdown-title">⏰ Launch Countdown</div>
+            <div class="countdown" id="countdown">
+                <div class="countdown-item">
+                    <div class="countdown-number" id="days">--</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="hours">--</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="minutes">--</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="seconds">--</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="value-props">
+            <div class="value-prop">
+                <div class="value-prop-icon">💰</div>
+                <div class="value-prop-text">
+                    <strong>No Agency Markup</strong>
+                    Direct connection means you keep 100% of your pay
+                </div>
+            </div>
+            <div class="value-prop">
+                <div class="value-prop-icon">✨</div>
+                <div class="value-prop-text">
+                    <strong>Transparent Pay</strong>
+                    Every job shows exact salary - no surprises
+                </div>
+            </div>
+            <div class="value-prop">
+                <div class="value-prop-icon">🛡️</div>
+                <div class="value-prop-text">
+                    <strong>Honest Job Descriptions</strong>
+                    Employers must disclose actual ratios & conditions upfront - no surprises
+                </div>
+            </div>
+            <div class="value-prop">
+                <div class="value-prop-icon">⭐</div>
+                <div class="value-prop-text">
+                    <strong>Review Employers</strong>
+                    See what other nurses really think before you apply
+                </div>
+            </div>
+            <div class="value-prop">
+                <div class="value-prop-icon">🎓</div>
+                <div class="value-prop-text">
+                    <strong>Find Loan Forgiveness Jobs</strong>
+                    Filter for PSLF-eligible positions
+                </div>
+            </div>
+        </div>
+        
+        <div class="founder-note">
+            <p>"I'm Jess - RN, mom of 3, and I've lived every problem we're solving. The recruiter spam. The ghost jobs. The agencies taking 40% of my pay. I built Flor because nurses deserve better."</p>
+            <p class="signature">— Jessica Hebert, RN, CCO & Co-Founder</p>
+        </div>
+        
+        <form id="waitlistForm">
+            <div class="form-section">
+                <label class="form-label">First Name *</label>
+                <input type="text" name="firstName" class="form-input" placeholder="Your first name" required>
+            </div>
+            
+            <div class="form-section">
+                <label class="form-label">Email *</label>
+                <input type="email" name="email" class="form-input" placeholder="your.email@example.com" required>
+            </div>
+            
+            <div class="form-section">
+                <label class="form-label">Are you a nurse? *</label>
+                <select name="userType" class="form-select" required>
+                    <option value="">Select...</option>
+                    <option value="RN-currently">Yes, I'm currently an RN</option>
+                    <option value="RN-looking">Yes, I'm an RN looking for work</option>
+                    <option value="Nursing-student">I'm a nursing student</option>
+                    <option value="Healthcare-employer">I'm a healthcare employer/recruiter</option>
+                    <option value="Other">Other (just interested!)</option>
+                </select>
+            </div>
+            
+            <div class="form-section">
+                <label class="form-label">State (optional)</label>
+                <input type="text" name="state" class="form-input" placeholder="e.g., Rhode Island, Massachusetts">
+            </div>
+            
+            <div class="form-section">
+                <label class="form-label">How did you hear about Flor? (optional)</label>
+                <select name="referralSource" class="form-select">
+                    <option value="">Select...</option>
+                    <option value="TikTok">TikTok</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="Friend">Friend or colleague</option>
+                    <option value="LinkedIn">LinkedIn</option>
+                    <option value="Other-social">Other social media</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="updates" name="updates" checked>
+                <label for="updates">Send me updates about Flor's launch and nursing job market insights</label>
+            </div>
+            
+            <button type="submit" class="submit-button">Join the Waitlist</button>
+            
+            <div class="contact-section">
+                <h3>Questions? Get in touch!</h3>
+                <div class="contact-options">
+                    <a href="https://www.instagram.com/florfornurses" target="_blank" class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                        DM us on Instagram
+                    </a>
+                    <a href="mailto:hello@florfornurses.com" class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        hello@florfornurses.com
+                    </a>
+                </div>
+            </div>
+            
+            <p class="privacy-note">
+                100% free for nurses, always. We'll never sell your data.
+            </p>
+        </form>
+    </div>
+    
+    <script>
+        // Countdown Timer
+        const launchDate = new Date('January 1, 2026 00:00:00 EST').getTime();
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = launchDate - now;
+            
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = '<div style="font-size: 24px; color: #667eea; font-weight: bold;">🎉 WE\'RE LIVE! 🎉</div>';
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        // Update countdown every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        
+        // Form submission handler
+        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                firstName: formData.get('firstName'),
+                email: formData.get('email'),
+                userType: formData.get('userType'),
+                state: formData.get('state'),
+                referralSource: formData.get('referralSource'),
+                updates: formData.get('updates') ? true : false,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('Waitlist Signup:', data);
+            
+            document.querySelector('.container').innerHTML = `
+                <div class="logo">
+                    <img src="flor_logo.jpeg" alt="Flor Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display: none; text-align: center;">
+                        <div style="font-size: 72px; margin-bottom: 10px;">🌸</div>
+                        <h1 style="color: #667eea; font-size: 48px; font-weight: bold; margin: 0;">Flor</h1>
+                    </div>
+                </div>
+                <div class="success-message">
+                    <div class="success-icon">🎉</div>
+                    <h2>You're on the list!</h2>
+                    <p>Welcome to the Flor community, ${data.firstName}! We'll email you when we launch on January 1, 2026.</p>
+                    
+                    <div class="value-props">
+                        <div class="value-prop">
+                            <div class="value-prop-icon">📧</div>
+                            <div class="value-prop-text">
+                                <strong>Check your email</strong>
+                                We just sent you a confirmation (check spam if you don't see it)
+                            </div>
+                        </div>
+                        <div class="value-prop">
+                            <div class="value-prop-icon">🗣️</div>
+                            <div class="value-prop-text">
+                                <strong>Spread the word</strong>
+                                Know another nurse who needs this? Share Flor with them!
+                            </div>
+                        </div>
+                        <div class="value-prop">
+                            <div class="value-prop-icon">💬</div>
+                            <div class="value-prop-text">
+                                <strong>Tell us your story</strong>
+                                Drop your worst recruiter/agency story in our TikTok comments @florfornurses
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="share-section">
+                        <h3>Help us reach more nurses</h3>
+                        <div class="share-buttons">
+                            <a href="https://www.tiktok.com/@florfornurses" class="share-button share-tiktok" target="_blank">Follow on TikTok</a>
+                            <a href="https://www.instagram.com/florfornurses" class="share-button share-instagram" target="_blank">Follow on Instagram</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-section">
+                        <h3>Questions? Get in touch!</h3>
+                        <div class="contact-options">
+                            <a href="https://www.instagram.com/florfornurses" target="_blank" class="contact-item">
+                                <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                                DM us on Instagram
+                            </a>
+                            <a href="mailto:hello@florfornurses.com" class="contact-item">
+                                <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                </svg>
+                                hello@florfornurses.com
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
