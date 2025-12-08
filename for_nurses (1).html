@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Flor - Built for nurses, by nurses. Transparent pay, no spam, perfect matches.">
+    <title>For Nurses - Flor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo img {
+            max-width: 150px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .logo-fallback {
+            font-size: 60px;
+            display: none;
+        }
+        
+        .tagline {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 36px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .mission-section {
+            margin-bottom: 40px;
+        }
+        
+        .mission-section h2 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .mission-section p {
+            color: #555;
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .values-list {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .values-list h3 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .value-item {
+            margin-bottom: 20px;
+        }
+        
+        .value-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .value-item strong {
+            color: #667eea;
+            font-size: 16px;
+        }
+        
+        .value-item p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .cta-section h3 {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .cta-section p {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 16px 35px;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .secondary-button {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 25px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .mission-section h2 {
+                font-size: 22px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+            
+            .cta-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="flor_logo.jpeg" alt="Flor Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="logo-fallback">🌸</div>
+        </div>
+        
+        <p class="tagline">Built for nurses, by nurses</p>
+        
+        <h1>Welcome to Flor</h1>
+        
+        <div class="mission-section">
+            <h2>Our Mission</h2>
+            <p>
+                Nursing is one of the most important professions in the world, yet nurses are constantly battling exploitative staffing agencies, opaque pay practices, and endless recruiter spam. We're changing that.
+            </p>
+            <p>
+                Flor eliminates the middleman by connecting nurses directly with healthcare facilities. No more hidden fees eating into your paycheck. No more bait-and-switch job postings. No more agencies taking 40% markups while you do all the work.
+            </p>
+            <p>
+                We're building a platform where transparency isn't optional—it's required. Where facilities compete for <em>you</em>, not the other way around. Where you have the power to make informed decisions about your career.
+            </p>
+        </div>
+        
+        <div class="values-list">
+            <h3>What Makes Flor Different</h3>
+            
+            <div class="value-item">
+                <strong>💰 Transparent Pay, Always</strong>
+                <p>Every job listing shows the real salary range upfront. No surprises, no "competitive pay" nonsense.</p>
+            </div>
+            
+            <div class="value-item">
+                <strong>🚫 Zero Recruiter Spam</strong>
+                <p>Apply directly to facilities. No middlemen calling and texting you constantly with irrelevant positions.</p>
+            </div>
+            
+            <div class="value-item">
+                <strong>✨ Honest Job Descriptions</strong>
+                <p>Facilities sign an ethics pledge to provide accurate staffing ratios, shift details, and working conditions.</p>
+            </div>
+            
+            <div class="value-item">
+                <strong>🎯 Built by Nurses</strong>
+                <p>Our co-founder is a registered nurse with 8 years of experience. We understand what you need because we've lived it.</p>
+            </div>
+            
+            <div class="value-item">
+                <strong>💪 Free for Nurses, Forever</strong>
+                <p>You'll never pay a dime to use Flor. Facilities pay to post jobs—not you.</p>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <h3>Join Us in Building Something Better</h3>
+            <p>Be part of the movement to fix nursing staffing. Your input shapes our platform.</p>
+            
+            <div class="cta-buttons">
+                <a href="flor_nurse_signup_simplified.html" class="cta-button">Join the Waitlist</a>
+                <a href="https://nursesurvey.tiiny.site" target="_blank" class="cta-button secondary-button">Take Our Survey</a>
+            </div>
+        </div>
+        
+        <div class="back-link">
+            <a href="flor_landing_page.html">← Back to home</a>
+        </div>
+    </div>
+</body>
+</html>
