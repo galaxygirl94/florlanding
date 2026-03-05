@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { seedApplications } from "@/data/seed-applications";
 
 const SPECIALTIES = [
   "Medical-Surgical", "ICU/Critical Care", "Emergency", "OR/Perioperative",
@@ -169,7 +170,7 @@ function NightingaleProfile() {
 
 /* ── Main Page ──────────────────────────────────────────────────────── */
 export default function NurseProfilePage() {
-  const { isLoggedIn, signup } = useAuth();
+  const { user, isLoggedIn, signup } = useAuth();
   const [saved, setSaved] = useState(false);
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedCerts, setSelectedCerts] = useState<string[]>([]);
@@ -284,85 +285,309 @@ export default function NurseProfilePage() {
 
       <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-10 sm:py-16">
 
-        {/* ── Florence Nightingale Demo Profile Section ── */}
-        <div className="mb-16 sm:mb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
-            {/* Demo profile card — takes 7 columns */}
-            <div className="lg:col-span-7">
-              <NightingaleProfile />
+        {/* ── LOGGED-IN DASHBOARD ── */}
+        {isLoggedIn && (
+          <div className="mb-12 sm:mb-16 space-y-8 animate-fade-in-up">
+            {/* Welcome header + quick stats */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-periwinkle to-periwinkle-dark flex items-center justify-center text-white text-xl font-extrabold flex-shrink-0">
+                    {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                  </div>
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-text">Welcome back, {user?.firstName}.</h2>
+                    <p className="text-sm text-text-muted">{user?.email}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-text-light leading-relaxed">
+                  Manage your profile, track applications, and keep your preferences up to date so Flor can find the best matches for you.
+                </p>
+              </div>
+
+              {/* Quick stats */}
+              <div className="grid grid-cols-3 lg:grid-cols-1 gap-4">
+                {[
+                  { label: "Applications", value: seedApplications.length, color: "text-periwinkle" },
+                  { label: "Viewed by Employers", value: seedApplications.filter(a => a.status === "viewed" || a.status === "responded").length, color: "text-amber" },
+                  { label: "Responses", value: seedApplications.filter(a => a.status === "responded").length, color: "text-success" },
+                ].map((stat) => (
+                  <div key={stat.label} className="bg-white rounded-2xl border border-periwinkle-100/40 p-4 text-center lg:text-left lg:flex lg:items-center lg:gap-4">
+                    <span className={`text-2xl sm:text-3xl font-extrabold ${stat.color} block lg:inline`}>{stat.value}</span>
+                    <span className="text-xs font-bold text-text-muted uppercase tracking-wider">{stat.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* CTA side — takes 5 columns */}
-            <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <div className="animate-fade-in-up-delay-1">
-                <span className="inline-flex items-center gap-2 text-periwinkle text-sm font-bold uppercase tracking-wider mb-5">
-                  <span className="w-8 h-px bg-periwinkle" />
-                  Sample profile
-                </span>
+            {/* Notifications */}
+            <section className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-periwinkle-50 flex items-center justify-center text-periwinkle flex-shrink-0">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-extrabold text-text">Notifications</h3>
+                    <p className="text-xs text-text-muted">Updates on your applications and messages</p>
+                  </div>
+                </div>
+                <span className="bg-periwinkle text-white text-xs font-bold px-2.5 py-1 rounded-full">3 new</span>
+              </div>
 
-                <h2 className="text-2xl sm:text-3xl xl:text-4xl font-extrabold text-text leading-[1.12] mb-4">
-                  This is what your profile could look&nbsp;like.
-                </h2>
-
-                <p className="text-base xl:text-lg text-text-light leading-relaxed mb-6">
-                  Florence set the standard 165 years ago. We named our platform after her because she believed every nurse deserves better. Your turn.
-                </p>
-
-                <div className="space-y-3 mb-8">
-                  {[
-                    "Verified credentials displayed front and center",
-                    "Your Flor Fit Score matches you to the right jobs",
-                    "Skills and specialties in your own words",
-                    "Facilities apply to you — not the other way around",
-                  ].map((item) => (
-                    <div key={item} className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full bg-periwinkle flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              <div className="space-y-3">
+                {[
+                  {
+                    type: "response",
+                    title: "Hasbro Children's Hospital responded to your application",
+                    detail: "Pediatric RN — Inpatient Pediatrics",
+                    time: "2 days ago",
+                    icon: (
+                      <div className="w-8 h-8 rounded-full bg-success-light flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <span className="text-sm text-text-light font-medium">{item}</span>
+                    ),
+                  },
+                  {
+                    type: "viewed",
+                    title: "PACE Organization of Rhode Island viewed your profile",
+                    detail: "Med Surg RN — Day Center",
+                    time: "5 days ago",
+                    icon: (
+                      <div className="w-8 h-8 rounded-full bg-amber/10 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 text-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      </div>
+                    ),
+                  },
+                  {
+                    type: "comment",
+                    title: "New answer on your question about shift differentials",
+                    detail: "Brown University Health — ICU RN",
+                    time: "1 week ago",
+                    icon: (
+                      <div className="w-8 h-8 rounded-full bg-periwinkle-50 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 text-periwinkle" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                        </svg>
+                      </div>
+                    ),
+                  },
+                ].map((notif, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl hover:bg-periwinkle-50/30 transition-colors cursor-pointer">
+                    {notif.icon}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-text">{notif.title}</p>
+                      <p className="text-xs text-text-muted mt-0.5">{notif.detail}</p>
                     </div>
-                  ))}
-                </div>
+                    <span className="text-xs text-text-muted whitespace-nowrap flex-shrink-0">{notif.time}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-                <div className="bg-periwinkle-50/60 rounded-xl p-5 border border-periwinkle-100/30">
-                  <p className="text-sm text-text leading-relaxed">
-                    <span className="font-bold text-periwinkle-dark">Fun fact:</span> Florence Nightingale was also a pioneering statistician — she invented the coxcomb chart to visualize mortality data and convince the British government to improve hospital sanitation. Data-driven care since&nbsp;1858.
-                  </p>
+            {/* Applications */}
+            <section className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-periwinkle-50 flex items-center justify-center text-periwinkle flex-shrink-0">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-extrabold text-text">Your Applications</h3>
+                    <p className="text-xs text-text-muted">Track where you&apos;ve applied and what&apos;s moving</p>
+                  </div>
+                </div>
+                <Link href="/tracker" className="text-sm font-bold text-periwinkle hover:text-periwinkle-dark transition-colors">
+                  View all
+                </Link>
+              </div>
+
+              <div className="space-y-3">
+                {seedApplications.map((app) => {
+                  const statusConfig = {
+                    applied: { label: "Applied", color: "bg-periwinkle/10 text-periwinkle", dot: "bg-periwinkle", step: 1 },
+                    viewed: { label: "Viewed", color: "bg-amber/10 text-amber", dot: "bg-amber", step: 2 },
+                    responded: { label: "Responded", color: "bg-success-light text-success", dot: "bg-success", step: 3 },
+                  }[app.status];
+                  return (
+                    <Link
+                      key={app.id}
+                      href={`/jobs/${app.jobId}`}
+                      className="flex items-center gap-4 p-4 rounded-xl border border-periwinkle-100/30 hover:border-periwinkle/30 hover:bg-periwinkle-50/20 transition-all"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-text truncate">{app.jobTitle}</p>
+                        <p className="text-xs text-text-muted mt-0.5">{app.facilityName}</p>
+                      </div>
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        {/* Mini progress */}
+                        <div className="hidden sm:flex items-center gap-1">
+                          {[1, 2, 3].map((s) => (
+                            <div key={s} className={`w-6 h-1.5 rounded-full ${s <= statusConfig.step ? statusConfig.dot : "bg-periwinkle-50"}`} />
+                          ))}
+                        </div>
+                        <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full ${statusConfig.color}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot}`} />
+                          {statusConfig.label}
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 text-center">
+                <Link
+                  href="/jobs"
+                  className="inline-flex items-center gap-2 text-sm font-bold text-periwinkle hover:text-periwinkle-dark transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  </svg>
+                  Browse more jobs
+                </Link>
+              </div>
+            </section>
+
+            {/* License Verification */}
+            <section className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-periwinkle-50 flex items-center justify-center text-periwinkle flex-shrink-0">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-text">License Verification</h3>
+                  <p className="text-xs text-text-muted">Verified nurses get priority visibility with employers</p>
                 </div>
               </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="border border-success/20 bg-success-light/30 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 rounded-full bg-success flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-sm font-bold text-success">RN — Rhode Island</span>
+                  </div>
+                  <p className="text-xs text-text-muted">Verified via Nursys · Active through 03/2027</p>
+                </div>
+
+                <div className="border border-dashed border-periwinkle-100 rounded-xl p-4 flex items-center justify-center">
+                  <button className="inline-flex items-center gap-2 text-sm font-bold text-periwinkle hover:text-periwinkle-dark transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Add another license
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-4 flex items-center gap-2.5 bg-periwinkle-50/60 rounded-xl p-4">
+                <svg className="w-4 h-4 text-periwinkle flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                </svg>
+                <span className="text-xs text-periwinkle-dark font-semibold">
+                  Compact license? Add your multistate license to unlock jobs across participating states.
+                </span>
+              </div>
+            </section>
+
+            {/* Divider */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1 h-px bg-periwinkle-100/40" />
+              <span className="text-sm font-bold text-text-muted uppercase tracking-wider">Edit your profile</span>
+              <div className="flex-1 h-px bg-periwinkle-100/40" />
             </div>
           </div>
-        </div>
+        )}
 
-        {/* ── Divider ── */}
-        <div className="flex items-center gap-4 mb-12 sm:mb-16">
-          <div className="flex-1 h-px bg-periwinkle-100/40" />
-          <span className="text-sm font-bold text-text-muted uppercase tracking-wider">Create your profile</span>
-          <div className="flex-1 h-px bg-periwinkle-100/40" />
-        </div>
-
-        {/* ── Step indicator ── */}
-        <div className="hidden sm:flex items-center justify-center gap-3 mb-12">
-          {[
-            { num: "1", label: "Account" },
-            { num: "2", label: "Personal Info" },
-            { num: "3", label: "License" },
-            { num: "4", label: "Experience" },
-            { num: "5", label: "Fit Preferences" },
-          ].map((step, i) => (
-            <div key={step.num} className="flex items-center">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-periwinkle flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">{step.num}</span>
+        {/* ── Florence Nightingale Demo — only for logged-out visitors ── */}
+        {!isLoggedIn && (
+          <>
+            <div className="mb-16 sm:mb-20">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
+                <div className="lg:col-span-7">
+                  <NightingaleProfile />
                 </div>
-                <span className="text-sm font-semibold text-text">{step.label}</span>
+                <div className="lg:col-span-5 lg:sticky lg:top-24">
+                  <div className="animate-fade-in-up-delay-1">
+                    <span className="inline-flex items-center gap-2 text-periwinkle text-sm font-bold uppercase tracking-wider mb-5">
+                      <span className="w-8 h-px bg-periwinkle" />
+                      Sample profile
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl xl:text-4xl font-extrabold text-text leading-[1.12] mb-4">
+                      This is what your profile could look&nbsp;like.
+                    </h2>
+                    <p className="text-base xl:text-lg text-text-light leading-relaxed mb-6">
+                      Florence set the standard 165 years ago. We named our platform after her because she believed every nurse deserves better. Your turn.
+                    </p>
+                    <div className="space-y-3 mb-8">
+                      {[
+                        "Verified credentials displayed front and center",
+                        "Your Flor Fit Score matches you to the right jobs",
+                        "Skills and specialties in your own words",
+                        "Facilities apply to you — not the other way around",
+                      ].map((item) => (
+                        <div key={item} className="flex items-start gap-3">
+                          <div className="w-5 h-5 rounded-full bg-periwinkle flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                          <span className="text-sm text-text-light font-medium">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="bg-periwinkle-50/60 rounded-xl p-5 border border-periwinkle-100/30">
+                      <p className="text-sm text-text leading-relaxed">
+                        <span className="font-bold text-periwinkle-dark">Fun fact:</span> Florence Nightingale was also a pioneering statistician — she invented the coxcomb chart to visualize mortality data and convince the British government to improve hospital sanitation. Data-driven care since&nbsp;1858.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              {i < 4 && <div className="w-12 lg:w-20 h-px bg-periwinkle-100 mx-4" />}
             </div>
-          ))}
-        </div>
+
+            <div className="flex items-center gap-4 mb-12 sm:mb-16">
+              <div className="flex-1 h-px bg-periwinkle-100/40" />
+              <span className="text-sm font-bold text-text-muted uppercase tracking-wider">Create your profile</span>
+              <div className="flex-1 h-px bg-periwinkle-100/40" />
+            </div>
+
+            <div className="hidden sm:flex items-center justify-center gap-3 mb-12">
+              {[
+                { num: "1", label: "Account" },
+                { num: "2", label: "Personal Info" },
+                { num: "3", label: "License" },
+                { num: "4", label: "Experience" },
+                { num: "5", label: "Fit Preferences" },
+              ].map((step, i) => (
+                <div key={step.num} className="flex items-center">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-periwinkle flex items-center justify-center">
+                      <span className="text-xs font-bold text-white">{step.num}</span>
+                    </div>
+                    <span className="text-sm font-semibold text-text">{step.label}</span>
+                  </div>
+                  {i < 4 && <div className="w-12 lg:w-20 h-px bg-periwinkle-100 mx-4" />}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
         {saved && (
           <div className="bg-success-light border border-success/20 rounded-xl p-4 mb-8 flex items-center gap-3 animate-fade-in-up max-w-4xl mx-auto">

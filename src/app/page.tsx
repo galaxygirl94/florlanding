@@ -20,7 +20,7 @@ export default function HomePage() {
 
         <div className="relative w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-28 sm:py-36">
           <div className="max-w-2xl xl:max-w-3xl animate-fade-in-up">
-            <p className="italic font-bold text-periwinkle-light text-5xl sm:text-6xl lg:text-7xl xl:text-8xl mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Meet Flor.</p>
+            <p className="italic font-normal text-periwinkle-light text-4xl sm:text-5xl lg:text-6xl xl:text-7xl mb-4 tracking-wide" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Meet Flor.</p>
 
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full mb-6">
               <div className="w-2 h-2 bg-periwinkle-light rounded-full" />
