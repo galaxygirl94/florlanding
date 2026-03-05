@@ -18,6 +18,17 @@ const CERTIFICATIONS = [
 
 const EHR_SYSTEMS = ["Epic", "Cerner", "Meditech", "LifeChart", "Allscripts", "PointClickCare", "Other"];
 const SCHEDULE_PREFS = ["Days", "Evenings", "Nights", "Rotating", "Flexible"];
+const COMMUTE_OPTIONS = ["10", "20", "30", "45", "60"];
+const CULTURE_PREFS = [
+  "Team-oriented",
+  "Work-life balance",
+  "Professional development",
+  "Collaborative",
+  "Supportive management",
+  "Flexible scheduling",
+  "Low staff turnover",
+  "Mission-driven",
+];
 const LICENSE_TYPES = ["RN", "LPN", "CNA", "APRN", "NP"];
 const STATES = ["RI", "MA", "CT", "NY", "CA", "FL", "TX", "PA", "OH", "IL"];
 
@@ -178,6 +189,12 @@ export default function NurseProfilePage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [signupError, setSignupError] = useState("");
 
+  // Fit Score fields
+  const [desiredPayMin, setDesiredPayMin] = useState("");
+  const [desiredPayMax, setDesiredPayMax] = useState("");
+  const [maxCommute, setMaxCommute] = useState("");
+  const [selectedCulture, setSelectedCulture] = useState<string[]>([]);
+
   const toggleItem = (
     item: string,
     list: string[],
@@ -333,7 +350,7 @@ export default function NurseProfilePage() {
             { num: "2", label: "Personal Info" },
             { num: "3", label: "License" },
             { num: "4", label: "Experience" },
-            { num: "5", label: "Preferences" },
+            { num: "5", label: "Fit Preferences" },
           ].map((step, i) => (
             <div key={step.num} className="flex items-center">
               <div className="flex items-center gap-2.5">
@@ -668,7 +685,7 @@ export default function NurseProfilePage() {
             </div>
           </section>
 
-          {/* Preferences */}
+          {/* Preferences — powers your Flor Fit Score */}
           <section className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8 lg:p-10">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 rounded-xl bg-periwinkle-50 flex items-center justify-center text-periwinkle flex-shrink-0">
@@ -678,17 +695,21 @@ export default function NurseProfilePage() {
               </div>
               <div>
                 <h2 className="text-lg font-extrabold text-text">Preferences</h2>
-                <p className="text-xs text-text-muted">Help us match you with jobs that fit your life.</p>
+                <p className="text-xs text-text-muted">These five preferences power your Flor Fit Score.</p>
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div>
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Schedule Preference</label>
-                <select className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors">
-                  <option value="">Select</option>
-                  {SCHEDULE_PREFS.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
+
+            {/* Schedule */}
+            <div className="mb-7">
+              <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Schedule Preference</label>
+              <select className="w-full sm:w-72 border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors">
+                <option value="">Select</option>
+                {SCHEDULE_PREFS.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+
+            {/* Location & Commute */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-7">
               <div>
                 <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Location (State)</label>
                 <select className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors">
@@ -696,8 +717,70 @@ export default function NurseProfilePage() {
                   {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
+              <div>
+                <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Max Commute (miles)</label>
+                <select
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  value={maxCommute}
+                  onChange={(e) => setMaxCommute(e.target.value)}
+                >
+                  <option value="">No preference</option>
+                  {COMMUTE_OPTIONS.map((m) => <option key={m} value={m}>{m} miles</option>)}
+                </select>
+              </div>
             </div>
-            <div className="mt-5">
+
+            {/* Pay Expectations */}
+            <div className="mb-7">
+              <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Pay Expectations ($/hr)</label>
+              <div className="grid grid-cols-2 gap-4 max-w-sm">
+                <div>
+                  <input
+                    type="number"
+                    value={desiredPayMin}
+                    onChange={(e) => setDesiredPayMin(e.target.value)}
+                    className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                    placeholder="Min"
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="number"
+                    value={desiredPayMax}
+                    onChange={(e) => setDesiredPayMax(e.target.value)}
+                    className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                    placeholder="Max"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-text-muted mt-2">We&apos;ll match you to jobs that meet your pay expectations — no bait-and-switch.</p>
+            </div>
+
+            {/* Culture Preferences */}
+            <div className="mb-7">
+              <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-3">Workplace Culture (select all that matter)</label>
+              <div className="flex flex-wrap gap-2">
+                {CULTURE_PREFS.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => toggleItem(c, selectedCulture, setSelectedCulture)}
+                    className={`px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 min-h-[40px] ${
+                      selectedCulture.includes(c)
+                        ? "bg-periwinkle text-white shadow-sm"
+                        : "bg-periwinkle-50/40 text-text-light border border-periwinkle-100/60 hover:border-periwinkle/40"
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-text-muted mt-2">We&apos;ll match your preferences against facility reviews and culture descriptions.</p>
+            </div>
+
+            {/* Union */}
+            <div>
               <label className="flex items-center gap-2.5 cursor-pointer min-h-[44px]">
                 <input type="checkbox" className="w-5 h-5 rounded border-periwinkle-100 text-periwinkle accent-periwinkle" />
                 <span className="text-sm font-semibold text-text">I prefer union positions</span>

@@ -63,6 +63,10 @@ export interface NurseProfile {
   schedulePreference?: string;
   locationCity?: string;
   locationState?: string;
+  maxCommuteMiles?: number;
+  desiredPayMin?: number;
+  desiredPayMax?: number;
+  culturePreferences?: string[];
   unionPreference?: boolean;
   resumeUrl?: string;
   resumeFileName?: string;

@@ -1,14 +1,12 @@
 // Flor Fit Score Algorithm Configuration
-// Adjust weights here without rewriting scoring logic
+// Five factors that match the marketing page — adjust weights here
 
 export const FIT_SCORE_WEIGHTS = {
-  specialtyMatch: 35,
-  yearsOfExperience: 20,
-  schedulePreference: 20,
-  certificationsBonus: 10,
-  locationProximity: 10,
-  unionPreference: 4,
-  ehrMatch: 1,
+  scheduleMatch: 25,
+  specialtyMatch: 25,
+  commuteDistance: 20,
+  payAlignment: 15,
+  facilityCulture: 15,
 } as const;
 
 export const TOTAL_POSSIBLE = Object.values(FIT_SCORE_WEIGHTS).reduce(
