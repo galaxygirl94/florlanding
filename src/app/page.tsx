@@ -26,7 +26,7 @@ export default function HomePage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-[1.06] tracking-tight">
-              <span className="italic text-periwinkle-light" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Meet Flor.</span>{" "}
+              <span className="block italic font-bold text-periwinkle-light text-5xl sm:text-6xl lg:text-7xl xl:text-8xl mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Meet Flor.</span>
               You deserve better than spam and ghost&nbsp;jobs.
             </h1>
 
