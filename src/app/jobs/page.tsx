@@ -55,7 +55,7 @@ export default function JobListingsPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#1E1E2E]/80 via-[#1E1E2E]/50 to-transparent" />
         <div className="absolute inset-0 flex items-center">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 w-full">
             <div className="animate-fade-in-up">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white">Find Nursing Jobs</h1>
               <p className="text-white/75 mt-3 text-base sm:text-lg max-w-lg leading-relaxed">
@@ -66,7 +66,7 @@ export default function JobListingsPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-8 sm:py-12">
         {/* Mobile filter toggle */}
         <button
           className="md:hidden w-full mb-5 bg-white border border-periwinkle-100/60 rounded-xl px-4 py-3.5 text-sm font-bold text-periwinkle flex items-center justify-center gap-2 min-h-[44px]"
@@ -185,7 +185,7 @@ export default function JobListingsPage() {
         </div>
 
         {/* Job cards grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
           {filteredJobs.map((job, i) => (
             <JobCard key={job.id} job={job} index={i} />
           ))}
