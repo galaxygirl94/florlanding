@@ -81,7 +81,7 @@ export default function EthicsPage() {
 
       {/* ========== THE PLEDGE ========== */}
       <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-3xl mx-auto">
             <div className="space-y-6">
               {pledgeItems.map((item, i) => (
@@ -114,7 +114,7 @@ export default function EthicsPage() {
 
       {/* ========== ENFORCEMENT ========== */}
       <section className="bg-offwhite">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-3xl mx-auto animate-fade-in-up">
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-extrabold text-text mb-4">
@@ -170,8 +170,8 @@ export default function EthicsPage() {
       </section>
 
       {/* ========== BADGE / COMMITMENT BLOCK ========== */}
-      <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+      <section className="bg-[#F8F8FA]">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-2xl mx-auto text-center animate-fade-in-up">
             <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-periwinkle to-periwinkle-dark mb-8">
               <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
@@ -201,7 +201,7 @@ export default function EthicsPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-periwinkle/8 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-periwinkle/8 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/4" />
 
-        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32 text-center">
+        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
             You deserve better. We&apos;re making sure you get&nbsp;it.
           </h2>

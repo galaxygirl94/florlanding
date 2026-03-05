@@ -91,7 +91,7 @@ export default function HowFitWorksPage() {
 
       {/* ========== THREE STEPS ========== */}
       <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="text-center mb-16 animate-fade-in-up">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text mb-4">How it works</h2>
             <p className="text-lg text-text-light max-w-xl mx-auto">Three steps. No complexity. No games.</p>
@@ -155,7 +155,7 @@ export default function HowFitWorksPage() {
 
       {/* ========== FIVE FACTORS — product showcase with photo ========== */}
       <section className="bg-gradient-to-b from-periwinkle-50 to-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 xl:gap-24 items-center">
             {/* Photo with floating score card */}
             <div className="relative lg:col-span-6 animate-fade-in-up">
@@ -239,8 +239,8 @@ export default function HowFitWorksPage() {
       </section>
 
       {/* ========== WHY IT MATTERS ========== */}
-      <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+      <section className="bg-[#F8F8FA]">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-3xl mx-auto text-center animate-fade-in-up">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text mb-6">
               No black boxes. No mystery algorithms.
@@ -270,7 +270,7 @@ export default function HowFitWorksPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-periwinkle/8 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-periwinkle/8 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/4" />
 
-        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32 text-center">
+        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
             Ready to see your Fit Scores?
           </h2>

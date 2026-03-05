@@ -36,7 +36,7 @@ export default function PayTransparencyPage() {
 
       {/* ========== THE PROBLEM ========== */}
       <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-3xl mx-auto">
             <div className="animate-fade-in-up">
               <span className="inline-flex items-center gap-2 text-danger text-sm font-bold uppercase tracking-wider mb-6">
@@ -99,7 +99,7 @@ export default function PayTransparencyPage() {
 
       {/* ========== THE FLOR STANDARD ========== */}
       <section className="bg-gradient-to-b from-periwinkle-50 to-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-in-up">
             <span className="inline-flex items-center gap-2 text-periwinkle text-sm font-bold uppercase tracking-wider mb-6">
               <span className="w-8 h-px bg-periwinkle" />
@@ -190,8 +190,8 @@ export default function PayTransparencyPage() {
       </section>
 
       {/* ========== MANIFESTO BLOCK ========== */}
-      <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+      <section className="bg-[#F0F0F8]">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-3xl mx-auto animate-fade-in-up">
             <div className="bg-periwinkle-50 rounded-3xl p-8 sm:p-12 lg:p-16">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text leading-tight mb-8">
@@ -222,7 +222,7 @@ export default function PayTransparencyPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-periwinkle/8 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-periwinkle/8 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/4" />
 
-        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32 text-center">
+        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
             See what jobs really pay.
           </h2>

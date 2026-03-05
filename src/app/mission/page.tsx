@@ -40,7 +40,7 @@ export default function MissionPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#1E1E2E]/90 via-[#1E1E2E]/70 to-[#1E1E2E]/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/60 via-transparent to-[#1E1E2E]/20" />
 
-        <div className="relative w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-28 sm:py-36">
+        <div className="relative w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-20 sm:py-28">
           <div className="max-w-2xl animate-fade-in-up">
             <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full mb-8">
               <div className="w-2 h-2 bg-periwinkle-light rounded-full" />
@@ -62,7 +62,7 @@ export default function MissionPage() {
 
       {/* ========== THE STORY ========== */}
       <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-3xl mx-auto animate-fade-in-up">
             <span className="inline-flex items-center gap-2 text-periwinkle text-sm font-bold uppercase tracking-wider mb-6">
               <span className="w-8 h-px bg-periwinkle" />
@@ -96,7 +96,7 @@ export default function MissionPage() {
 
       {/* ========== WHAT WE BELIEVE ========== */}
       <section className="bg-gradient-to-b from-periwinkle-50 to-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="text-center mb-16 animate-fade-in-up">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text mb-4">What we believe</h2>
             <p className="text-lg text-text-light max-w-xl mx-auto">The principles that guide everything we build.</p>
@@ -142,7 +142,7 @@ export default function MissionPage() {
 
       {/* ========== FOUNDING TEAM ========== */}
       <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="text-center mb-16 animate-fade-in-up">
             <span className="inline-flex items-center gap-2 text-periwinkle text-sm font-bold uppercase tracking-wider mb-6">
               <span className="w-8 h-px bg-periwinkle" />
@@ -182,7 +182,7 @@ export default function MissionPage() {
 
       {/* ========== FLORENCE NIGHTINGALE — statue + quote ========== */}
       <section className="bg-offwhite">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-20 sm:py-28">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-center">
               <div className="md:col-span-5 animate-fade-in-up">
@@ -218,7 +218,7 @@ export default function MissionPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-periwinkle/8 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-periwinkle/8 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/4" />
 
-        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32 text-center">
+        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
             Join us in changing the&nbsp;system.
           </h2>

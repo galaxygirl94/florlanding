@@ -22,7 +22,7 @@ export default function ContactPage() {
 
       {/* ========== CONTACT FORM + INFO ========== */}
       <section className="bg-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 max-w-5xl mx-auto">
             {/* Form */}
             <div className="lg:col-span-7 animate-fade-in-up">
@@ -164,7 +164,7 @@ export default function ContactPage() {
 
       {/* ========== FAQ QUICK HITS ========== */}
       <section className="bg-offwhite">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12 animate-fade-in-up">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-text mb-3">Quick answers</h2>
@@ -192,7 +192,7 @@ export default function ContactPage() {
       <section className="bg-[#1E1E2E] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-periwinkle/8 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/4" />
 
-        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-24 sm:py-32 text-center">
+        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-16 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
             Ready to find your next role?
           </h2>
