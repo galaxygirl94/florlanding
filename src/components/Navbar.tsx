@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { user, isLoggedIn, logout } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -58,13 +60,35 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <div className="ml-4 pl-4 border-l border-gray-200">
-              <Link
-                href="/nurse-profile"
-                className="bg-periwinkle hover:bg-periwinkle-dark text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 shadow-sm shadow-periwinkle/20 hover:shadow-md hover:shadow-periwinkle/30 hover:-translate-y-px"
-              >
-                Get Started
-              </Link>
+            <div className="ml-4 pl-4 border-l border-gray-200 flex items-center gap-3">
+              {isLoggedIn ? (
+                <>
+                  <span className="text-sm font-medium text-text-light">
+                    Hi, {user?.firstName}
+                  </span>
+                  <button
+                    onClick={logout}
+                    className="text-sm font-bold text-periwinkle hover:text-periwinkle-dark px-4 py-2.5 rounded-full border border-periwinkle/30 hover:border-periwinkle/50 transition-all duration-200"
+                  >
+                    Log Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="text-sm font-bold text-periwinkle hover:text-periwinkle-dark px-4 py-2.5 rounded-full border border-periwinkle/30 hover:border-periwinkle/50 transition-all duration-200"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    href="/nurse-profile"
+                    className="bg-periwinkle hover:bg-periwinkle-dark text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 shadow-sm shadow-periwinkle/20 hover:shadow-md hover:shadow-periwinkle/30 hover:-translate-y-px"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -98,13 +122,36 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="/nurse-profile"
-                className="mt-4 bg-periwinkle text-white px-4 py-3.5 rounded-full text-base font-bold text-center hover:bg-periwinkle-dark transition-all duration-200"
-                onClick={() => setMenuOpen(false)}
-              >
-                Get Started — It&apos;s Free
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <div className="px-4 py-2 text-sm text-text-muted">
+                    Signed in as {user?.firstName} {user?.lastName}
+                  </div>
+                  <button
+                    onClick={() => { logout(); setMenuOpen(false); }}
+                    className="mt-2 border border-periwinkle/30 text-periwinkle px-4 py-3.5 rounded-full text-base font-bold text-center hover:bg-periwinkle-50 transition-all duration-200"
+                  >
+                    Log Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="mt-2 border border-periwinkle/30 text-periwinkle px-4 py-3.5 rounded-full text-base font-bold text-center hover:bg-periwinkle-50 transition-all duration-200"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    href="/nurse-profile"
+                    className="mt-2 bg-periwinkle text-white px-4 py-3.5 rounded-full text-base font-bold text-center hover:bg-periwinkle-dark transition-all duration-200"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Get Started — It&apos;s Free
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

@@ -255,12 +255,12 @@ export default function HomePage() {
       </section>
 
       {/* ========== FULL-BLEED PHOTO STRIP — nurse-hands ========== */}
-      <section className="relative h-[220px] sm:h-[280px] overflow-hidden">
+      <section className="relative h-[320px] sm:h-[400px] lg:h-[460px] overflow-hidden">
         <Image
           src="/nurse-hands.jpg"
           alt="Close-up of hands being held on blue fabric"
           fill
-          className="object-cover"
+          className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#1E1E2E]/80 via-[#1E1E2E]/50 to-[#1E1E2E]/20" />
         <div className="absolute inset-0 flex items-center">
@@ -429,8 +429,8 @@ export default function HomePage() {
                 title: "Registered Nurse, 8 years",
               },
               {
-                img: "/nurse-community.jpg",
-                alt: "Three nurses outside making heart shapes with their hands",
+                img: "/nurse-mom.jpg",
+                alt: "Nurse mom in blue scrubs touching noses with her son",
                 quote: "Every hour on bad job boards is an hour away from my patients. Flor gave me that time back.",
                 name: "Maria L.",
                 title: "Pediatric Nurse, 5 years",
@@ -640,16 +640,21 @@ export default function HomePage() {
       </section>
 
       {/* ========== FEATURED JOBS ========== */}
-      <section className="bg-[#F8F8FA]">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-14 sm:py-18">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mb-10">
+      <section className="relative bg-gradient-to-b from-[#1E1E2E] to-[#2A2A40] overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-periwinkle/10 rounded-full blur-[120px]" />
+        <div className="relative max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-16 sm:py-22">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mb-12">
             <div>
-              <h2 className="text-3xl sm:text-4xl xl:text-5xl font-extrabold text-text">Featured Jobs</h2>
-              <p className="text-text-light mt-1.5 text-base xl:text-lg leading-relaxed">Real jobs with real pay, ready for you right now.</p>
+              <span className="inline-flex items-center gap-2 text-periwinkle-light text-sm font-bold uppercase tracking-wider mb-4">
+                <span className="w-8 h-px bg-periwinkle-light" />
+                Now hiring
+              </span>
+              <h2 className="text-3xl sm:text-4xl xl:text-5xl font-extrabold text-white">Featured Jobs</h2>
+              <p className="text-white/50 mt-2 text-base xl:text-lg leading-relaxed">Real jobs with real pay, ready for you right now.</p>
             </div>
             <Link
               href="/jobs"
-              className="inline-flex items-center gap-2 text-periwinkle hover:text-periwinkle-dark font-bold transition-colors flex-shrink-0"
+              className="inline-flex items-center gap-2 text-periwinkle-light hover:text-white font-bold transition-colors flex-shrink-0 bg-white/10 hover:bg-white/15 px-5 py-2.5 rounded-full border border-white/10"
             >
               View all jobs
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

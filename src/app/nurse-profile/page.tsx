@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 const SPECIALTIES = [
   "Medical-Surgical", "ICU/Critical Care", "Emergency", "OR/Perioperative",
@@ -157,11 +158,25 @@ function NightingaleProfile() {
 
 /* ── Main Page ──────────────────────────────────────────────────────── */
 export default function NurseProfilePage() {
+  const { isLoggedIn, signup } = useAuth();
   const [saved, setSaved] = useState(false);
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedCerts, setSelectedCerts] = useState<string[]>([]);
   const [selectedEhr, setSelectedEhr] = useState<string[]>([]);
   const [resumeFile, setResumeFile] = useState<string>("");
+  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [photoFileName, setPhotoFileName] = useState<string>("");
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const resumeInputRef = useRef<HTMLInputElement>(null);
+
+  // Account creation fields
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [signupError, setSignupError] = useState("");
 
   const toggleItem = (
     item: string,
@@ -169,6 +184,61 @@ export default function NurseProfilePage() {
     setList: (v: string[]) => void
   ) => {
     setList(list.includes(item) ? list.filter((i) => i !== item) : [...list, item]);
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 5 * 1024 * 1024) return; // 5MB limit
+    setPhotoFileName(file.name);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) return; // 5MB limit
+    setResumeFile(file.name);
+  };
+
+  const handleSave = () => {
+    setSignupError("");
+    // If not logged in, require account credentials
+    if (!isLoggedIn) {
+      if (!email || !password) {
+        setSignupError("Please enter an email and password to create your account.");
+        return;
+      }
+      if (password.length < 6) {
+        setSignupError("Password must be at least 6 characters.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setSignupError("Passwords do not match.");
+        return;
+      }
+      if (!firstName || !lastName) {
+        setSignupError("Please enter your first and last name.");
+        return;
+      }
+      const success = signup(email, password, firstName, lastName);
+      if (!success) {
+        setSignupError("An account with this email already exists. Please log in instead.");
+        return;
+      }
+    }
+    setSaved(true);
+  };
+
+  const handleUpdate = () => {
+    setSaved(true);
+    // Briefly show the saved message
+    setTimeout(() => setSaved(false), 3000);
   };
 
   return (
@@ -259,10 +329,11 @@ export default function NurseProfilePage() {
         {/* ── Step indicator ── */}
         <div className="hidden sm:flex items-center justify-center gap-3 mb-12">
           {[
-            { num: "1", label: "Personal Info" },
-            { num: "2", label: "License" },
-            { num: "3", label: "Experience" },
-            { num: "4", label: "Preferences" },
+            { num: "1", label: "Account" },
+            { num: "2", label: "Personal Info" },
+            { num: "3", label: "License" },
+            { num: "4", label: "Experience" },
+            { num: "5", label: "Preferences" },
           ].map((step, i) => (
             <div key={step.num} className="flex items-center">
               <div className="flex items-center gap-2.5">
@@ -271,7 +342,7 @@ export default function NurseProfilePage() {
                 </div>
                 <span className="text-sm font-semibold text-text">{step.label}</span>
               </div>
-              {i < 3 && <div className="w-12 lg:w-20 h-px bg-periwinkle-100 mx-4" />}
+              {i < 4 && <div className="w-12 lg:w-20 h-px bg-periwinkle-100 mx-4" />}
             </div>
           ))}
         </div>
@@ -290,8 +361,79 @@ export default function NurseProfilePage() {
           </div>
         )}
 
+        {signupError && (
+          <div className="bg-danger-light border border-danger/20 rounded-xl p-4 mb-8 flex items-center gap-3 animate-fade-in-up max-w-4xl mx-auto">
+            <div className="w-8 h-8 rounded-full bg-danger flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <p className="text-sm font-semibold text-danger">{signupError}</p>
+          </div>
+        )}
+
         {/* ── Form sections — centered, clean ── */}
         <div className="max-w-4xl mx-auto space-y-8">
+
+          {/* Account Credentials — only show if not logged in */}
+          {!isLoggedIn && (
+            <section className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8 lg:p-10">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-10 h-10 rounded-xl bg-periwinkle-50 flex items-center justify-center text-periwinkle flex-shrink-0">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-lg font-extrabold text-text">Create Your Account</h2>
+                  <p className="text-xs text-text-muted">Set up your login credentials to save and access your profile.</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                    placeholder="you@email.com"
+                  />
+                </div>
+                <div />
+                <div>
+                  <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Password</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                    placeholder="At least 6 characters"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Confirm Password</label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                    placeholder="Confirm your password"
+                  />
+                </div>
+              </div>
+              <div className="mt-5 flex items-center gap-2.5 bg-periwinkle-50/60 rounded-xl p-4">
+                <svg className="w-4 h-4 text-periwinkle flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+                <span className="text-xs text-periwinkle-dark font-semibold">
+                  Already have an account?{" "}
+                  <Link href="/login" className="underline hover:no-underline">Log in here</Link>
+                </span>
+              </div>
+            </section>
+          )}
+
           {/* Personal Info */}
           <section className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8 lg:p-10">
             <div className="flex items-center gap-3 mb-8">
@@ -308,35 +450,85 @@ export default function NurseProfilePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">First Name</label>
-                <input type="text" className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors" placeholder="First name" />
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="First name"
+                />
               </div>
               <div>
                 <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Last Name</label>
-                <input type="text" className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors" placeholder="Last name" />
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="Last name"
+                />
               </div>
               <div>
                 <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Email</label>
-                <input type="email" className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors" placeholder="you@email.com" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="you@email.com"
+                />
               </div>
               <div>
                 <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Phone</label>
-                <input type="tel" className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors" placeholder="(555) 123-4567" />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="(555) 123-4567"
+                />
               </div>
             </div>
 
             <div className="mt-7 pt-6 border-t border-periwinkle-100/30">
               <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-3">Profile Photo (Optional)</label>
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-periwinkle-50 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-7 h-7 text-periwinkle-light" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
+                <div className="w-14 h-14 rounded-2xl bg-periwinkle-50 flex items-center justify-center flex-shrink-0 overflow-hidden relative">
+                  {photoPreview ? (
+                    <Image src={photoPreview} alt="Profile preview" fill className="object-cover" />
+                  ) : (
+                    <svg className="w-7 h-7 text-periwinkle-light" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                  )}
                 </div>
                 <div>
-                  <button className="text-sm font-bold text-periwinkle hover:text-periwinkle-dark transition-colors">
-                    Upload Photo
+                  <input
+                    ref={photoInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => photoInputRef.current?.click()}
+                    className="text-sm font-bold text-periwinkle hover:text-periwinkle-dark transition-colors"
+                  >
+                    {photoPreview ? "Change Photo" : "Upload Photo"}
                   </button>
-                  <p className="text-xs text-text-muted mt-0.5">We show your skills first, not your photo.</p>
+                  {photoFileName ? (
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-xs text-text-muted">{photoFileName}</p>
+                      <button
+                        onClick={() => { setPhotoPreview(""); setPhotoFileName(""); }}
+                        className="text-xs text-danger hover:text-danger font-bold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-text-muted mt-0.5">JPG, PNG, up to 5MB. We show your skills first, not your photo.</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -526,7 +718,26 @@ export default function NurseProfilePage() {
                 <p className="text-xs text-text-muted">Optional — your structured profile does the heavy lifting.</p>
               </div>
             </div>
-            <div className="border-2 border-dashed border-periwinkle-100 rounded-xl p-8 text-center hover:border-periwinkle/30 transition-colors">
+            <input
+              ref={resumeInputRef}
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleResumeUpload}
+              className="hidden"
+            />
+            <div
+              className="border-2 border-dashed border-periwinkle-100 rounded-xl p-8 text-center hover:border-periwinkle/30 transition-colors cursor-pointer"
+              onClick={() => !resumeFile && resumeInputRef.current?.click()}
+              onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const file = e.dataTransfer.files?.[0];
+                if (file && file.size <= 5 * 1024 * 1024) {
+                  setResumeFile(file.name);
+                }
+              }}
+            >
               {resumeFile ? (
                 <div>
                   <div className="w-12 h-12 rounded-xl bg-periwinkle-50 flex items-center justify-center mx-auto mb-3">
@@ -535,7 +746,7 @@ export default function NurseProfilePage() {
                     </svg>
                   </div>
                   <p className="text-sm font-bold text-text">{resumeFile}</p>
-                  <button onClick={() => setResumeFile("")} className="text-xs text-periwinkle hover:text-periwinkle-dark font-bold mt-2 transition-colors">
+                  <button onClick={(e) => { e.stopPropagation(); setResumeFile(""); }} className="text-xs text-periwinkle hover:text-periwinkle-dark font-bold mt-2 transition-colors">
                     Remove
                   </button>
                 </div>
@@ -548,9 +759,7 @@ export default function NurseProfilePage() {
                   </div>
                   <p className="text-sm font-bold text-text mb-1">
                     Drop your resume here or{" "}
-                    <button onClick={() => setResumeFile("Resume_2026.pdf")} className="text-periwinkle hover:text-periwinkle-dark transition-colors">
-                      browse
-                    </button>
+                    <span className="text-periwinkle">browse</span>
                   </p>
                   <p className="text-xs text-text-muted">PDF or DOC, up to 5MB</p>
                 </div>
@@ -578,13 +787,32 @@ export default function NurseProfilePage() {
             />
           </section>
 
-          {/* Save */}
-          <button
-            onClick={() => setSaved(true)}
-            className="w-full bg-periwinkle hover:bg-periwinkle-dark text-white font-bold py-4 rounded-full text-lg transition-all duration-200 shadow-lg shadow-periwinkle/20 hover:shadow-xl hover:shadow-periwinkle/30 hover:-translate-y-0.5 min-h-[56px]"
-          >
-            Save Profile
-          </button>
+          {/* Save / Update buttons */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            {!saved ? (
+              <button
+                onClick={handleSave}
+                className="flex-1 bg-periwinkle hover:bg-periwinkle-dark text-white font-bold py-4 rounded-full text-lg transition-all duration-200 shadow-lg shadow-periwinkle/20 hover:shadow-xl hover:shadow-periwinkle/30 hover:-translate-y-0.5 min-h-[56px]"
+              >
+                {isLoggedIn ? "Save Profile" : "Create Account & Save Profile"}
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={handleUpdate}
+                  className="flex-1 bg-periwinkle hover:bg-periwinkle-dark text-white font-bold py-4 rounded-full text-lg transition-all duration-200 shadow-lg shadow-periwinkle/20 hover:shadow-xl hover:shadow-periwinkle/30 hover:-translate-y-0.5 min-h-[56px]"
+                >
+                  Update Profile
+                </button>
+                <Link
+                  href="/jobs"
+                  className="flex-1 bg-white border-2 border-periwinkle text-periwinkle hover:bg-periwinkle-50 font-bold py-4 rounded-full text-lg transition-all duration-200 min-h-[56px] text-center"
+                >
+                  Browse Jobs
+                </Link>
+              </>
+            )}
+          </div>
 
           <p className="text-center text-xs text-text-muted mt-2">
             Free forever. We&apos;ll never charge nurses. That&apos;s a promise.
