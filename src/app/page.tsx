@@ -429,8 +429,8 @@ export default function HomePage() {
                 title: "Registered Nurse, 8 years",
               },
               {
-                img: "/nurse-mom.jpg",
-                alt: "Nurse mom in blue scrubs touching noses with her son",
+                img: "/nurse-group.jpg",
+                alt: "Group of four nurses smiling together in front of an ambulance",
                 quote: "Every hour on bad job boards is an hour away from my patients. Flor gave me that time back.",
                 name: "Maria L.",
                 title: "Pediatric Nurse, 5 years",
