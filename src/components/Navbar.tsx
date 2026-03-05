@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,7 +30,15 @@ export default function Navbar() {
     >
       <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
         <div className="flex items-center justify-between h-16 sm:h-[72px]">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+            <Image
+              src="/flor-logo.jpg"
+              alt="Flor"
+              width={28}
+              height={34}
+              className="object-contain"
+              priority
+            />
             <span
               className="text-2xl font-bold tracking-tight text-text"
               style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
