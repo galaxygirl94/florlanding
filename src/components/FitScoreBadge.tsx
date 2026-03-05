@@ -11,13 +11,13 @@ export default function FitScoreBadge({ score, topMatch, topGap, size = "sm" }: 
 
   if (size === "lg") {
     return (
-      <div className="bg-white rounded-2xl card-shadow p-4 sm:p-6">
-        <div className="text-center mb-3">
-          <div className={`text-4xl sm:text-5xl font-bold ${color}`}>{score}</div>
-          <div className="text-sm text-text-light mt-1">out of 100</div>
-          <div className="text-xs font-semibold text-periwinkle mt-1">Flor Fit Score</div>
+      <div className="bg-white rounded-2xl section-shadow p-5 sm:p-6">
+        <div className="text-center mb-4">
+          <div className={`text-5xl sm:text-6xl font-extrabold ${color} leading-none`}>{score}</div>
+          <div className="text-sm text-text-muted mt-1.5 font-medium">out of 100</div>
+          <div className="text-xs font-bold text-periwinkle uppercase tracking-wider mt-1">Flor Fit Score</div>
         </div>
-        <div className="text-sm text-text-light text-center">
+        <div className="text-sm text-text-light text-center leading-relaxed">
           {topMatch}. {topGap}.
         </div>
       </div>
@@ -25,9 +25,9 @@ export default function FitScoreBadge({ score, topMatch, topGap, size = "sm" }: 
   }
 
   return (
-    <div className="inline-flex items-center gap-2 bg-periwinkle-50 rounded-xl px-3 py-2">
-      <span className={`text-lg font-bold ${color}`}>{score}/100</span>
-      <span className="text-[10px] font-medium text-periwinkle-dark">Flor Fit</span>
+    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-periwinkle-50 to-periwinkle-100/50 rounded-xl px-3 py-2">
+      <span className={`text-lg font-extrabold ${color}`}>{score}/100</span>
+      <span className="text-[9px] font-bold text-periwinkle-dark uppercase tracking-wider">Flor Fit</span>
     </div>
   );
 }
