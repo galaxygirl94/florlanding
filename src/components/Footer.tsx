@@ -1,51 +1,59 @@
 import Link from "next/link";
-import FlorLogo from "@/components/FlorLogo";
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-periwinkle-100/50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-8">
+    <footer className="bg-[#1E1E2E] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-8">
+          {/* Brand column */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <FlorLogo size="sm" showTagline />
-            <p className="text-sm text-text-light mt-4 leading-relaxed max-w-xs">
-              Changing the system for the better. Real pay, real schedules, direct applications — the way nursing job search should be.
+            <div className="flex items-center gap-2.5 mb-4">
+              <span className="text-xl font-extrabold tracking-tight text-white">
+                fl<span className="text-periwinkle-light">o</span>r
+              </span>
+            </div>
+            <p className="text-sm text-white/50 leading-relaxed max-w-xs mb-6">
+              Changing the system for the better. Named after Florence Nightingale. Built by nurses, for nurses.
             </p>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-sm text-text mb-4">For Nurses</h4>
-            <div className="flex flex-col gap-2.5">
-              <Link href="/jobs" className="text-sm text-text-light hover:text-periwinkle transition-colors">Browse Jobs</Link>
-              <Link href="/nurse-profile" className="text-sm text-text-light hover:text-periwinkle transition-colors">Create Profile</Link>
-              <Link href="/tracker" className="text-sm text-text-light hover:text-periwinkle transition-colors">Track Applications</Link>
+            <div className="flex items-center gap-2 text-xs text-white/30">
+              <div className="w-2 h-2 bg-success rounded-full" />
+              All systems operational
             </div>
           </div>
 
           <div>
-            <h4 className="font-bold text-sm text-text mb-4">For Facilities</h4>
-            <div className="flex flex-col gap-2.5">
-              <span className="text-sm text-text-muted">Post a Job (Coming Soon)</span>
-              <Link href="/facility/facility-1" className="text-sm text-text-light hover:text-periwinkle transition-colors">Facility Profiles</Link>
+            <h4 className="font-bold text-sm text-white/80 uppercase tracking-wider mb-5">For Nurses</h4>
+            <div className="flex flex-col gap-3">
+              <Link href="/jobs" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Browse Jobs</Link>
+              <Link href="/nurse-profile" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Create Profile</Link>
+              <Link href="/tracker" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Track Applications</Link>
             </div>
           </div>
 
           <div>
-            <h4 className="font-bold text-sm text-text mb-4">Flor</h4>
-            <div className="flex flex-col gap-2.5">
-              <span className="text-sm text-text-light">Our Mission</span>
-              <span className="text-sm text-text-light">Contact Us</span>
-              <span className="text-sm text-text-muted italic">Named after Florence Nightingale</span>
+            <h4 className="font-bold text-sm text-white/80 uppercase tracking-wider mb-5">For Facilities</h4>
+            <div className="flex flex-col gap-3">
+              <span className="text-sm text-white/30">Post a Job (Coming Soon)</span>
+              <Link href="/facility/facility-1" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Facility Profiles</Link>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-sm text-white/80 uppercase tracking-wider mb-5">Company</h4>
+            <div className="flex flex-col gap-3">
+              <span className="text-sm text-white/50">Our Mission</span>
+              <span className="text-sm text-white/50">Ethics Pledge</span>
+              <span className="text-sm text-white/50">Contact</span>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-periwinkle-100/50 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-sm text-text-muted">
+        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-sm text-white/30">
             &copy; 2026 Flor. All rights reserved.
           </p>
-          <p className="text-sm text-text-muted">
-            Built by nurses, for nurses.
+          <p className="text-sm text-white/30 italic">
+            &ldquo;I attribute my success to this — I never gave or took any excuse.&rdquo; — Florence Nightingale
           </p>
         </div>
       </div>

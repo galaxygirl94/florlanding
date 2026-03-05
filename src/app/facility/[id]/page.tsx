@@ -16,31 +16,30 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20 text-center">
         <h1 className="text-2xl font-bold mb-4">Facility not found</h1>
-        <Link href="/jobs" className="text-periwinkle hover:text-periwinkle-dark transition-colors">Back to jobs</Link>
+        <Link href="/jobs" className="text-periwinkle hover:text-periwinkle-dark transition-colors font-semibold">Back to jobs</Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <div className="animate-fade-in-up">
-        {/* Photo 9: Collaborative care banner */}
-        <div className="relative rounded-3xl overflow-hidden shadow-lg mb-5 sm:mb-6">
+        {/* Photo banner */}
+        <div className="relative rounded-2xl overflow-hidden hero-shadow mb-6 sm:mb-8 h-[200px] sm:h-[260px]">
           <Image
             src="/nurse-fistbump.png"
-            alt="Nurse fist-bumping young girl in hospital bed — great collaborative care"
-            width={900}
-            height={300}
-            className="w-full h-[180px] sm:h-[240px] object-cover"
+            alt="Nurse fist-bumping young patient — collaborative care at its best"
+            fill
+            className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#2A2A3C]/60 via-[#8B8FD4]/30 to-transparent" />
-          <div className="absolute inset-0 flex items-end px-6 sm:px-8 pb-5 sm:pb-6">
-            <p className="text-white/90 text-sm font-medium">The kind of workplace nurses want to find through Flor</p>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1E1E2E]/65 via-[#1E1E2E]/30 to-transparent" />
+          <div className="absolute inset-0 flex items-end px-6 sm:px-8 pb-6">
+            <p className="text-white/80 text-sm font-medium">The kind of workplace nurses want to find through Flor</p>
           </div>
         </div>
 
-        {/* Header */}
-        <div className="bg-white rounded-2xl section-shadow p-6 sm:p-8 mb-5 sm:mb-6">
+        {/* Header card */}
+        <div className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
             <div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-text">{facility.name}</h1>
@@ -52,19 +51,17 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
                 {facility.location.city}, {facility.location.state}
                 {facility.location.address && ` · ${facility.location.address}`}
               </p>
-              <span className="inline-block mt-2.5 bg-periwinkle-50 text-periwinkle-dark text-xs font-semibold px-3 py-1.5 rounded-lg">
+              <span className="inline-block mt-3 bg-periwinkle-50 text-periwinkle-dark text-xs font-bold px-3 py-1.5 rounded-full">
                 {facility.type}
               </span>
             </div>
-            <div className="flex-shrink-0 bg-gradient-to-br from-amber/10 to-amber/5 rounded-2xl px-5 py-3.5 text-center self-start border border-amber/10">
+            <div className="flex-shrink-0 bg-amber/5 border border-amber/10 rounded-2xl px-5 py-3.5 text-center self-start">
               <div className="text-2xl font-extrabold text-amber-dark">{facility.starRating}</div>
               <div className="flex gap-0.5 justify-center mt-0.5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <svg
                     key={star}
-                    className={`w-3.5 h-3.5 ${
-                      star <= Math.round(facility.starRating) ? "text-amber" : "text-periwinkle-100"
-                    }`}
+                    className={`w-3.5 h-3.5 ${star <= Math.round(facility.starRating) ? "text-amber" : "text-periwinkle-100"}`}
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -81,7 +78,7 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
           <p className="text-sm leading-relaxed mb-6 text-text-light">{facility.description}</p>
 
           {/* Culture */}
-          <div className="bg-gradient-to-r from-periwinkle-50 to-cream rounded-xl p-4 sm:p-5 mb-6">
+          <div className="bg-periwinkle-50/60 rounded-xl p-5 mb-6">
             <h3 className="text-xs font-bold text-periwinkle-dark uppercase tracking-wider mb-2">Workplace Culture</h3>
             <p className="text-sm text-text leading-relaxed">{facility.culture}</p>
           </div>
@@ -89,11 +86,11 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
           {/* Details */}
           <div className="flex flex-wrap gap-3 text-sm">
             {facility.ehrSystem && (
-              <span className="bg-warm-gray px-3.5 py-2 rounded-xl font-medium text-text-light">
+              <span className="bg-warm-gray px-4 py-2 rounded-full font-semibold text-text-light">
                 EHR: {facility.ehrSystem}
               </span>
             )}
-            <button className="bg-periwinkle text-white px-5 py-2 rounded-xl font-semibold hover:bg-periwinkle-dark transition-all duration-200 min-h-[44px] shadow-sm shadow-periwinkle/15">
+            <button className="bg-periwinkle text-white px-6 py-2.5 rounded-full font-bold hover:bg-periwinkle-dark transition-all duration-200 min-h-[44px] shadow-sm shadow-periwinkle/15">
               Contact Facility
             </button>
           </div>
@@ -101,18 +98,18 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
 
         {/* Reviews */}
         {facility.reviews.length > 0 && (
-          <div className="bg-white rounded-2xl section-shadow p-6 sm:p-8 mb-5 sm:mb-6 animate-fade-in-up-delay-1">
-            <h2 className="text-lg sm:text-xl font-extrabold mb-5 sm:mb-6">Nurse Reviews</h2>
-            <div className="space-y-4 sm:space-y-5">
+          <div className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8 mb-6 animate-fade-in-up-delay-1">
+            <h2 className="text-lg sm:text-xl font-extrabold mb-6">Nurse Reviews</h2>
+            <div className="space-y-4">
               {facility.reviews.map((review) => (
-                <div key={review.id} className="border border-periwinkle-100/50 rounded-xl p-4 sm:p-5 hover:border-periwinkle-100 transition-colors">
+                <div key={review.id} className="border border-periwinkle-100/40 rounded-xl p-5 hover:border-periwinkle/30 transition-colors">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-periwinkle-50 to-periwinkle-100 flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-periwinkle-50 flex items-center justify-center flex-shrink-0">
                         <span className="text-sm font-bold text-periwinkle">{review.authorInitials}</span>
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-text">{review.role}</div>
+                        <div className="text-sm font-bold text-text">{review.role}</div>
                         <div className="text-xs text-text-muted">{review.date}</div>
                       </div>
                     </div>
@@ -120,9 +117,7 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
                       {[1, 2, 3, 4, 5].map((star) => (
                         <svg
                           key={star}
-                          className={`w-4 h-4 ${
-                            star <= review.rating ? "text-amber" : "text-periwinkle-100"
-                          }`}
+                          className={`w-4 h-4 ${star <= review.rating ? "text-amber" : "text-periwinkle-100"}`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -140,19 +135,19 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
 
         {/* Open Positions */}
         {facilityJobs.length > 0 && (
-          <div className="bg-white rounded-2xl section-shadow p-6 sm:p-8 animate-fade-in-up-delay-2">
-            <h2 className="text-lg sm:text-xl font-extrabold mb-5 sm:mb-6">Open Positions</h2>
-            <div className="space-y-3 sm:space-y-4">
+          <div className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 sm:p-8 animate-fade-in-up-delay-2">
+            <h2 className="text-lg sm:text-xl font-extrabold mb-6">Open Positions</h2>
+            <div className="space-y-3">
               {facilityJobs.map((job) => (
                 <Link key={job.id} href={`/jobs/${job.id}`}>
-                  <div className="border border-periwinkle-100/50 rounded-xl p-4 sm:p-5 hover:border-periwinkle hover:bg-periwinkle-50/20 transition-all duration-200 cursor-pointer group">
+                  <div className="border border-periwinkle-100/40 rounded-xl p-5 hover:border-periwinkle/40 hover:bg-periwinkle-50/30 transition-all duration-200 cursor-pointer group">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <div>
-                        <h3 className="font-semibold text-sm group-hover:text-periwinkle transition-colors">{job.title}</h3>
+                        <h3 className="font-bold text-sm group-hover:text-periwinkle transition-colors">{job.title}</h3>
                         <p className="text-xs text-text-muted mt-0.5">{job.type} · {job.location.city}, {job.location.state}</p>
                       </div>
                       <div className="text-lg font-extrabold text-periwinkle self-start sm:self-auto">
-                        ${job.payRange.min}-${job.payRange.max}/{job.payUnit}
+                        ${job.payRange.min}–${job.payRange.max}/{job.payUnit}
                       </div>
                     </div>
                   </div>

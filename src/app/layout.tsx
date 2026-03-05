@@ -4,9 +4,9 @@ import Footer from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Flor — Transparent Nursing Jobs",
+  title: "Flor — Transparent Nursing Jobs | Built by Nurses, for Nurses",
   description:
-    "Flor is the transparency-first nursing job marketplace. See real pay, real schedules, and apply directly — no recruiters, no guesswork.",
+    "Flor is the transparency-first nursing job marketplace. See real pay, real schedules, and apply directly — no recruiters, no guesswork. Named after Florence Nightingale.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
