@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import JobCard from "@/components/JobCard";
 import { seedJobs } from "@/data/seed-jobs";
 
@@ -14,6 +15,21 @@ export default function HomePage() {
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-32">
           <div className="max-w-3xl mx-auto text-center animate-fade-in-up">
+            {/* Prominent Flor logo */}
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <Image
+                src="/flor-logo.jpg"
+                alt="Flor"
+                width={52}
+                height={64}
+                className="object-contain"
+                priority
+              />
+              <span className="text-4xl sm:text-5xl font-extrabold tracking-tight text-text">
+                fl<span className="text-periwinkle">o</span>r
+              </span>
+            </div>
+
             <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm text-periwinkle-dark text-sm font-medium px-4 py-2 rounded-full mb-6 border border-periwinkle-100/50 shadow-sm">
               <svg className="w-4 h-4 text-periwinkle" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
