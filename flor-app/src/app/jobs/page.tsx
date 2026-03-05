@@ -4,40 +4,49 @@ import { useState, useMemo } from "react";
 import JobCard from "@/components/JobCard";
 import { seedJobs } from "@/data/seed-jobs";
 
-const SPECIALTIES = ["All", "Behavioral Health", "OR/Perioperative", "CNA"];
-const EHR_SYSTEMS = ["All", "Epic", "LifeChart", "Not specified"];
-const SCHEDULE_TYPES = ["All", "Days", "Evenings", "Nights", "Rotating"];
-const LOCATIONS = ["All", "Providence, RI", "Pawtucket, RI", "Newport, RI"];
+const SPECIALTIES = ["All", "Behavioral Health", "OR/Perioperative", "Medical-Surgical", "Home Health", "CNA"];
+const SCHEDULE_TYPES = [
+  "All",
+  "M-F, no on-call",
+  "M-F, no weekends",
+  "No weekend/holiday requirement",
+  "Rotating weekends",
+  "Night shift only",
+  "3x12 (days)",
+  "3x12 (nights)",
+  "Per diem / as needed",
+];
+const LOCATIONS = ["All", "Providence, RI", "Pawtucket, RI", "Newport, RI", "Warwick, RI", "Woonsocket, RI"];
+const JOB_TYPES = ["All", "Full Time", "Part Time", "Per Diem", "Contract"];
 
 export default function JobListingsPage() {
   const [specialty, setSpecialty] = useState("All");
-  const [ehr, setEhr] = useState("All");
   const [schedule, setSchedule] = useState("All");
   const [location, setLocation] = useState("All");
+  const [jobType, setJobType] = useState("All");
   const [unionOnly, setUnionOnly] = useState(false);
   const [payMin, setPayMin] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
 
+  const publishedJobs = seedJobs.filter((j) => j.status === "published");
+
   const filteredJobs = useMemo(() => {
-    return seedJobs.filter((job) => {
+    return publishedJobs.filter((job) => {
       if (specialty !== "All") {
         const jobSpec = job.specialty || (job.licenseRequired.type === "CNA" ? "CNA" : "");
         if (jobSpec.toLowerCase() !== specialty.toLowerCase()) return false;
-      }
-      if (ehr !== "All") {
-        const jobEhr = job.ehrSystem || "Not specified";
-        if (jobEhr !== ehr) return false;
       }
       if (schedule !== "All" && job.scheduleType !== schedule) return false;
       if (location !== "All") {
         const jobLoc = `${job.location.city}, ${job.location.state}`;
         if (jobLoc !== location) return false;
       }
+      if (jobType !== "All" && job.type !== jobType) return false;
       if (unionOnly && !job.union) return false;
       if (payMin > 0 && job.payRange.max < payMin) return false;
       return true;
     });
-  }, [specialty, ehr, schedule, location, unionOnly, payMin]);
+  }, [specialty, schedule, location, jobType, unionOnly, payMin, publishedJobs]);
 
   const FilterPill = ({
     label,
@@ -105,19 +114,7 @@ export default function JobListingsPage() {
             </select>
           </div>
           <div>
-            <label className="text-xs font-semibold text-text-light block mb-1.5">EHR System</label>
-            <select
-              value={ehr}
-              onChange={(e) => setEhr(e.target.value)}
-              className="w-full border border-periwinkle-100 rounded-xl px-3 py-3 text-sm bg-white min-h-[44px]"
-            >
-              {EHR_SYSTEMS.map((e) => (
-                <option key={e} value={e}>{e}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="text-xs font-semibold text-text-light block mb-1.5">Schedule</label>
+            <label className="text-xs font-semibold text-text-light block mb-1.5">Shift Type</label>
             <select
               value={schedule}
               onChange={(e) => setSchedule(e.target.value)}
@@ -137,6 +134,18 @@ export default function JobListingsPage() {
             >
               {LOCATIONS.map((l) => (
                 <option key={l} value={l}>{l}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-text-light block mb-1.5">Job Type</label>
+            <select
+              value={jobType}
+              onChange={(e) => setJobType(e.target.value)}
+              className="w-full border border-periwinkle-100 rounded-xl px-3 py-3 text-sm bg-white min-h-[44px]"
+            >
+              {JOB_TYPES.map((t) => (
+                <option key={t} value={t}>{t}</option>
               ))}
             </select>
           </div>

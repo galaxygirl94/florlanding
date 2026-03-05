@@ -25,6 +25,9 @@ export interface JobListing {
   experienceRange?: { min: number; max: number };
   questions: QAItem[];
   postedDate: string;
+  status: "draft" | "published" | "closed" | "filled";
+  employerId?: string;
+  description?: string;
 }
 
 export interface QAItem {
@@ -55,6 +58,7 @@ export interface NurseProfile {
   resumeUrl?: string;
   resumeFileName?: string;
   bio?: string;
+  availability?: string;
 }
 
 export interface FacilityProfile {
@@ -81,12 +85,100 @@ export interface FacilityReview {
   text: string;
 }
 
+export type ApplicationStatus =
+  | "applied"
+  | "viewed"
+  | "screening"
+  | "interview_requested"
+  | "interview_scheduled"
+  | "interview_completed"
+  | "offer_extended"
+  | "offer_accepted"
+  | "offer_declined"
+  | "hired"
+  | "rejected";
+
 export interface Application {
   id: string;
   jobId: string;
   jobTitle: string;
   facilityName: string;
-  status: "applied" | "viewed" | "responded";
+  nurseId: string;
+  nurseName: string;
+  nurseSpecialty: string;
+  nurseYearsExperience: number;
+  nurseCertifications: string[];
+  nurseAvailability?: string;
+  status: ApplicationStatus;
   appliedDate: string;
   lastUpdate: string;
+  message?: string;
+}
+
+export type InterviewType = "phone" | "video" | "in_person";
+export type InterviewStatus = "requested" | "confirmed" | "declined" | "completed" | "cancelled" | "rescheduled";
+export type InterviewRecommendation = "move_forward" | "reject" | "hold";
+
+export interface Interview {
+  id: string;
+  applicationId: string;
+  jobId: string;
+  jobTitle: string;
+  nurseId: string;
+  nurseName: string;
+  employerId: string;
+  facilityName: string;
+  type: InterviewType;
+  status: InterviewStatus;
+  scheduledDate: string;
+  scheduledTime: string;
+  duration: number;
+  interviewers: string[];
+  location?: string;
+  meetingLink?: string;
+  notes?: string;
+  feedback?: {
+    rating: number;
+    notes: string;
+    recommendation: InterviewRecommendation;
+  };
+  createdAt: string;
+}
+
+export type UserRole = "nurse" | "employer" | "admin";
+
+export interface User {
+  id: string;
+  email: string;
+  role: UserRole;
+  firstName: string;
+  lastName: string;
+  facilityId?: string;
+  facilityName?: string;
+  approved?: boolean;
+}
+
+export type PipelineStage = "applied" | "screening" | "interview" | "offer" | "hired";
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: "application" | "interview_request" | "interview_confirmed" | "interview_declined" | "offer" | "status_change" | "new_applicant";
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+  link?: string;
+}
+
+export interface EmployerProfile {
+  id: string;
+  userId: string;
+  facilityId: string;
+  facilityName: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone?: string;
+  approved: boolean;
+  createdAt: string;
 }

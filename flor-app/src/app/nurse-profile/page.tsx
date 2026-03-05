@@ -3,45 +3,42 @@
 import { useState } from "react";
 
 const SPECIALTIES = [
-  "Medical-Surgical",
-  "ICU/Critical Care",
-  "Emergency",
-  "OR/Perioperative",
-  "Labor & Delivery",
-  "Pediatrics",
-  "Behavioral Health",
-  "Home Health",
-  "Long-Term Care",
-  "Oncology",
-  "Rehabilitation",
-  "CNA",
+  "Medical-Surgical", "ICU/Critical Care", "Emergency", "OR/Perioperative",
+  "Labor & Delivery", "Pediatrics", "Behavioral Health", "Home Health",
+  "Long-Term Care", "Oncology", "Rehabilitation", "CNA",
 ];
 
 const CERTIFICATIONS = [
-  "BLS/CPR",
-  "ACLS",
-  "PALS",
-  "TNCC",
-  "CCRN",
-  "CEN",
-  "CNOR",
-  "CPR Certification",
-  "Driver's License",
+  "RN License",
+  "LPN License",
+  "BLS (Basic Life Support)",
+  "ACLS (Advanced Cardiac Life Support)",
+  "PALS (Pediatric Advanced Life Support)",
+  "TNCC (Trauma Nursing Core Course)",
+  "CCRN (Critical Care RN)",
+  "CEN (Certified Emergency Nurse)",
+  "Other specialty certifications",
 ];
 
-const EHR_SYSTEMS = ["Epic", "Cerner", "Meditech", "LifeChart", "Allscripts", "PointClickCare", "Other"];
-
-const SCHEDULE_PREFS = ["Days", "Evenings", "Nights", "Rotating", "Flexible"];
+const SCHEDULE_PREFS = [
+  "M-F, no on-call",
+  "M-F, no weekends",
+  "No weekend/holiday requirement",
+  "Rotating weekends",
+  "Night shift only",
+  "3x12 (days)",
+  "3x12 (nights)",
+  "Per diem / as needed",
+  "Flexible",
+];
 
 const LICENSE_TYPES = ["RN", "LPN", "CNA", "APRN", "NP"];
-
 const STATES = ["RI", "MA", "CT", "NY", "CA", "FL", "TX", "PA", "OH", "IL"];
 
 export default function NurseProfilePage() {
   const [saved, setSaved] = useState(false);
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedCerts, setSelectedCerts] = useState<string[]>([]);
-  const [selectedEhr, setSelectedEhr] = useState<string[]>([]);
   const [resumeFile, setResumeFile] = useState<string>("");
 
   const toggleItem = (
@@ -188,7 +185,7 @@ export default function NurseProfilePage() {
             </div>
 
             {/* Certifications */}
-            <div className="mb-6">
+            <div>
               <label className="text-xs font-semibold text-text-light block mb-2">Certifications</label>
               <div className="flex flex-wrap gap-2">
                 {CERTIFICATIONS.map((c) => (
@@ -206,44 +203,25 @@ export default function NurseProfilePage() {
                 ))}
               </div>
             </div>
-
-            {/* EHR */}
-            <div>
-              <label className="text-xs font-semibold text-text-light block mb-2">EHR Systems Experience</label>
-              <div className="flex flex-wrap gap-2">
-                {EHR_SYSTEMS.map((e) => (
-                  <button
-                    key={e}
-                    onClick={() => toggleItem(e, selectedEhr, setSelectedEhr)}
-                    className={`px-3 py-2 rounded-full text-sm font-medium transition-colors min-h-[44px] ${
-                      selectedEhr.includes(e)
-                        ? "bg-periwinkle text-white"
-                        : "bg-periwinkle-50 text-text-light hover:bg-periwinkle-100"
-                    }`}
-                  >
-                    {e}
-                  </button>
-                ))}
-              </div>
-              <p className="text-xs text-text-light mt-2 italic bg-periwinkle-50 rounded-lg p-2.5">
-                EHR experience is noted on your profile but won&apos;t affect your Flor Fit Score — we know great nurses adapt quickly.
-              </p>
-            </div>
           </section>
 
           {/* Preferences */}
           <section className="bg-white rounded-2xl card-shadow p-5 sm:p-8">
             <h2 className="text-lg font-bold mb-4 sm:mb-6">Preferences</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-text-light block mb-1.5">Schedule Preference</label>
-                <select className="w-full border border-periwinkle-100 rounded-xl px-3 py-3 text-sm bg-white min-h-[44px]">
-                  <option value="">Select</option>
-                  {SCHEDULE_PREFS.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
+            <div className="mb-4">
+              <label className="text-xs font-semibold text-text-light block mb-2">Schedule Preference</label>
+              <div className="flex flex-wrap gap-2">
+                {SCHEDULE_PREFS.map((s) => (
+                  <button
+                    key={s}
+                    className="px-3 py-2 rounded-full text-sm font-medium bg-periwinkle-50 text-text-light hover:bg-periwinkle-100 transition-colors min-h-[44px]"
+                  >
+                    {s}
+                  </button>
+                ))}
               </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-semibold text-text-light block mb-1.5">Location (State)</label>
                 <select className="w-full border border-periwinkle-100 rounded-xl px-3 py-3 text-sm bg-white min-h-[44px]">
@@ -251,6 +229,17 @@ export default function NurseProfilePage() {
                   {STATES.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-text-light block mb-1.5">Availability</label>
+                <select className="w-full border border-periwinkle-100 rounded-xl px-3 py-3 text-sm bg-white min-h-[44px]">
+                  <option value="">Select</option>
+                  <option>Immediately</option>
+                  <option>Within 2 weeks</option>
+                  <option>Within 1 month</option>
+                  <option>Within 2 months</option>
+                  <option>Just exploring</option>
                 </select>
               </div>
             </div>

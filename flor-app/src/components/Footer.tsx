@@ -25,10 +25,11 @@ export default function Footer() {
             </div>
           </div>
           <div>
-            <h4 className="font-semibold text-sm mb-3">For Facilities</h4>
+            <h4 className="font-semibold text-sm mb-3">For Employers</h4>
             <div className="flex flex-col gap-2">
-              <span className="text-sm text-text-light">Post a Job (Coming Soon)</span>
-              <Link href="/facility/facility-1" className="text-sm text-text-light hover:text-periwinkle">Facility Profiles</Link>
+              <Link href="/register/employer" className="text-sm text-text-light hover:text-periwinkle">Create Employer Account</Link>
+              <Link href="/employer/jobs/new" className="text-sm text-text-light hover:text-periwinkle">Post a Job</Link>
+              <Link href="/employer" className="text-sm text-text-light hover:text-periwinkle">Employer Dashboard</Link>
             </div>
           </div>
           <div>
@@ -36,6 +37,7 @@ export default function Footer() {
             <div className="flex flex-col gap-2">
               <span className="text-sm text-text-light">Our Mission</span>
               <span className="text-sm text-text-light">Contact Us</span>
+              <Link href="/login" className="text-sm text-text-light hover:text-periwinkle">Sign In</Link>
             </div>
           </div>
         </div>
