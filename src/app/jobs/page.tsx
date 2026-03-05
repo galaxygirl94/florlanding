@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import JobCard from "@/components/JobCard";
 import { seedJobs } from "@/data/seed-jobs";
 
@@ -43,12 +44,27 @@ export default function JobListingsPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      {/* Page Header */}
+      {/* Page Header with Photo 4 */}
       <div className="mb-8 sm:mb-10 animate-fade-in-up">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-text">Find Nursing Jobs</h1>
-        <p className="text-text-light mt-2 text-sm sm:text-base leading-relaxed max-w-2xl">
-          Every listing shows real pay and honest schedules. No guesswork, no ghost posts.
-        </p>
+        <div className="relative rounded-3xl overflow-hidden mb-6 sm:mb-8 shadow-lg">
+          <Image
+            src="/nurse-tablet.png"
+            alt="Nurse smiling while browsing jobs on a tablet — the Flor search experience"
+            width={1200}
+            height={400}
+            className="w-full h-[200px] sm:h-[280px] object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#2A2A3C]/75 via-[#8B8FD4]/40 to-transparent" />
+          <div className="absolute inset-0 flex items-center px-6 sm:px-10">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-white">Find Nursing Jobs</h1>
+              <p className="text-white/80 mt-2 text-sm sm:text-base leading-relaxed max-w-lg">
+                Every listing shows real pay and honest schedules. No guesswork, no ghost posts.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Mobile: Show Filters button */}

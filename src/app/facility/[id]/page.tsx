@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { seedFacilities } from "@/data/seed-facilities";
 import { seedJobs } from "@/data/seed-jobs";
 
@@ -23,6 +24,21 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       <div className="animate-fade-in-up">
+        {/* Photo 9: Collaborative care banner */}
+        <div className="relative rounded-3xl overflow-hidden shadow-lg mb-5 sm:mb-6">
+          <Image
+            src="/nurse-fistbump.png"
+            alt="Nurse fist-bumping young girl in hospital bed — great collaborative care"
+            width={900}
+            height={300}
+            className="w-full h-[180px] sm:h-[240px] object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#2A2A3C]/60 via-[#8B8FD4]/30 to-transparent" />
+          <div className="absolute inset-0 flex items-end px-6 sm:px-8 pb-5 sm:pb-6">
+            <p className="text-white/90 text-sm font-medium">The kind of workplace nurses want to find through Flor</p>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="bg-white rounded-2xl section-shadow p-6 sm:p-8 mb-5 sm:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
