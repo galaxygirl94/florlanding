@@ -1,13 +1,13 @@
-"use client";
-
-import { use } from "react";
 import Link from "next/link";
 import { seedFacilities } from "@/data/seed-facilities";
 import { seedJobs } from "@/data/seed-jobs";
 
+export function generateStaticParams() {
+  return seedFacilities.map((f) => ({ id: f.id }));
+}
 
-export default function FacilityProfilePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default async function FacilityProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const facility = seedFacilities.find((f) => f.id === id);
   const facilityJobs = seedJobs.filter((j) => j.facilityId === id);
 
