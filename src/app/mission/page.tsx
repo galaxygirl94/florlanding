@@ -31,8 +31,8 @@ export default function MissionPage() {
       {/* ========== HERO — photo with overlay ========== */}
       <section className="relative overflow-hidden min-h-[60vh] flex items-center">
         <Image
-          src="/nurse-hands.png"
-          alt="Close-up of nurse holding a patient's hand"
+          src="/nurse-hands.jpg"
+          alt="Close-up of hands being held on blue fabric"
           fill
           className="object-cover"
           priority
@@ -180,17 +180,35 @@ export default function MissionPage() {
         </div>
       </section>
 
-      {/* ========== FLORENCE NIGHTINGALE QUOTE ========== */}
+      {/* ========== FLORENCE NIGHTINGALE — statue + quote ========== */}
       <section className="bg-offwhite">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-20 sm:py-28">
-          <div className="max-w-3xl mx-auto text-center animate-fade-in-up">
-            <svg className="w-12 h-12 text-periwinkle-200 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z" />
-            </svg>
-            <blockquote className="text-2xl sm:text-3xl font-extrabold text-text leading-tight mb-6">
-              &ldquo;I attribute my success to this — I never gave or took any excuse.&rdquo;
-            </blockquote>
-            <p className="text-text-muted font-medium">Florence Nightingale</p>
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-center">
+              <div className="md:col-span-5 animate-fade-in-up">
+                <div className="relative rounded-2xl overflow-hidden hero-shadow aspect-[3/4] max-h-[480px]">
+                  <Image
+                    src="/florence-statue.jpg"
+                    alt="Bronze statue of Florence Nightingale"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 400px"
+                  />
+                </div>
+              </div>
+              <div className="md:col-span-7 animate-fade-in-up-delay-1">
+                <svg className="w-12 h-12 text-periwinkle-200 mb-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z" />
+                </svg>
+                <blockquote className="text-2xl sm:text-3xl font-extrabold text-text leading-tight mb-6">
+                  &ldquo;I attribute my success to this — I never gave or took any excuse.&rdquo;
+                </blockquote>
+                <p className="text-text-muted font-medium mb-4">Florence Nightingale</p>
+                <p className="text-text-light leading-relaxed">
+                  The founder of modern nursing — and the namesake of Flor. Her legacy of courage, compassion, and refusal to accept the status quo is what drives us every day.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

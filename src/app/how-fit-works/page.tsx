@@ -159,13 +159,13 @@ export default function HowFitWorksPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 xl:gap-24 items-center">
             {/* Photo with floating score card */}
             <div className="relative lg:col-span-6 animate-fade-in-up">
-              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/5] max-w-[612px] max-h-[612px]">
+              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/5]">
                 <Image
-                  src="/nurse-confident.png"
-                  alt="Confident nurse with arms crossed"
+                  src="/nurse-confident.jpg"
+                  alt="Nurse in green scrubs writing on clipboard"
                   fill
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 612px"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/30 to-transparent" />
               </div>

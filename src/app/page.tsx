@@ -9,8 +9,8 @@ export default function HomePage() {
       {/* ========== HERO — full viewport, edge-to-edge ========== */}
       <section className="relative overflow-hidden min-h-[92vh] flex items-center">
         <Image
-          src="/nurse-hero.png"
-          alt="Nurse smiling outdoors with coffee"
+          src="/nurse-hero.jpg"
+          alt="Nurse tying her surgical cap, getting ready for her shift"
           fill
           className="object-cover"
           priority
@@ -63,13 +63,13 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 xl:gap-24 items-center">
             {/* Large image — takes more space */}
             <div className="order-2 lg:order-1 lg:col-span-6 animate-fade-in-up">
-              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/3] lg:aspect-[3/4] xl:aspect-[4/5] max-w-[612px] max-h-[612px]">
+              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/3] lg:aspect-[3/4] xl:aspect-[4/5]">
                 <Image
-                  src="/nurse-burnout.png"
-                  alt="Two exhausted nurses sitting on the floor after a long shift"
+                  src="/nurse-burnout.jpg"
+                  alt="Frustrated nurse at desk with head in hands"
                   fill
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 612px"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/30 to-transparent" />
               </div>
@@ -222,13 +222,13 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 xl:gap-24 items-center">
             {/* Photo — big, impactful, takes 7 columns */}
             <div className="relative lg:col-span-7 animate-fade-in-up">
-              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/5] lg:aspect-[3/4] max-w-[612px] max-h-[612px]">
+              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/5] lg:aspect-[3/4]">
                 <Image
-                  src="/nurse-confident.png"
-                  alt="Confident nurse with arms crossed"
+                  src="/nurse-confident.jpg"
+                  alt="Nurse in green scrubs writing on clipboard"
                   fill
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 612px"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/30 to-transparent" />
               </div>
@@ -326,8 +326,8 @@ export default function HomePage() {
       {/* ========== FULL-WIDTH PHOTO BREAK — mission/hands ========== */}
       <section className="relative h-[300px] sm:h-[400px] lg:h-[400px] overflow-hidden">
         <Image
-          src="/nurse-hands.png"
-          alt="Close-up of nurse holding a patient's hand"
+          src="/nurse-hands.jpg"
+          alt="Close-up of hands being held on blue fabric"
           fill
           className="object-cover"
         />
@@ -366,15 +366,15 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             {[
               {
-                img: "/nurse-elderly.png",
-                alt: "Nurse hugging elderly man, both smiling warmly",
+                img: "/nurse-community.jpg",
+                alt: "Three nurses outside making heart shapes with their hands",
                 quote: "I became a nurse to make a difference in people's lives — not to spend my evenings fighting through job boards and recruiter emails.",
                 name: "Sarah M.",
                 title: "Registered Nurse, 8 years",
               },
               {
-                img: "/nurse-child.png",
-                alt: "Nurse hugging child with red balloon in hospital corridor",
+                img: "/nurse-community.jpg",
+                alt: "Three nurses outside making heart shapes with their hands",
                 quote: "Every hour I spend on bad job boards is an hour I'm not spending with my patients. Flor gave me that time back.",
                 name: "Maria L.",
                 title: "Pediatric Nurse, 5 years",
@@ -387,7 +387,7 @@ export default function HomePage() {
                 }`}
               >
                 <div className="relative h-64 sm:h-72 lg:h-80">
-                  <Image src={item.img} alt={item.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 612px" />
+                  <Image src={item.img} alt={item.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/40 via-transparent to-transparent" />
                 </div>
                 <div className="p-7 sm:p-9">
@@ -448,13 +448,13 @@ export default function HomePage() {
 
             {/* Photo — 7 columns, big */}
             <div className="lg:col-span-7 animate-fade-in-up-delay-1">
-              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/3] max-w-[612px] max-h-[612px]">
+              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/3]">
                 <Image
-                  src="/nurse-mom.png"
-                  alt="Nurse mom touching noses with her young son"
+                  src="/nurse-mom.jpg"
+                  alt="Nurse mom in blue scrubs touching noses with her son"
                   fill
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 612px"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/15 to-transparent" />
               </div>

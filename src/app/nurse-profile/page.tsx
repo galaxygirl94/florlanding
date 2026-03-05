@@ -171,8 +171,8 @@ export default function NurseProfilePage() {
       {/* Header with photo banner */}
       <div className="relative overflow-hidden h-[180px] sm:h-[260px]">
         <Image
-          src="/nurse-commute.png"
-          alt="Nurse arriving at work"
+          src="/nurse-commute.jpg"
+          alt="Nurse on subway holding coffee in teal scrubs"
           fill
           className="object-cover"
           priority

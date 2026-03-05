@@ -27,8 +27,8 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
         {/* Photo banner */}
         <div className="relative rounded-2xl overflow-hidden hero-shadow mb-6 sm:mb-8 h-[200px] sm:h-[260px]">
           <Image
-            src="/nurse-fistbump.png"
-            alt="Nurse fist-bumping young patient — collaborative care at its best"
+            src="/nurse-community.jpg"
+            alt="Three nurses outside making heart shapes with their hands"
             fill
             className="object-cover"
           />

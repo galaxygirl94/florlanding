@@ -47,8 +47,8 @@ export default function JobListingsPage() {
       {/* Page Header with photo banner */}
       <div className="relative overflow-hidden h-[200px] sm:h-[280px]">
         <Image
-          src="/nurse-tablet.png"
-          alt="Nurse browsing jobs on a tablet"
+          src="/nurse-tablet.jpg"
+          alt="Two nurses looking at a phone together"
           fill
           className="object-cover"
           priority
