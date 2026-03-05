@@ -34,17 +34,17 @@ export default function Footer() {
             <h4 className="font-bold text-sm text-white/80 uppercase tracking-wider mb-5">Explore</h4>
             <div className="flex flex-col gap-3">
               <Link href="/facility/facility-1" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Facility Reviews</Link>
-              <span className="text-sm text-white/50">How Flor Fit Works</span>
-              <span className="text-sm text-white/50">Pay Transparency</span>
+              <Link href="/how-fit-works" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">How Flor Fit Works</Link>
+              <Link href="/pay-transparency" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Pay Transparency</Link>
             </div>
           </div>
 
           <div>
             <h4 className="font-bold text-sm text-white/80 uppercase tracking-wider mb-5">Flor</h4>
             <div className="flex flex-col gap-3">
-              <span className="text-sm text-white/50">Our Mission</span>
-              <span className="text-sm text-white/50">Ethics Pledge</span>
-              <span className="text-sm text-white/50">Contact Us</span>
+              <Link href="/mission" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Our Mission</Link>
+              <Link href="/ethics" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Ethics Pledge</Link>
+              <Link href="/contact" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Contact Us</Link>
             </div>
           </div>
         </div>

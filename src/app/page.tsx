@@ -63,12 +63,13 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 xl:gap-24 items-center">
             {/* Large image — takes more space */}
             <div className="order-2 lg:order-1 lg:col-span-6 animate-fade-in-up">
-              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/3] lg:aspect-[3/4] xl:aspect-[4/5]">
+              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/3] lg:aspect-[3/4] xl:aspect-[4/5] max-w-[612px] max-h-[612px]">
                 <Image
                   src="/nurse-burnout.png"
                   alt="Two exhausted nurses sitting on the floor after a long shift"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 612px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/30 to-transparent" />
               </div>
@@ -221,12 +222,13 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 xl:gap-24 items-center">
             {/* Photo — big, impactful, takes 7 columns */}
             <div className="relative lg:col-span-7 animate-fade-in-up">
-              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/5] lg:aspect-[3/4] max-h-[640px]">
+              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/5] lg:aspect-[3/4] max-w-[612px] max-h-[612px]">
                 <Image
                   src="/nurse-confident.png"
                   alt="Confident nurse with arms crossed"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 612px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/30 to-transparent" />
               </div>
@@ -322,7 +324,7 @@ export default function HomePage() {
       </section>
 
       {/* ========== FULL-WIDTH PHOTO BREAK — mission/hands ========== */}
-      <section className="relative h-[300px] sm:h-[400px] lg:h-[480px] overflow-hidden">
+      <section className="relative h-[300px] sm:h-[400px] lg:h-[400px] overflow-hidden">
         <Image
           src="/nurse-hands.png"
           alt="Close-up of nurse holding a patient's hand"
@@ -384,8 +386,8 @@ export default function HomePage() {
                   i === 0 ? "animate-fade-in-up-delay-1" : "animate-fade-in-up-delay-2"
                 }`}
               >
-                <div className="relative h-72 sm:h-80 lg:h-96">
-                  <Image src={item.img} alt={item.alt} fill className="object-cover" />
+                <div className="relative h-64 sm:h-72 lg:h-80">
+                  <Image src={item.img} alt={item.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 612px" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/40 via-transparent to-transparent" />
                 </div>
                 <div className="p-7 sm:p-9">
@@ -446,12 +448,13 @@ export default function HomePage() {
 
             {/* Photo — 7 columns, big */}
             <div className="lg:col-span-7 animate-fade-in-up-delay-1">
-              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/3]">
+              <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/3] max-w-[612px] max-h-[612px]">
                 <Image
                   src="/nurse-mom.png"
                   alt="Nurse mom touching noses with her young son"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 612px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E2E]/15 to-transparent" />
               </div>
