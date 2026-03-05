@@ -32,8 +32,13 @@ function NightingaleProfile() {
         <div className="flex flex-col sm:flex-row items-start gap-5 sm:gap-6 mb-8">
           {/* Avatar */}
           <div className="relative flex-shrink-0">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-periwinkle-50 to-periwinkle-100 flex items-center justify-center overflow-hidden">
-              <span className="text-3xl sm:text-4xl">🏥</span>
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-periwinkle-50 to-periwinkle-100 overflow-hidden relative">
+              <Image
+                src="/florence-pfp.png"
+                alt="Florence Nightingale"
+                fill
+                className="object-cover"
+              />
             </div>
             {/* Verified badge */}
             <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-success flex items-center justify-center border-2 border-white">
