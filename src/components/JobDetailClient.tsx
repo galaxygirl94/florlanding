@@ -8,6 +8,13 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
   const [newQuestion, setNewQuestion] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
+  const fitColor =
+    (job.fitScore ?? 0) >= 90
+      ? "bg-success"
+      : (job.fitScore ?? 0) >= 80
+      ? "bg-periwinkle"
+      : "bg-amber";
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 pb-28 sm:pb-12">
       {/* Breadcrumb */}
@@ -45,12 +52,22 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
                 <span className="font-medium">{job.type}{job.hoursPerWeek ? ` · ${job.hoursPerWeek} hrs/wk` : ""}</span>
               </div>
             </div>
-            {job.union && (
-              <div className="bg-amber/10 border border-amber/15 rounded-xl px-4 py-2.5 text-center flex-shrink-0 self-start">
-                <div className="text-sm font-bold text-amber-dark">Union</div>
-                <div className="text-[10px] text-amber-dark">{job.unionName}</div>
-              </div>
-            )}
+
+            {/* Fit Score + Union */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              {job.fitScore != null && (
+                <div className={`${fitColor} rounded-xl px-4 py-3 text-center`}>
+                  <div className="text-2xl font-extrabold text-white">{job.fitScore}%</div>
+                  <div className="text-[10px] font-bold text-white/80 uppercase tracking-wider">Flor Fit</div>
+                </div>
+              )}
+              {job.union && (
+                <div className="bg-amber/10 border border-amber/15 rounded-xl px-4 py-3 text-center">
+                  <div className="text-sm font-bold text-amber-dark">Union</div>
+                  <div className="text-[10px] text-amber-dark">{job.unionName}</div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Pay section */}
@@ -59,14 +76,49 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
               Pay Information
             </div>
             <div className="text-3xl sm:text-4xl font-extrabold text-periwinkle-dark mb-2">
-              ${job.payRange.min.toFixed(2)}–${job.payRange.max.toFixed(2)}
+              ${job.payRange.min}–${job.payRange.max}
               <span className="text-base font-semibold text-periwinkle">/{job.payUnit}</span>
             </div>
-            <div className="bg-white/80 rounded-lg p-4 mt-3">
+            {(job.signOnBonus ?? 0) > 0 && (
+              <div className="inline-flex items-center gap-2 bg-success-light text-success font-bold text-sm px-3 py-1.5 rounded-full mb-3">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                ${job.signOnBonus!.toLocaleString()} sign-on bonus
+              </div>
+            )}
+            <div className="bg-white/80 rounded-lg p-4 mt-2">
               <div className="text-xs font-bold text-periwinkle-dark mb-1">Pay Explained</div>
               <p className="text-sm text-text leading-relaxed">{job.payExplained}</p>
             </div>
           </div>
+
+          {/* Patient ratio */}
+          {job.patientRatio && (
+            <div className="bg-white rounded-xl border border-periwinkle-100/40 p-4 mb-6 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-periwinkle-50 flex items-center justify-center flex-shrink-0">
+                <span className="text-lg font-extrabold text-periwinkle">{job.patientRatio}</span>
+              </div>
+              <div>
+                <div className="text-sm font-bold text-text flex items-center gap-2">
+                  Patient-to-nurse ratio
+                  {job.patientRatioVerified && (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-success bg-success-light px-2 py-0.5 rounded-full">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                      </svg>
+                      Flor Verified
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-text-light">
+                  {job.patientRatioVerified
+                    ? "This ratio is verified through our Ethics Pledge. The facility has committed to maintaining this staffing level."
+                    : "Self-reported by the facility."}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Schedule */}
           <div className="mb-6">
@@ -79,7 +131,44 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
               ))}
             </div>
             <p className="text-sm text-text-light">{job.schedule}</p>
+            <div className="flex flex-wrap gap-x-6 gap-y-1 mt-3 text-sm">
+              {job.weekends && (
+                <span className="text-text-light">Weekends: <span className="font-semibold text-text">{job.weekends}</span></span>
+              )}
+              {job.onCall && (
+                <span className="text-text-light">On-call: <span className="font-semibold text-text">{job.onCall}</span></span>
+              )}
+            </div>
           </div>
+
+          {/* Benefits badges */}
+          {(job.loanForgiveness || job.tuitionReimbursement || job.relocationAssistance || job.magnetDesignated) && (
+            <div className="mb-6">
+              <h2 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Benefits & Perks</h2>
+              <div className="flex flex-wrap gap-2">
+                {job.loanForgiveness && (
+                  <span className="text-sm font-bold bg-success-light text-success px-3.5 py-1.5 rounded-full border border-success/20">
+                    Loan Forgiveness Eligible
+                  </span>
+                )}
+                {job.tuitionReimbursement && (
+                  <span className="text-sm font-bold bg-info/10 text-info px-3.5 py-1.5 rounded-full border border-info/20">
+                    Tuition Reimbursement
+                  </span>
+                )}
+                {job.relocationAssistance && (
+                  <span className="text-sm font-bold bg-rose-light text-rose px-3.5 py-1.5 rounded-full border border-rose/20">
+                    Relocation Assistance
+                  </span>
+                )}
+                {job.magnetDesignated && (
+                  <span className="text-sm font-bold bg-periwinkle-50 text-periwinkle-dark px-3.5 py-1.5 rounded-full border border-periwinkle-100">
+                    Magnet Designated
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Requirements & Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -127,6 +216,9 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
                 )}
                 {job.specialty && (
                   <li className="text-text">Specialty: <span className="font-semibold">{job.specialty}</span></li>
+                )}
+                {job.facilityType && (
+                  <li className="text-text">Facility type: <span className="font-semibold">{job.facilityType}</span></li>
                 )}
                 {job.preferredExperience && (
                   <li className="text-text-light">Preferred: {job.preferredExperience}</li>

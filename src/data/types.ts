@@ -19,12 +19,24 @@ export interface JobListing {
   drivingRequired: boolean;
   ehrSystem?: string;
   specialty?: string;
+  facilityType?: string;
   union: boolean;
   unionName?: string;
   note?: string;
   experienceRange?: { min: number; max: number };
   questions: QAItem[];
   postedDate: string;
+  weekends?: "Required" | "Optional" | "No Weekends";
+  onCall?: "Yes" | "No" | "Optional";
+  fitScore?: number;
+  patientRatio?: string;
+  patientRatioVerified?: boolean;
+  signOnBonus?: number;
+  loanForgiveness?: boolean;
+  tuitionReimbursement?: boolean;
+  relocationAssistance?: boolean;
+  magnetDesignated?: boolean;
+  remoteEligible?: boolean;
 }
 
 export interface QAItem {
