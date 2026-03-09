@@ -8,7 +8,7 @@ export interface JobListing {
   payExplained: string;
   type: string;
   hoursPerWeek?: number;
-  location: { city: string; state: string };
+  location: { city: string; state: string; address?: string; zip?: string };
   schedule: string;
   scheduleType: string;
   scheduleBadges: string[];
@@ -16,14 +16,20 @@ export interface JobListing {
   certificationsRequired: string[];
   certificationsPreferred?: string[];
   preferredExperience?: string;
+  experienceRange?: { min: number; max: number };
+  yearsSpecialtyRequired?: number;
+  experienceStrict?: boolean;
   drivingRequired: boolean;
   ehrSystem?: string;
   specialty?: string;
+  secondarySpecialty?: string;
   facilityType?: string;
+  patientPopulation?: string;
+  careSetting?: string;
   union: boolean;
   unionName?: string;
   note?: string;
-  experienceRange?: { min: number; max: number };
+  description?: string;
   questions: QAItem[];
   postedDate: string;
   weekends?: "Required" | "Optional" | "No Weekends";
@@ -37,6 +43,8 @@ export interface JobListing {
   relocationAssistance?: boolean;
   magnetDesignated?: boolean;
   remoteEligible?: boolean;
+  status?: "active" | "paused" | "closed" | "draft";
+  applicantCount?: number;
 }
 
 export interface QAItem {
@@ -55,12 +63,18 @@ export interface NurseProfile {
   email: string;
   phone?: string;
   photoUrl?: string;
-  licenses: { type: string; state: string; number?: string; verified: boolean }[];
+  zipCode?: string;
+  licenses: { type: string; state: string; number?: string; verified: boolean; verificationStatus?: "active" | "inactive" | "expired" | "encumbered" | "not_found" | "pending" }[];
   certifications: string[];
   specialties: string[];
   yearsOfExperience: number;
+  yearsSpecialty?: number;
   ehrExperience: string[];
   schedulePreference?: string;
+  shiftPreferences?: string[];
+  scheduleTypes?: string[];
+  careSettings?: string[];
+  patientPopulations?: string[];
   locationCity?: string;
   locationState?: string;
   maxCommuteMiles?: number;
@@ -71,13 +85,14 @@ export interface NurseProfile {
   resumeUrl?: string;
   resumeFileName?: string;
   bio?: string;
+  profileCompleted?: boolean;
 }
 
 export interface FacilityProfile {
   id: string;
   name: string;
   description: string;
-  location: { city: string; state: string; address?: string };
+  location: { city: string; state: string; address?: string; zip?: string };
   type: string;
   culture: string;
   ehrSystem?: string;
@@ -102,7 +117,33 @@ export interface Application {
   jobId: string;
   jobTitle: string;
   facilityName: string;
-  status: "applied" | "viewed" | "responded";
+  nurseId?: string;
+  nurseName?: string;
+  nurseProfile?: NurseProfile;
+  fitScore?: number;
+  status: "applied" | "viewed" | "responded" | "new" | "reviewing" | "interview" | "offer" | "hired" | "passed";
   appliedDate: string;
   lastUpdate: string;
+  note?: string;
+}
+
+export interface EmployerAccount {
+  id: string;
+  facilityId: string;
+  email: string;
+  name: string;
+  role: string;
+}
+
+export interface Interview {
+  id: string;
+  applicationId: string;
+  jobId: string;
+  nurseId: string;
+  nurseName: string;
+  date: string;
+  time: string;
+  duration: number;
+  notes?: string;
+  status: "scheduled" | "completed" | "cancelled";
 }

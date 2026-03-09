@@ -3,25 +3,16 @@
 import Link from "next/link";
 import { seedApplications } from "@/data/seed-applications";
 
-const STATUS_CONFIG = {
-  applied: {
-    label: "Applied",
-    color: "bg-info/10 text-info",
-    dotColor: "bg-info",
-    step: 1,
-  },
-  viewed: {
-    label: "Viewed",
-    color: "bg-amber/10 text-amber-dark",
-    dotColor: "bg-amber",
-    step: 2,
-  },
-  responded: {
-    label: "Responded",
-    color: "bg-success-light text-success",
-    dotColor: "bg-success",
-    step: 3,
-  },
+const STATUS_CONFIG: Record<string, { label: string; color: string; dotColor: string; step: number }> = {
+  applied: { label: "Applied", color: "bg-info/10 text-info", dotColor: "bg-info", step: 1 },
+  new: { label: "Applied", color: "bg-info/10 text-info", dotColor: "bg-info", step: 1 },
+  viewed: { label: "Viewed", color: "bg-amber/10 text-amber-dark", dotColor: "bg-amber", step: 2 },
+  reviewing: { label: "Reviewing", color: "bg-amber/10 text-amber-dark", dotColor: "bg-amber", step: 2 },
+  responded: { label: "Responded", color: "bg-success-light text-success", dotColor: "bg-success", step: 3 },
+  interview: { label: "Interview", color: "bg-success-light text-success", dotColor: "bg-success", step: 3 },
+  offer: { label: "Offer", color: "bg-success-light text-success", dotColor: "bg-success", step: 3 },
+  hired: { label: "Hired", color: "bg-success-light text-success", dotColor: "bg-success", step: 3 },
+  passed: { label: "Passed", color: "bg-gray-100 text-text-muted", dotColor: "bg-gray-400", step: 0 },
 };
 
 export default function TrackerPage() {

@@ -16,11 +16,22 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = [
-    { href: "/jobs", label: "Find Jobs" },
-    { href: "/nurse-profile", label: "My Profile" },
-    { href: "/tracker", label: "Applications" },
-  ];
+  const [isEmployer, setIsEmployer] = useState(false);
+
+  useEffect(() => {
+    setIsEmployer(localStorage.getItem("flor_user_type") === "employer");
+  }, []);
+
+  const links = isEmployer
+    ? [
+        { href: "/employer", label: "Dashboard" },
+        { href: "/employer/post", label: "Post Job" },
+      ]
+    : [
+        { href: "/jobs/matched", label: "Find Jobs" },
+        { href: "/nurse-profile", label: "My Profile" },
+        { href: "/tracker", label: "Applications" },
+      ];
 
   return (
     <nav
@@ -60,7 +71,18 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <div className="ml-4 pl-4 border-l border-gray-200 flex items-center gap-3">
+            {/* Demo view toggle */}
+            <button
+              onClick={() => {
+                const next = !isEmployer;
+                setIsEmployer(next);
+                localStorage.setItem("flor_user_type", next ? "employer" : "nurse");
+              }}
+              className="text-[11px] font-bold text-text-muted hover:text-periwinkle px-3 py-1.5 rounded-full border border-periwinkle-100/40 hover:border-periwinkle/30 transition-all"
+            >
+              {isEmployer ? "Switch to Nurse" : "Switch to Employer"}
+            </button>
+            <div className="ml-2 pl-4 border-l border-gray-200 flex items-center gap-3">
               {isLoggedIn ? (
                 <>
                   <span className="text-sm font-medium text-text-light">
@@ -82,7 +104,7 @@ export default function Navbar() {
                     Log In
                   </Link>
                   <Link
-                    href="/nurse-profile"
+                    href="/onboarding/resume"
                     className="bg-periwinkle hover:bg-periwinkle-dark text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 shadow-sm shadow-periwinkle/20 hover:shadow-md hover:shadow-periwinkle/30 hover:-translate-y-px"
                   >
                     Get Started
@@ -144,7 +166,7 @@ export default function Navbar() {
                     Log In
                   </Link>
                   <Link
-                    href="/nurse-profile"
+                    href="/onboarding/resume"
                     className="mt-2 bg-periwinkle text-white px-4 py-3.5 rounded-full text-base font-bold text-center hover:bg-periwinkle-dark transition-all duration-200"
                     onClick={() => setMenuOpen(false)}
                   >
