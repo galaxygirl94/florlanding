@@ -22,6 +22,8 @@ const C = {
 interface JobCardProps {
   job: JobListing;
   index?: number;
+  isSaved?: boolean;
+  onToggleSave?: (id: string) => void;
 }
 
 /* ── Smart facility image with illustrated fallback ── */
@@ -157,7 +159,7 @@ function PayDisplay({ job, accentColor }: { job: JobListing; accentColor: string
   );
 }
 
-export default function JobCard({ job, index = 0 }: JobCardProps) {
+export default function JobCard({ job, index = 0, isSaved, onToggleSave }: JobCardProps) {
   const [hovered, setHovered] = useState(false);
   const delayClass =
     index === 0
@@ -197,9 +199,9 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
         }}>
           <FacilityImage src={job.facilityImage} specialty={job.specialty} accentColor={accentColor} />
 
-          {/* Shift badge — frosted pill top-right */}
+          {/* Shift badge — frosted pill top-left */}
           <div style={{
-            position: "absolute", top: 10, right: 10,
+            position: "absolute", top: 10, left: 12,
             background: "rgba(255,255,255,0.92)", backdropFilter: "blur(6px)",
             borderRadius: 20, padding: "3px 10px",
             fontSize: 10, fontWeight: 700, color: C.navy,
@@ -208,6 +210,28 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
           }}>
             {job.scheduleType}
           </div>
+
+          {/* Save button — top right below shift */}
+          {onToggleSave && (
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleSave(job.id); }}
+              style={{
+                position: "absolute", top: 8, right: 10,
+                background: "rgba(255,255,255,0.94)", backdropFilter: "blur(8px)",
+                border: "none", cursor: "pointer",
+                width: 30, height: 30, borderRadius: "50%",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+                transition: "transform 0.15s ease",
+                transform: isSaved ? "scale(1.15)" : "scale(1)",
+                zIndex: 2,
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill={isSaved ? C.coral : "none"} stroke={isSaved ? C.coral : C.muted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+            </button>
+          )}
 
           {/* Sign-on bonus — amber gradient bottom strip */}
           {(job.signOnBonus ?? 0) > 0 && (

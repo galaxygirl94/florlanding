@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import JobCard from "@/components/JobCard";
 import { seedJobs } from "@/data/seed-jobs";
@@ -65,9 +65,30 @@ export default function JobListingsPage() {
   const [minFitScore, setMinFitScore] = useState(0);
   const [verifiedRatioOnly, setVerifiedRatioOnly] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [savedIds, setSavedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("flor_saved_jobs");
+    if (stored) try { setSavedIds(JSON.parse(stored)); } catch { /* ignore */ }
+  }, []);
+
+  const toggleSave = (id: string) => {
+    setSavedIds(prev => {
+      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+      localStorage.setItem("flor_saved_jobs", JSON.stringify(next));
+      return next;
+    });
+  };
 
   const filteredJobs = useMemo(() => {
     return seedJobs.filter((job) => {
+      // Search query filter
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        const searchable = `${job.title} ${job.facilityName} ${job.specialty || ""} ${job.location.city}`.toLowerCase();
+        if (!searchable.includes(q)) return false;
+      }
       if (specialty !== "All" && job.specialty !== specialty) return false;
       if (facilityType !== "All" && job.facilityType !== facilityType) return false;
       if (shift !== "All" && job.scheduleType !== shift) return false;
@@ -329,6 +350,25 @@ export default function JobListingsPage() {
       </div>
 
       <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-10 sm:py-14">
+        {/* Search bar */}
+        <div className="relative mb-6">
+          <svg
+            width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="#6B7280" strokeWidth="2" strokeLinecap="round"
+            className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"
+          >
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search roles, specialties, or facilities..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 bg-white border border-periwinkle-100/60 rounded-xl text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-periwinkle transition-colors"
+            style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}
+          />
+        </div>
+
         {/* Mobile filter button */}
         <button
           className="lg:hidden w-full mb-5 bg-white border border-periwinkle-100/60 rounded-xl px-4 py-3.5 text-sm font-bold text-periwinkle flex items-center justify-center gap-2 min-h-[44px]"
@@ -402,7 +442,7 @@ export default function JobListingsPage() {
             {/* Job cards grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
               {filteredJobs.map((job, i) => (
-                <JobCard key={job.id} job={job} index={i} />
+                <JobCard key={job.id} job={job} index={i} isSaved={savedIds.includes(job.id)} onToggleSave={toggleSave} />
               ))}
             </div>
 
