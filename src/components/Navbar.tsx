@@ -14,11 +14,12 @@ const C = {
 };
 
 const seedNotifications = [
-  { id: 1, icon: "📅", text: "Interview requested from Memorial Hospital", time: "2h ago", unread: true },
-  { id: 2, icon: "✨", text: "New job match: ICU Nurse at City Medical (87% match)", time: "5h ago", unread: true },
-  { id: 3, icon: "👤", text: "Complete your profile to unlock more matches", time: "1d ago", unread: false },
-  { id: 4, icon: "📅", text: "Interview confirmed with Sunrise Health", time: "2d ago", unread: false },
-  { id: 5, icon: "✨", text: "New job match: ER Nurse at Valley Hospital (79% match)", time: "3d ago", unread: false },
+  { id: 1, icon: "📅", text: "Interview request from Hasbro Children's Hospital — Pediatric RN", time: "2h ago", unread: true },
+  { id: 2, icon: "✨", text: "New job match: ICU RN at Brown University Health (87% Flor Fit)", time: "5h ago", unread: true },
+  { id: 3, icon: "👁", text: "Rhode Island Hospital viewed your profile", time: "11d ago", unread: true },
+  { id: 4, icon: "👤", text: "Complete your profile to unlock more matches", time: "1d ago", unread: false },
+  { id: 5, icon: "📅", text: "Interview confirmed with Sunrise Health — ER RN", time: "2d ago", unread: false },
+  { id: 6, icon: "✨", text: "New job match: ER Nurse at Valley Hospital (79% Flor Fit)", time: "3d ago", unread: false },
 ];
 
 export default function Navbar() {
