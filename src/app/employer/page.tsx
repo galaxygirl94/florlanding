@@ -214,6 +214,14 @@ export default function EmployerDashboard() {
     setIntForm({ applicantId: "", date: "", time: "", duration: "30", notes: "" });
   }
 
+  function cancelInterview(id: string) {
+    persistInterviews(interviews.map((i) => i.id === id ? { ...i, status: "cancelled" as const } : i));
+  }
+
+  function setInterviewOutcome(id: string, outcome: "hired" | "not-a-fit" | "follow-up") {
+    persistInterviews(interviews.map((i) => i.id === id ? { ...i, outcome } : i));
+  }
+
   /* ── Render ─────────────────────────────────────────────────────── */
 
   return (
@@ -285,6 +293,8 @@ export default function EmployerDashboard() {
               form={intForm}
               onFormChange={setIntForm}
               onSchedule={scheduleInterview}
+              onCancelInterview={cancelInterview}
+              onSetOutcome={setInterviewOutcome}
             />
           )}
           {activeTab === "Hiring Dashboard" && (
@@ -656,13 +666,18 @@ function TabInterviews({
   form,
   onFormChange,
   onSchedule,
+  onCancelInterview,
+  onSetOutcome,
 }: {
   interviews: Interview[];
   apps: Application[];
   form: { applicantId: string; date: string; time: string; duration: string; notes: string };
   onFormChange: (f: { applicantId: string; date: string; time: string; duration: string; notes: string }) => void;
   onSchedule: () => void;
+  onCancelInterview: (id: string) => void;
+  onSetOutcome: (id: string, outcome: "hired" | "not-a-fit" | "follow-up") => void;
 }) {
+  const [subTab, setSubTab] = useState<"upcoming" | "past">("upcoming");
   const upcoming = interviews.filter((i) => i.status === "scheduled").sort((a, b) => a.date.localeCompare(b.date));
   const past = interviews.filter((i) => i.status !== "scheduled").sort((a, b) => b.date.localeCompare(a.date));
 
@@ -739,50 +754,152 @@ function TabInterviews({
         </button>
       </div>
 
-      {/* Upcoming */}
-      <div>
-        <h2 className="text-lg font-extrabold text-text mb-4">Upcoming Interviews ({upcoming.length})</h2>
-        {upcoming.length === 0 ? (
-          <p className="text-sm text-text-muted">No upcoming interviews.</p>
-        ) : (
-          <div className="space-y-3">
-            {upcoming.map((int) => (
-              <InterviewCard key={int.id} interview={int} />
-            ))}
-          </div>
-        )}
+      {/* Sub-tabs: Upcoming / Past */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setSubTab("upcoming")}
+          className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+            subTab === "upcoming" ? "bg-periwinkle text-white" : "bg-white border border-periwinkle-100/40 text-text-light hover:text-periwinkle"
+          }`}
+        >
+          Upcoming ({upcoming.length})
+        </button>
+        <button
+          onClick={() => setSubTab("past")}
+          className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+            subTab === "past" ? "bg-periwinkle text-white" : "bg-white border border-periwinkle-100/40 text-text-light hover:text-periwinkle"
+          }`}
+        >
+          Past ({past.length})
+        </button>
       </div>
 
-      {/* Past */}
-      {past.length > 0 && (
+      {/* Upcoming */}
+      {subTab === "upcoming" && (
         <div>
-          <h2 className="text-lg font-extrabold text-text mb-4">Past Interviews ({past.length})</h2>
-          <div className="space-y-3">
-            {past.map((int) => (
-              <InterviewCard key={int.id} interview={int} />
-            ))}
-          </div>
+          {upcoming.length === 0 ? (
+            <p className="text-sm text-text-muted">No upcoming interviews.</p>
+          ) : (
+            <div className="space-y-3">
+              {upcoming.map((int) => (
+                <InterviewCard key={int.id} interview={int} onCancel={onCancelInterview} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Past */}
+      {subTab === "past" && (
+        <div>
+          {past.length === 0 ? (
+            <p className="text-sm text-text-muted">No past interviews.</p>
+          ) : (
+            <div className="space-y-3">
+              {past.map((int) => (
+                <InterviewCard key={int.id} interview={int} onSetOutcome={onSetOutcome} />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 }
 
-function InterviewCard({ interview }: { interview: Interview }) {
+function InterviewCard({
+  interview,
+  onCancel,
+  onSetOutcome,
+}: {
+  interview: Interview;
+  onCancel?: (id: string) => void;
+  onSetOutcome?: (id: string, outcome: "hired" | "not-a-fit" | "follow-up") => void;
+}) {
   const isUpcoming = interview.status === "scheduled";
+  const isCancelled = interview.status === "cancelled";
+
+  // Find the associated app for fit score display
+  const fitScore = 85; // Placeholder — in production, look up from the application
+
   return (
-    <div className={`bg-white rounded-2xl border border-periwinkle-100/40 section-shadow p-5 ${!isUpcoming ? "opacity-70" : ""}`}>
+    <div className={`bg-white rounded-2xl border border-periwinkle-100/40 section-shadow p-5 ${!isUpcoming ? "opacity-80" : ""}`}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <p className="text-sm font-bold text-text">{interview.nurseName}</p>
+        <div className="flex-1">
+          <div className="flex items-center gap-3">
+            <p className="text-sm font-bold text-text">{interview.nurseName}</p>
+            <span className="rounded-full bg-periwinkle-50 text-periwinkle-dark text-xs font-bold px-2.5 py-0.5">
+              {fitScore}% Fit
+            </span>
+          </div>
           <div className="flex flex-wrap items-center gap-3 mt-1 text-xs text-text-light">
             <span>{formatDate(interview.date)}</span>
             <span>{interview.time}</span>
             <span>{interview.duration} min</span>
-            <span className={`rounded-full px-2.5 py-1 font-bold ${isUpcoming ? "bg-periwinkle-50 text-periwinkle-dark" : "bg-success-light text-success"}`}>
-              {isUpcoming ? "Scheduled" : "Completed"}
+            <span className={`rounded-full px-2.5 py-1 font-bold ${
+              isCancelled
+                ? "bg-danger-light text-danger"
+                : isUpcoming
+                ? "bg-periwinkle-50 text-periwinkle-dark"
+                : "bg-success-light text-success"
+            }`}>
+              {isCancelled ? "Cancelled" : isUpcoming ? "Scheduled" : "Completed"}
             </span>
+            {interview.outcome && (
+              <span className={`rounded-full px-2.5 py-1 font-bold ${
+                interview.outcome === "hired" ? "bg-success-light text-success" :
+                interview.outcome === "follow-up" ? "bg-amber/10 text-amber" :
+                "bg-gray-100 text-text-muted"
+              }`}>
+                {interview.outcome === "hired" ? "Hired" : interview.outcome === "follow-up" ? "Follow Up" : "Not a Fit"}
+              </span>
+            )}
+            {interview.meetLink && (
+              <a
+                href={interview.meetLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-periwinkle font-bold hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                View Calendar Event
+              </a>
+            )}
           </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {isUpcoming && onCancel && (
+            <button
+              onClick={() => onCancel(interview.id)}
+              className="rounded-full px-4 py-1.5 text-xs font-bold border border-danger/30 text-danger hover:bg-danger-light transition-colors"
+            >
+              Cancel Interview
+            </button>
+          )}
+          {!isUpcoming && !isCancelled && !interview.outcome && onSetOutcome && (
+            <>
+              <button
+                onClick={() => onSetOutcome(interview.id, "hired")}
+                className="rounded-full px-3 py-1.5 text-xs font-bold border border-success/30 text-success hover:bg-success-light transition-colors"
+              >
+                Hired
+              </button>
+              <button
+                onClick={() => onSetOutcome(interview.id, "not-a-fit")}
+                className="rounded-full px-3 py-1.5 text-xs font-bold border border-periwinkle-100/60 text-text-muted hover:text-text transition-colors"
+              >
+                Not a fit
+              </button>
+              <button
+                onClick={() => onSetOutcome(interview.id, "follow-up")}
+                className="rounded-full px-3 py-1.5 text-xs font-bold border border-amber/30 text-amber hover:bg-amber/10 transition-colors"
+              >
+                Follow up
+              </button>
+            </>
+          )}
         </div>
       </div>
       {interview.notes && <p className="text-xs text-text-muted mt-2 italic">{interview.notes}</p>}

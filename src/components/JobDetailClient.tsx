@@ -3,10 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { JobListing } from "@/data/types";
+import ScheduleInterviewModal from "@/components/ScheduleInterviewModal";
 
 export default function JobDetailClient({ job }: { job: JobListing }) {
   const [newQuestion, setNewQuestion] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [interviewScheduled, setInterviewScheduled] = useState(false);
 
   const fitColor =
     (job.fitScore ?? 0) >= 90
@@ -232,9 +235,27 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
 
           {/* Desktop Apply */}
           <div className="hidden sm:block mt-8 pt-6 border-t border-periwinkle-100/30">
-            <button className="w-full sm:w-auto bg-periwinkle hover:bg-periwinkle-dark text-white font-bold px-10 py-4 rounded-full text-lg transition-all duration-200 shadow-lg shadow-periwinkle/20 hover:shadow-xl hover:shadow-periwinkle/30 hover:-translate-y-0.5">
-              Apply Now
-            </button>
+            <div className="flex items-center gap-3 flex-wrap">
+              <button className="bg-periwinkle hover:bg-periwinkle-dark text-white font-bold px-10 py-4 rounded-full text-lg transition-all duration-200 shadow-lg shadow-periwinkle/20 hover:shadow-xl hover:shadow-periwinkle/30 hover:-translate-y-0.5">
+                Apply Now
+              </button>
+              {job.directScheduling && (job.fitScore ?? 0) >= 85 && !interviewScheduled && (
+                <button
+                  onClick={() => setShowScheduleModal(true)}
+                  className="border-2 border-periwinkle text-periwinkle font-bold px-8 py-3.5 rounded-full text-base hover:bg-periwinkle hover:text-white transition-all duration-150"
+                >
+                  📅 Schedule Interview →
+                </button>
+              )}
+              {interviewScheduled && (
+                <span className="inline-flex items-center gap-2 bg-success-light text-success font-bold px-6 py-3.5 rounded-full text-base border border-success/20">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Interview Scheduled
+                </span>
+              )}
+            </div>
             <p className="text-xs text-text-muted mt-2">Direct application — no recruiter middleman</p>
           </div>
         </div>
@@ -311,10 +332,54 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
 
       {/* Mobile sticky apply bar */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 glass border-t border-periwinkle-100/40 p-4 z-40">
-        <button className="w-full bg-periwinkle hover:bg-periwinkle-dark text-white font-bold py-4 rounded-full text-base transition-all duration-200 shadow-lg shadow-periwinkle/20 min-h-[44px]">
-          Apply Now
-        </button>
+        <div className="space-y-2">
+          <button className="w-full bg-periwinkle hover:bg-periwinkle-dark text-white font-bold py-4 rounded-full text-base transition-all duration-200 shadow-lg shadow-periwinkle/20 min-h-[44px]">
+            Apply Now
+          </button>
+          {job.directScheduling && (job.fitScore ?? 0) >= 85 && !interviewScheduled && (
+            <button
+              onClick={() => setShowScheduleModal(true)}
+              className="w-full border-2 border-periwinkle text-periwinkle font-bold py-3 rounded-full text-sm hover:bg-periwinkle hover:text-white transition-all duration-150"
+            >
+              📅 Schedule Interview →
+            </button>
+          )}
+          {interviewScheduled && (
+            <div className="w-full text-center bg-success-light text-success font-bold py-3 rounded-full text-sm border border-success/20">
+              ✓ Interview Scheduled
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Schedule Interview Modal */}
+      {showScheduleModal && (
+        <ScheduleInterviewModal
+          job={job}
+          onClose={() => setShowScheduleModal(false)}
+          onConfirm={(data) => {
+            /* In production: call /api/interviews to create calendar event */
+            try {
+              const existing = JSON.parse(localStorage.getItem("flor-scheduled-interviews") || "[]");
+              existing.push({
+                id: `int-nurse-${Date.now()}`,
+                jobId: job.id,
+                jobTitle: job.title,
+                facilityName: job.facilityName,
+                date: data.date,
+                time: data.time,
+                duration: job.interviewDuration ?? 30,
+                nurseName: data.name,
+                nurseEmail: data.email,
+                note: data.note,
+                status: "scheduled",
+              });
+              localStorage.setItem("flor-scheduled-interviews", JSON.stringify(existing));
+            } catch { /* ignore */ }
+            setInterviewScheduled(true);
+          }}
+        />
+      )}
     </div>
   );
 }

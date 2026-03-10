@@ -27,6 +27,21 @@ const PATIENT_POPULATIONS = ["Adult", "Geriatric", "Pediatric", "Neonatal", "Mat
 
 const EHR_SYSTEMS = ["Epic", "Cerner/Oracle Health", "Meditech", "PointClickCare", "Athenahealth"];
 
+const DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+const TIME_SLOTS = Array.from({ length: 25 }, (_, i) => {
+  const h = Math.floor(i / 2) + 7;
+  const m = i % 2 === 0 ? "00" : "30";
+  return `${h.toString().padStart(2, "0")}:${m}`;
+}).filter((t) => t <= "19:00");
+
+const ADVANCE_NOTICE_OPTIONS = [
+  { value: "0", label: "Same day" },
+  { value: "1", label: "24 hours notice" },
+  { value: "2", label: "48 hours notice" },
+  { value: "3", label: "72 hours notice" },
+];
+
 /* ── Types ────────────────────────────────────────────────────────── */
 
 interface CertRequirement {
@@ -69,6 +84,15 @@ interface JobForm {
   loanForgiveness: boolean;
   relocationAssistance: boolean;
   patientRatio: string;
+  directScheduling: boolean;
+  schedulingDays: string[];
+  schedulingStartTime: string;
+  schedulingEndTime: string;
+  interviewDuration: string;
+  interviewBuffer: string;
+  maxInterviewsPerDay: string;
+  advanceNoticeDays: string;
+  googleCalendarConnected: boolean;
 }
 
 /* ── Component ────────────────────────────────────────────────────── */
@@ -104,6 +128,15 @@ export default function PostJobPage() {
     loanForgiveness: false,
     relocationAssistance: false,
     patientRatio: "",
+    directScheduling: false,
+    schedulingDays: [],
+    schedulingStartTime: "09:00",
+    schedulingEndTime: "17:00",
+    interviewDuration: "30",
+    interviewBuffer: "15",
+    maxInterviewsPerDay: "4",
+    advanceNoticeDays: "2",
+    googleCalendarConnected: false,
   });
 
   /* Pre-fill address from facility */
@@ -653,6 +686,139 @@ export default function PostJobPage() {
                       placeholder="5:1"
                       className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40" />
                   </div>
+                </div>
+              </Section>
+
+              {/* ── 9c. Interview Scheduling ──────────────────────── */}
+              <Section num={0} title="Interview Scheduling" subtitle="Let qualified candidates book interviews directly">
+                <div className="space-y-5">
+                  {/* Toggle */}
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <div
+                      className={`relative w-12 h-7 rounded-full transition-colors ${form.directScheduling ? "bg-periwinkle" : "bg-gray-200"}`}
+                      onClick={() => setForm({ ...form, directScheduling: !form.directScheduling })}
+                    >
+                      <div className={`absolute top-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform ${form.directScheduling ? "translate-x-5" : "translate-x-0.5"}`} />
+                    </div>
+                    <span className="text-sm font-bold text-text">Allow qualified candidates to schedule interviews directly</span>
+                  </label>
+
+                  {form.directScheduling && (
+                    <>
+                      {/* Note */}
+                      <div className="flex items-start gap-2 bg-periwinkle-50 rounded-xl p-3">
+                        <svg className="w-4 h-4 text-periwinkle mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                        <p className="text-xs text-periwinkle-dark leading-relaxed italic">
+                          Only candidates with 85%+ Flor Fit Score for this role will see the Schedule Interview button. You are only meeting people who genuinely match.
+                        </p>
+                      </div>
+
+                      {/* Day selection */}
+                      <div>
+                        <label className="block text-xs font-bold text-text-light mb-2">Available days</label>
+                        <div className="flex flex-wrap gap-2">
+                          {DAYS_OF_WEEK.map((day) => (
+                            <button
+                              key={day}
+                              type="button"
+                              onClick={() => {
+                                const days = form.schedulingDays.includes(day)
+                                  ? form.schedulingDays.filter((d) => d !== day)
+                                  : [...form.schedulingDays, day];
+                                setForm({ ...form, schedulingDays: days });
+                              }}
+                              className={`rounded-full px-4 py-2 text-sm font-bold transition-all ${
+                                form.schedulingDays.includes(day)
+                                  ? "bg-periwinkle text-white"
+                                  : "bg-white border border-periwinkle-100/60 text-text-light hover:border-periwinkle"
+                              }`}
+                            >
+                              {day}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Time range */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-text-light mb-1.5">Start time</label>
+                          <select value={form.schedulingStartTime} onChange={(e) => setForm({ ...form, schedulingStartTime: e.target.value })}
+                            className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40">
+                            {TIME_SLOTS.map((t) => <option key={t} value={t}>{t}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-text-light mb-1.5">End time</label>
+                          <select value={form.schedulingEndTime} onChange={(e) => setForm({ ...form, schedulingEndTime: e.target.value })}
+                            className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40">
+                            {TIME_SLOTS.map((t) => <option key={t} value={t}>{t}</option>)}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Duration, buffer, max, advance */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-text-light mb-1.5">Interview duration</label>
+                          <select value={form.interviewDuration} onChange={(e) => setForm({ ...form, interviewDuration: e.target.value })}
+                            className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40">
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-text-light mb-1.5">Buffer between interviews</label>
+                          <select value={form.interviewBuffer} onChange={(e) => setForm({ ...form, interviewBuffer: e.target.value })}
+                            className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40">
+                            <option value="0">No buffer</option>
+                            <option value="15">15 minutes</option>
+                            <option value="30">30 minutes</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-text-light mb-1.5">Max interviews per day</label>
+                          <input type="number" min="1" max="10" value={form.maxInterviewsPerDay}
+                            onChange={(e) => setForm({ ...form, maxInterviewsPerDay: e.target.value })}
+                            className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-text-light mb-1.5">Advance notice required</label>
+                          <select value={form.advanceNoticeDays} onChange={(e) => setForm({ ...form, advanceNoticeDays: e.target.value })}
+                            className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40">
+                            {ADVANCE_NOTICE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Google Calendar */}
+                      <div className="bg-white border border-periwinkle-100/40 rounded-xl p-4">
+                        <p className="text-sm text-text-light mb-3">Connect your Google Calendar to sync your availability and avoid double-booking.</p>
+                        {form.googleCalendarConnected ? (
+                          <div className="flex items-center gap-2 text-sm font-bold text-success">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Google Calendar connected
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setForm({ ...form, googleCalendarConnected: true })}
+                            className="bg-white border-2 border-periwinkle text-periwinkle font-bold px-5 py-2.5 rounded-full text-sm hover:bg-periwinkle hover:text-white transition-all duration-200"
+                          >
+                            Connect Google Calendar
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </Section>
 

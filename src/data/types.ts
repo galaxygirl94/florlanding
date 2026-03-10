@@ -54,6 +54,17 @@ export interface JobListing {
   tuitionPopover?: string;
   annualPayRange?: { min: number; max: number };
   payHidden?: boolean;
+  directScheduling?: boolean;
+  schedulingAvailability?: {
+    days: string[];
+    startTime: string;
+    endTime: string;
+  }[];
+  interviewDuration?: number;
+  interviewBuffer?: number;
+  maxInterviewsPerDay?: number;
+  advanceNoticeDays?: number;
+  googleCalendarConnected?: boolean;
 }
 
 export interface QAItem {
@@ -156,4 +167,7 @@ export interface Interview {
   duration: number;
   notes?: string;
   status: "scheduled" | "completed" | "cancelled";
+  meetLink?: string;
+  calendarEventId?: string;
+  outcome?: "hired" | "not-a-fit" | "follow-up";
 }
