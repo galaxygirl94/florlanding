@@ -56,11 +56,11 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#F4F4FB] to-transparent" />
       </section>
 
       {/* ========== STATS BAR — social proof strip ========== */}
-      <section className="bg-white relative -mt-8 z-10">
+      <section className="bg-[#F4F4FB] relative -mt-8 z-10">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
           <div className="bg-white rounded-2xl section-shadow border border-periwinkle-100/30 grid grid-cols-2 lg:grid-cols-4 divide-x divide-periwinkle-100/30">
             {[
@@ -80,7 +80,7 @@ export default function HomePage() {
       </section>
 
       {/* ========== THE SYSTEM IS BROKEN — wide two-column ========== */}
-      <section className="bg-white">
+      <section className="bg-[#F4F4FB]">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 pt-12 sm:pt-16 pb-14 sm:pb-18">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-20 items-center">
             {/* Large image */}
@@ -405,7 +405,7 @@ export default function HomePage() {
       </section>
 
       {/* ========== TESTIMONIALS — tighter, wider ========== */}
-      <section className="bg-white">
+      <section className="bg-[#F4F4FB]">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-14 sm:py-18">
           <div className="text-center max-w-2xl mx-auto mb-10 animate-fade-in-up">
             <span className="inline-flex items-center gap-2 text-periwinkle text-sm font-bold uppercase tracking-wider mb-4">
@@ -501,7 +501,7 @@ export default function HomePage() {
       </section>
 
       {/* ========== WORK-LIFE BALANCE — wide two-column ========== */}
-      <section className="bg-white">
+      <section className="bg-[#F4F4FB]">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-14 sm:py-18">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-20 items-center">
             {/* Content — 5 columns */}

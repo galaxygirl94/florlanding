@@ -34,6 +34,14 @@ interface CertRequirement {
   level: "required" | "preferred";
 }
 
+const RANGE_REASONS = [
+  "Range reflects shift differential (nights/weekends)",
+  "Range reflects years of experience",
+  "Range reflects PRN vs. full-time rate",
+  "Range reflects unit or specialty placement",
+  "Other — please specify",
+];
+
 interface JobForm {
   title: string;
   specialty: string;
@@ -46,12 +54,21 @@ interface JobForm {
   scheduleType: string;
   careSetting: string;
   patientPopulation: string;
+  payType: "single" | "range" | "";
+  payFormat: "hr" | "yr";
   payMin: string;
   payMax: string;
+  payRangeReason: string;
   ehrSystem: string;
   description: string;
   facilityAddress: string;
   facilityId: string;
+  signOnBonus: string;
+  shiftDifferentials: string;
+  tuitionReimbursement: string;
+  loanForgiveness: boolean;
+  relocationAssistance: boolean;
+  patientRatio: string;
 }
 
 /* ── Component ────────────────────────────────────────────────────── */
@@ -72,12 +89,21 @@ export default function PostJobPage() {
     scheduleType: "",
     careSetting: "",
     patientPopulation: "",
+    payType: "",
+    payFormat: "hr",
     payMin: "",
     payMax: "",
+    payRangeReason: "",
     ehrSystem: "",
     description: "",
     facilityAddress: "",
     facilityId: "",
+    signOnBonus: "",
+    shiftDifferentials: "",
+    tuitionReimbursement: "",
+    loanForgiveness: false,
+    relocationAssistance: false,
+    patientRatio: "",
   });
 
   /* Pre-fill address from facility */
@@ -175,8 +201,12 @@ export default function PostJobPage() {
 
   /* ── Validation ─────────────────────────────────────────────────── */
 
-  const payValid = form.payMin && form.payMax && Number(form.payMax) >= Number(form.payMin);
-  const canSubmit = form.title && form.specialty && payValid;
+  const payValid = form.payType === "single"
+    ? !!form.payMin
+    : form.payType === "range"
+    ? form.payMin && form.payMax && Number(form.payMax) >= Number(form.payMin) && !!form.payRangeReason
+    : false;
+  const canSubmit = form.title && form.specialty && payValid && form.shift && form.scheduleType;
 
   /* ── Render ─────────────────────────────────────────────────────── */
 
@@ -213,6 +243,33 @@ export default function PostJobPage() {
             <div>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-text">Post a New Job</h1>
               <p className="text-text-light mt-1">Create a listing that matches nurses to your needs</p>
+            </div>
+          </div>
+
+          {/* Onboarding checklist */}
+          <div className="bg-[#1E1E2E] rounded-2xl p-6 sm:p-8 mb-8 max-w-3xl">
+            <h2 className="text-lg font-extrabold text-white mb-1">Complete listings get 3x more qualified applicants</h2>
+            <p className="text-sm text-white/60 mb-5">Nurses filter by pay, shift, and benefits before they read a job description. Fill in every field.</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {[
+                { label: "Pay", done: payValid },
+                { label: "Shift times", done: !!form.shift },
+                { label: "Specialty", done: !!form.specialty },
+                { label: "Employment type", done: !!form.scheduleType },
+                { label: "Location", done: !!form.facilityId },
+                { label: "Certifications", done: form.certifications.length > 0 },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-2">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${item.done ? "bg-[#2ECC71]" : "bg-white/10"}`}>
+                    {item.done && (
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className={`text-sm ${item.done ? "text-white font-semibold" : "text-white/50"}`}>{item.label}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -447,34 +504,94 @@ export default function PostJobPage() {
                 </div>
               </Section>
 
-              {/* ── 9. Pay Range ──────────────────────────────────── */}
-              <Section num={9} title="Pay Range" subtitle="Hourly rate range — required">
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <div>
-                    <label className="block text-xs font-bold text-text-light mb-1.5">Min $/hr *</label>
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.5"
-                      value={form.payMin}
-                      onChange={(e) => setForm({ ...form, payMin: e.target.value })}
-                      placeholder="35"
-                      className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-text-light mb-1.5">Max $/hr *</label>
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.5"
-                      value={form.payMax}
-                      onChange={(e) => setForm({ ...form, payMax: e.target.value })}
-                      placeholder="45"
-                      className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40"
-                    />
-                  </div>
+              {/* ── 9. Pay — Redesigned ────────────────────────────── */}
+              <Section num={9} title="Pay" subtitle="Pay is required. The form cannot progress without it.">
+                {/* Step 1: Pay type */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, payType: "single", payMax: form.payMin })}
+                    className={`rounded-2xl border-2 p-5 text-left transition-all ${
+                      form.payType === "single"
+                        ? "border-periwinkle bg-periwinkle-50"
+                        : "border-periwinkle-100/60 hover:border-periwinkle/40"
+                    }`}
+                  >
+                    <div className="text-sm font-bold text-text mb-1">Single Rate</div>
+                    <div className="text-xs text-periwinkle font-semibold">✦ Nurses prefer a clear number over a range</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, payType: "range" })}
+                    className={`rounded-2xl border-2 p-5 text-left transition-all ${
+                      form.payType === "range"
+                        ? "border-periwinkle bg-periwinkle-50"
+                        : "border-periwinkle-100/60 hover:border-periwinkle/40"
+                    }`}
+                  >
+                    <div className="text-sm font-bold text-text mb-1">Pay Range</div>
+                    <div className="text-xs text-text-muted">Min and max with required explanation</div>
+                  </button>
                 </div>
+
+                {/* Step 2: Format toggle */}
+                {form.payType && (
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-xs font-bold text-text-light">Format:</span>
+                    <button type="button" onClick={() => setForm({ ...form, payFormat: "hr" })}
+                      className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${form.payFormat === "hr" ? "bg-periwinkle text-white" : "bg-white border border-periwinkle-100/60 text-text-light"}`}>
+                      $/hr
+                    </button>
+                    <button type="button" onClick={() => setForm({ ...form, payFormat: "yr" })}
+                      className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${form.payFormat === "yr" ? "bg-periwinkle text-white" : "bg-white border border-periwinkle-100/60 text-text-light"}`}>
+                      $/yr
+                    </button>
+                  </div>
+                )}
+
+                {/* Step 3: Pay inputs */}
+                {form.payType === "single" && (
+                  <div className="mb-3">
+                    <label className="block text-xs font-bold text-text-light mb-1.5">Rate *</label>
+                    <input
+                      type="number" min="0" step="0.5"
+                      value={form.payMin}
+                      onChange={(e) => setForm({ ...form, payMin: e.target.value, payMax: e.target.value })}
+                      placeholder={form.payFormat === "hr" ? "45" : "85000"}
+                      className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40"
+                    />
+                  </div>
+                )}
+
+                {form.payType === "range" && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <div>
+                        <label className="block text-xs font-bold text-text-light mb-1.5">Min *</label>
+                        <input type="number" min="0" step="0.5" value={form.payMin}
+                          onChange={(e) => setForm({ ...form, payMin: e.target.value })}
+                          placeholder={form.payFormat === "hr" ? "35" : "65000"}
+                          className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-text-light mb-1.5">Max *</label>
+                        <input type="number" min="0" step="0.5" value={form.payMax}
+                          onChange={(e) => setForm({ ...form, payMax: e.target.value })}
+                          placeholder={form.payFormat === "hr" ? "52" : "95000"}
+                          className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40" />
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <label className="block text-xs font-bold text-text-light mb-1.5">What explains this range? *</label>
+                      <select value={form.payRangeReason} onChange={(e) => setForm({ ...form, payRangeReason: e.target.value })}
+                        className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40">
+                        <option value="">Select a reason...</option>
+                        {RANGE_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
+                      </select>
+                    </div>
+                  </>
+                )}
+
                 <div className="flex items-start gap-2 bg-periwinkle-50 rounded-xl p-3">
                   <svg className="w-4 h-4 text-periwinkle mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
@@ -482,6 +599,60 @@ export default function PostJobPage() {
                   <p className="text-xs text-periwinkle-dark leading-relaxed">
                     Flor requires transparent pay. Nurses see this upfront — it&apos;s why they trust the platform.
                   </p>
+                </div>
+              </Section>
+
+              {/* ── 9b. Encouraged Fields ───────────────────────────── */}
+              <Section num={0} title="Benefits & Perks" subtitle="Encouraged — complete listings get 3x more qualified applicants">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-text-light mb-1.5">
+                      Sign-on bonus amount
+                      {!form.signOnBonus && <span className="text-periwinkle ml-1">✦ Nurses love this</span>}
+                    </label>
+                    <input type="text" value={form.signOnBonus} onChange={(e) => setForm({ ...form, signOnBonus: e.target.value })}
+                      placeholder="$5,000"
+                      className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-text-light mb-1.5">
+                      Shift differentials
+                      {!form.shiftDifferentials && <span className="text-periwinkle ml-1">✦ Nurses love this</span>}
+                    </label>
+                    <input type="text" value={form.shiftDifferentials} onChange={(e) => setForm({ ...form, shiftDifferentials: e.target.value })}
+                      placeholder="Night $5/hr, Weekend $6/hr"
+                      className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-text-light mb-1.5">
+                      Tuition reimbursement details
+                      {!form.tuitionReimbursement && <span className="text-periwinkle ml-1">✦ Nurses love this</span>}
+                    </label>
+                    <input type="text" value={form.tuitionReimbursement} onChange={(e) => setForm({ ...form, tuitionReimbursement: e.target.value })}
+                      placeholder="Up to $5,250/yr"
+                      className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40" />
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <label className="flex items-center gap-2.5 cursor-pointer">
+                      <input type="checkbox" checked={form.loanForgiveness} onChange={(e) => setForm({ ...form, loanForgiveness: e.target.checked })}
+                        className="w-4 h-4 rounded border-periwinkle-100 accent-periwinkle" />
+                      <span className="text-sm text-text">Loan forgiveness eligible</span>
+                    </label>
+                    <label className="flex items-center gap-2.5 cursor-pointer">
+                      <input type="checkbox" checked={form.relocationAssistance} onChange={(e) => setForm({ ...form, relocationAssistance: e.target.checked })}
+                        className="w-4 h-4 rounded border-periwinkle-100 accent-periwinkle" />
+                      <span className="text-sm text-text">Relocation assistance</span>
+                    </label>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-text-light mb-1.5">
+                      Nurse-to-patient ratio
+                      {!form.patientRatio && <span className="text-periwinkle ml-1">✦ Nurses love this</span>}
+                    </label>
+                    <input type="text" value={form.patientRatio} onChange={(e) => setForm({ ...form, patientRatio: e.target.value })}
+                      placeholder="5:1"
+                      className="w-full rounded-xl border border-periwinkle-100/60 bg-white px-4 py-3 text-sm text-text focus:outline-none focus:ring-2 focus:ring-periwinkle/40" />
+                  </div>
                 </div>
               </Section>
 
@@ -526,7 +697,11 @@ export default function PostJobPage() {
                 <button
                   type="submit"
                   disabled={!canSubmit}
-                  className="bg-periwinkle hover:bg-periwinkle-dark disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-full px-8 py-3 font-bold text-sm transition-colors"
+                  className={`text-white rounded-full px-8 py-3 font-bold text-sm transition-all duration-300 ${
+                    canSubmit
+                      ? "bg-periwinkle hover:bg-periwinkle-dark shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                      : "bg-gray-300 cursor-not-allowed"
+                  }`}
                 >
                   Post Job
                 </button>

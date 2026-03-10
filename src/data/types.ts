@@ -51,6 +51,9 @@ export interface JobListing {
   bilingualPayDifferential?: boolean;
   communityTravel?: boolean;
   newGradsWelcome?: boolean;
+  tuitionPopover?: string;
+  annualPayRange?: { min: number; max: number };
+  payHidden?: boolean;
 }
 
 export interface QAItem {

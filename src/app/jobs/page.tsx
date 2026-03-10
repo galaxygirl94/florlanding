@@ -300,6 +300,34 @@ export default function JobListingsPage() {
         </div>
       </div>
 
+      {/* "Why Flor Shows Pay" callout */}
+      <div className="bg-[#1E1E2E]">
+        <div className="max-w-[700px] mx-auto px-6 sm:px-10 py-16 sm:py-20 text-center">
+          <div className="w-[60px] h-[2px] bg-periwinkle mx-auto mb-6" />
+          <h2 className="text-3xl sm:text-[40px] font-extrabold text-white italic leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+            Every job. Every salary. No&nbsp;exceptions.
+          </h2>
+          <div className="w-[60px] h-[2px] bg-periwinkle mx-auto mt-6 mb-6" />
+          <p className="text-base sm:text-lg text-white/75 leading-relaxed max-w-xl mx-auto">
+            Other job boards let employers hide pay. We don&apos;t. Direct hire only — no recruiters, no agencies, no spam. Nurses on Flor apply knowing exactly what they&apos;ll earn.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4 mt-8">
+            <div className="text-center">
+              <p className="text-2xl sm:text-3xl font-extrabold text-periwinkle-light">0</p>
+              <p className="text-xs text-white/50 font-medium mt-1">Recruiters</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl sm:text-3xl font-extrabold text-periwinkle-light">100%</p>
+              <p className="text-xs text-white/50 font-medium mt-1">Pay Visible</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl sm:text-3xl font-extrabold text-periwinkle-light">Direct</p>
+              <p className="text-xs text-white/50 font-medium mt-1">Hire Only</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-10 sm:py-14">
         {/* Mobile filter button */}
         <button

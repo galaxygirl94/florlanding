@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { JobListing } from "@/data/types";
@@ -47,6 +50,46 @@ function shiftPillClass(type: string) {
   }
 }
 
+/* ── Tuition Popover ── */
+function TuitionPopover({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open); }}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        className="w-7 h-7 flex items-center justify-center rounded-lg bg-periwinkle-50 text-sm hover:bg-periwinkle-100 transition-colors cursor-pointer"
+        title="Tuition reimbursement details"
+      >
+        🎓
+      </button>
+      {open && (
+        <div
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-white border-[1.5px] border-periwinkle rounded-2xl p-4 z-50 animate-scale-in"
+          style={{ boxShadow: "0 8px 32px rgba(139,143,212,0.2)" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b-[1.5px] border-r-[1.5px] border-periwinkle rotate-45" />
+          <p className="text-xs text-text leading-relaxed font-medium">{text}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Benefit icons ── */
 const BENEFIT_ICONS: Record<string, { icon: string; label: string }> = {
   health: { icon: "🏥", label: "Health insurance" },
@@ -66,26 +109,27 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
       ? "animate-fade-in-up-delay-2"
       : "animate-fade-in-up-delay-3";
 
-  const fitScore = job.fitScore ?? Math.floor(Math.random() * 20 + 75); // placeholder if none
+  const fitScore = job.fitScore ?? Math.floor(Math.random() * 20 + 75);
 
-  // Derive benefit tags from job properties if not explicitly set
   const benefits = job.benefitTags ?? [
     ...(job.tuitionReimbursement ? ["tuition"] : []),
     ...(job.loanForgiveness ? ["tuition"] : []),
     ...(job.signOnBonus ? ["401k"] : []),
   ];
 
-  // Format pay display
-  const payDisplay =
-    job.payRange.min === job.payRange.max
-      ? `$${job.payRange.min.toFixed(2)}`
-      : `$${job.payRange.min % 1 === 0 ? job.payRange.min : job.payRange.min.toFixed(2)}–$${job.payRange.max % 1 === 0 ? job.payRange.max : job.payRange.max.toFixed(2)}`;
+  // Pay display logic
+  const isPayHidden = job.payHidden || (job.payRange.min === 0 && job.payRange.max === 0);
+  const payDisplay = isPayHidden
+    ? null
+    : job.payRange.min === job.payRange.max
+    ? `$${job.payRange.min.toFixed(2)}`
+    : `$${job.payRange.min % 1 === 0 ? job.payRange.min : job.payRange.min.toFixed(2)}–$${job.payRange.max % 1 === 0 ? job.payRange.max : job.payRange.max.toFixed(2)}`;
 
   return (
-    <div className={`bg-white rounded-2xl border border-periwinkle-100/40 overflow-hidden hover:border-periwinkle/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full flex flex-col card-warm ${delayClass}`}>
-      {/* 1. Employer photo header */}
+    <div className={`bg-white rounded-3xl border border-periwinkle-100/40 overflow-hidden hover:border-periwinkle/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full flex flex-col card-warm ${delayClass}`}>
+      {/* Photo header with pay ribbon overlay */}
       <Link href={`/jobs/${job.id}`} className="block">
-        <div className="relative h-36 sm:h-40 overflow-hidden bg-gradient-to-br from-periwinkle-50 via-periwinkle-100 to-periwinkle-200">
+        <div className="relative h-[180px] overflow-hidden bg-gradient-to-br from-periwinkle-50 via-periwinkle-100 to-periwinkle-200">
           {job.facilityImage ? (
             <Image
               src={job.facilityImage}
@@ -95,7 +139,6 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             />
           ) : (
-            /* Gradient fallback with facility initial */
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-5xl font-extrabold text-periwinkle/20">
                 {job.facilityName.charAt(0)}
@@ -104,47 +147,60 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-          {/* Facility name overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-4">
-            <p className="text-xs font-semibold text-white/80 truncate">{job.facilityName}</p>
-            <div className="flex items-center gap-1 mt-0.5">
-              <svg className="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-              </svg>
-              <span className="text-[11px] text-white/60">{job.location.city}, {job.location.state}</span>
+          {/* Sign-on bonus badge — top right */}
+          {(job.signOnBonus ?? 0) > 0 && (
+            <div className="absolute top-3 right-3 bg-[#2ECC71] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md animate-pulse-once z-10">
+              ✦ ${job.signOnBonus!.toLocaleString()} Sign-On
             </div>
+          )}
+
+          {/* Pay ribbon — overlapping bottom of photo */}
+          <div className="absolute bottom-0 left-0 right-0">
+            {isPayHidden ? (
+              <div className="mx-3 mb-3 bg-white border-2 border-periwinkle rounded-2xl px-4 py-3" style={{ boxShadow: "var(--shadow-ribbon)" }}>
+                <div className="text-lg font-extrabold text-periwinkle leading-none">
+                  Pay Available
+                </div>
+                <p className="text-[10px] font-medium text-periwinkle/70 mt-1 flex items-center gap-1">
+                  <span>💡</span> Hidden everywhere else. Shown here.
+                </p>
+              </div>
+            ) : (
+              <div className="mx-3 mb-3 rounded-2xl px-4 py-3" style={{ background: "linear-gradient(135deg, #8B8FD4, #6B6FB4)", boxShadow: "var(--shadow-ribbon)" }}>
+                <div className="text-xl sm:text-2xl font-extrabold text-white leading-none">
+                  {payDisplay}
+                  <span className="text-sm font-semibold text-white/70 ml-1">/{job.payUnit}</span>
+                </div>
+                {job.annualPayRange && (
+                  <p className="text-[11px] text-white/70 mt-1 font-medium">
+                    ${job.annualPayRange.min.toLocaleString()}–${job.annualPayRange.max.toLocaleString()}/yr
+                  </p>
+                )}
+                {job.payHiddenElsewhere && (
+                  <p className="text-[10px] font-medium text-white/70 mt-1 flex items-center gap-1">
+                    <span>💡</span> Pay shown here — hidden on other job boards
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </Link>
 
-      <div className="p-6 sm:p-7 flex flex-col flex-1">
-        {/* 2. Job title — prominent */}
+      <div className="p-6 flex flex-col flex-1">
+        {/* Job title */}
         <Link href={`/jobs/${job.id}`}>
-          <h3 className="text-lg font-bold text-text group-hover:text-periwinkle transition-colors leading-snug mb-3">
+          <h3 className="text-lg font-bold text-text group-hover:text-periwinkle transition-colors leading-snug font-serif mb-1">
             {job.title}
           </h3>
         </Link>
 
-        {/* 3. Pay — hero element, bold periwinkle badge */}
-        <Link href={`/jobs/${job.id}`} className="block">
-          <div className="bg-periwinkle/10 rounded-xl p-4 mb-3">
-            <div className="text-2xl font-extrabold text-periwinkle leading-none">
-              {payDisplay}
-              <span className="text-sm font-semibold text-periwinkle/70 ml-1">/{job.payUnit}</span>
-            </div>
-            {(job.signOnBonus ?? 0) > 0 && (
-              <p className="text-xs font-bold text-success mt-1.5">+ ${job.signOnBonus!.toLocaleString()} sign-on bonus</p>
-            )}
-            {job.payHiddenElsewhere && (
-              <p className="text-[10px] font-medium text-periwinkle/70 mt-1.5 flex items-center gap-1">
-                <span>💡</span> Pay shown here — hidden on other job boards
-              </p>
-            )}
-          </div>
-        </Link>
+        {/* Employer · Location */}
+        <p className="text-sm text-text-muted mb-3">
+          {job.facilityName} · {job.location.city}, {job.location.state}
+        </p>
 
-        {/* 4. Shift tag + 5. Specialty tag */}
+        {/* Shift / Specialty / Type pills */}
         <div className="flex flex-wrap gap-1.5 mb-3">
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${shiftPillClass(job.scheduleType)}`}>
             {job.scheduleType}
@@ -172,47 +228,52 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
         </div>
 
         {/* Special feature badges */}
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {job.union && (
-            <span className="text-xs font-bold bg-amber/10 text-amber-dark px-2.5 py-1 rounded-full border border-amber/20">
-              Union
-            </span>
-          )}
-          {job.magnetDesignated && (
-            <span className="text-xs font-bold bg-periwinkle-50 text-periwinkle-dark px-2.5 py-1 rounded-full border border-periwinkle-100">
-              Magnet
-            </span>
-          )}
-          {job.loanForgiveness && (
-            <span className="text-xs font-bold bg-success-light text-success px-2.5 py-1 rounded-full border border-success/20">
-              Loan Forgiveness
-            </span>
-          )}
-        </div>
+        {(job.union || job.magnetDesignated || job.loanForgiveness) && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {job.union && (
+              <span className="text-xs font-bold bg-amber/10 text-amber-dark px-2.5 py-1 rounded-full border border-amber/20">
+                Union
+              </span>
+            )}
+            {job.magnetDesignated && (
+              <span className="text-xs font-bold bg-periwinkle-50 text-periwinkle-dark px-2.5 py-1 rounded-full border border-periwinkle-100">
+                Magnet
+              </span>
+            )}
+            {job.loanForgiveness && (
+              <span className="text-xs font-bold bg-success-light text-success px-2.5 py-1 rounded-full border border-success/20">
+                Loan Forgiveness
+              </span>
+            )}
+          </div>
+        )}
 
-        {/* 6. Flor Fit Score + 7. Benefits icon row */}
+        {/* Benefits row with interactive tuition popover */}
+        {benefits.length > 0 && (
+          <div className="flex items-center gap-1 mb-4">
+            {[...new Set(benefits)].map((tag) => {
+              const b = BENEFIT_ICONS[tag];
+              if (!b) return null;
+              if (tag === "tuition" && job.tuitionPopover) {
+                return <TuitionPopover key={tag} text={job.tuitionPopover} />;
+              }
+              return (
+                <span key={tag} className="w-7 h-7 flex items-center justify-center rounded-lg bg-warm-gray text-sm" title={b.label}>
+                  {b.icon}
+                </span>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Flor Fit Score */}
         <div className="flex items-center justify-between mt-auto pt-4 border-t border-periwinkle/15">
           <FitScoreRing score={fitScore} />
-
-          {/* 7. Benefits icons */}
-          {benefits.length > 0 && (
-            <div className="flex items-center gap-1">
-              {[...new Set(benefits)].map((tag) => {
-                const b = BENEFIT_ICONS[tag];
-                if (!b) return null;
-                return (
-                  <span key={tag} className="w-7 h-7 flex items-center justify-center rounded-lg bg-warm-gray text-sm" title={b.label}>
-                    {b.icon}
-                  </span>
-                );
-              })}
-            </div>
-          )}
         </div>
 
-        {/* 8. "Apply Directly" button */}
+        {/* Apply Directly button */}
         <Link href={`/jobs/${job.id}`} className="block mt-4">
-          <button className="w-full bg-periwinkle hover:bg-periwinkle-dark text-white font-bold py-3 rounded-full text-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+          <button className="w-full bg-periwinkle hover:bg-periwinkle-dark text-white font-bold py-3 rounded-full text-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.97]">
             Apply Directly
           </button>
         </Link>
