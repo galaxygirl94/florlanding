@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { JobListing } from "@/data/types";
@@ -18,75 +18,27 @@ function FitScoreRing({ score }: { score: number }) {
   const offset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="relative w-11 h-11">
-        <svg className="w-11 h-11 -rotate-90" viewBox="0 0 44 44">
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ position: "relative", width: 44, height: 44 }}>
+        <svg width="44" height="44" viewBox="0 0 44 44" style={{ transform: "rotate(-90deg)" }}>
           <circle cx="22" cy="22" r={radius} fill="none" stroke="#E4E5F4" strokeWidth="3" />
           <circle
             cx="22" cy="22" r={radius} fill="none"
             stroke="#8B8FD4" strokeWidth="3" strokeLinecap="round"
             strokeDasharray={circumference} strokeDashoffset={offset}
-            className="transition-all duration-700"
+            style={{ transition: "all 0.7s" }}
           />
         </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-xs font-extrabold text-periwinkle">
+        <span style={{
+          position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 12, fontWeight: 800, color: "#8B8FD4", fontFamily: "Manrope, sans-serif"
+        }}>
           {score}
         </span>
       </div>
-      <span className="text-[10px] font-bold text-periwinkle leading-tight">
+      <span style={{ fontSize: 10, fontWeight: 700, color: "#8B8FD4", lineHeight: 1.3, fontFamily: "Manrope, sans-serif" }}>
         Flor<br />Fit
       </span>
-    </div>
-  );
-}
-
-/* ── Shift-type color coding ── */
-function shiftPillClass(type: string) {
-  switch (type) {
-    case "Days": return "bg-amber/15 text-amber-dark border-amber/25";
-    case "Nights": return "bg-[#2D2B55]/10 text-[#2D2B55] border-[#2D2B55]/20";
-    case "Rotating": return "bg-periwinkle-50 text-periwinkle-dark border-periwinkle-100";
-    case "Evenings": return "bg-rose-light text-rose border-rose/20";
-    default: return "bg-warm-gray text-text-light border-periwinkle-100/40";
-  }
-}
-
-/* ── Tuition Popover ── */
-function TuitionPopover({ text }: { text: string }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
-  return (
-    <div className="relative" ref={ref}>
-      <button
-        type="button"
-        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open); }}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        className="w-7 h-7 flex items-center justify-center rounded-lg bg-periwinkle-50 text-sm hover:bg-periwinkle-100 transition-colors cursor-pointer"
-        title="Tuition reimbursement details"
-      >
-        🎓
-      </button>
-      {open && (
-        <div
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-white border-[1.5px] border-periwinkle rounded-2xl p-4 z-50 animate-scale-in"
-          style={{ boxShadow: "0 8px 32px rgba(139,143,212,0.2)" }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b-[1.5px] border-r-[1.5px] border-periwinkle rotate-45" />
-          <p className="text-xs text-text leading-relaxed font-medium">{text}</p>
-        </div>
-      )}
     </div>
   );
 }
@@ -97,7 +49,7 @@ function FacilityImage({ src, specialty }: { src?: string; specialty?: string })
 
   if (failed || !src) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <SpecialtyIllustration specialty={specialty} className="w-full h-full" />
       </div>
     );
@@ -115,14 +67,110 @@ function FacilityImage({ src, specialty }: { src?: string; specialty?: string })
   );
 }
 
-/* ── Benefit icons ── */
-const BENEFIT_ICONS: Record<string, { icon: string; label: string }> = {
-  health: { icon: "🏥", label: "Health insurance" },
-  "401k": { icon: "💰", label: "401k" },
-  tuition: { icon: "🎓", label: "Tuition" },
-  pto: { icon: "🌴", label: "PTO" },
-  mileage: { icon: "🚗", label: "Mileage" },
-};
+/* ── Pay scale bar ── */
+function PayScaleBar({ min, max }: { min: number; max: number }) {
+  const SCALE_MIN = 30;
+  const SCALE_MAX = 90;
+  const clamp = (v: number) => Math.max(0, Math.min(100, ((v - SCALE_MIN) / (SCALE_MAX - SCALE_MIN)) * 100));
+  const leftPct = clamp(min);
+  const rightPct = clamp(max);
+
+  return (
+    <div style={{ marginTop: 10, padding: "0 2px" }}>
+      <div style={{ position: "relative", height: 5, borderRadius: 3, background: "#E4E5F4" }}>
+        <div style={{
+          position: "absolute", top: 0, bottom: 0, borderRadius: 3,
+          left: `${leftPct}%`, width: `${Math.max(rightPct - leftPct, 2)}%`,
+          background: "linear-gradient(90deg, #8B8FD4, #A89ED4)",
+        }} />
+        {/* min dot */}
+        <div style={{
+          position: "absolute", top: "50%", left: `${leftPct}%`, transform: "translate(-50%, -50%)",
+          width: 9, height: 9, borderRadius: "50%", background: "#8B8FD4", border: "2px solid white",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.15)"
+        }} />
+        {/* max dot */}
+        {min !== max && (
+          <div style={{
+            position: "absolute", top: "50%", left: `${rightPct}%`, transform: "translate(-50%, -50%)",
+            width: 9, height: 9, borderRadius: "50%", background: "#8B8FD4", border: "2px solid white",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.15)"
+          }} />
+        )}
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+        <span style={{ fontSize: 9, fontWeight: 600, color: "#999", fontFamily: "Manrope, sans-serif" }}>$30/hr</span>
+        <span style={{ fontSize: 9, fontWeight: 600, color: "#999", fontFamily: "Manrope, sans-serif" }}>$90/hr</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Pay display with boxed pills ── */
+function PayDisplay({ job }: { job: JobListing }) {
+  const isPayHidden = job.payHidden || (job.payRange.min === 0 && job.payRange.max === 0);
+
+  if (isPayHidden) {
+    return (
+      <div style={{ padding: "12px 0" }}>
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 6,
+          background: "#8B8FD4", color: "white", borderRadius: 10, padding: "6px 14px",
+          fontFamily: "Manrope, sans-serif", fontSize: 14, fontWeight: 700,
+        }}>
+          Pay Available
+        </div>
+        <p style={{ fontSize: 10, color: "#8B8FD4", marginTop: 4, fontFamily: "Manrope, sans-serif", fontWeight: 500 }}>
+          Hidden elsewhere. Shown here.
+        </p>
+      </div>
+    );
+  }
+
+  const fmtPay = (v: number) => `$${v % 1 === 0 ? v : v.toFixed(2)}`;
+  const payText = job.payRange.min === job.payRange.max
+    ? fmtPay(job.payRange.min)
+    : `${fmtPay(job.payRange.min)}–${fmtPay(job.payRange.max)}`;
+
+  return (
+    <div style={{ padding: "12px 0" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
+        {/* Base pay — filled pill */}
+        <div style={{
+          background: "#8B8FD4", color: "white", borderRadius: 10, padding: "6px 14px",
+          fontFamily: "Manrope, sans-serif", fontSize: 16, fontWeight: 600,
+          display: "inline-flex", alignItems: "baseline", gap: 4,
+        }}>
+          {payText}
+          <span style={{ fontSize: 11, fontWeight: 500, opacity: 0.8 }}>/{job.payUnit}</span>
+        </div>
+
+        {/* Night diff — outlined pill */}
+        {job.nightDifferential && (
+          <div style={{
+            border: "1.5px solid #8B8FD4", color: "#8B8FD4", borderRadius: 10, padding: "5px 12px",
+            fontFamily: "Manrope, sans-serif", fontSize: 12, fontWeight: 500,
+          }}>
+            +${job.nightDifferential}/hr nights
+          </div>
+        )}
+
+        {/* Weekend diff — outlined pill */}
+        {job.weekendDifferential && (
+          <div style={{
+            border: "1.5px solid #8B8FD4", color: "#8B8FD4", borderRadius: 10, padding: "5px 12px",
+            fontFamily: "Manrope, sans-serif", fontSize: 12, fontWeight: 500,
+          }}>
+            +${job.weekendDifferential}/hr wknd
+          </div>
+        )}
+      </div>
+
+      {/* Pay scale bar */}
+      <PayScaleBar min={job.payRange.min} max={job.payRange.max} />
+    </div>
+  );
+}
 
 export default function JobCard({ job, index = 0 }: JobCardProps) {
   const delayClass =
@@ -135,197 +183,138 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
       : "animate-fade-in-up-delay-3";
 
   const fitScore = job.fitScore ?? Math.floor(Math.random() * 20 + 75);
-
-  const benefits = job.benefitTags ?? [
-    ...(job.tuitionReimbursement ? ["tuition"] : []),
-    ...(job.loanForgiveness ? ["tuition"] : []),
-    ...(job.signOnBonus ? ["401k"] : []),
-  ];
-
-  // Pay display logic
-  const isPayHidden = job.payHidden || (job.payRange.min === 0 && job.payRange.max === 0);
-  const payDisplay = isPayHidden
-    ? null
-    : job.payRange.min === job.payRange.max
-    ? `$${job.payRange.min % 1 === 0 ? job.payRange.min : job.payRange.min.toFixed(2)}`
-    : `$${job.payRange.min % 1 === 0 ? job.payRange.min : job.payRange.min.toFixed(2)}–$${job.payRange.max % 1 === 0 ? job.payRange.max : job.payRange.max.toFixed(2)}`;
+  const accentColor = "#8B8FD4";
 
   return (
-    <div className={`bg-white rounded-3xl border border-periwinkle-100/40 overflow-hidden hover:border-periwinkle/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full flex flex-col ${delayClass}`}
-      style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+    <div
+      className={`group h-full flex flex-col ${delayClass}`}
+      style={{
+        background: "white",
+        borderRadius: 20,
+        overflow: "hidden",
+        border: "1px solid rgba(139,143,212,0.15)",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+        cursor: "pointer",
+        transition: "all 0.3s ease",
+        fontFamily: "Manrope, sans-serif",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-3px)";
+        e.currentTarget.style.boxShadow = `0 8px 30px rgba(139,143,212,0.22)`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)";
+      }}
     >
-      {/* Photo header with pay ribbon + left accent bar */}
+      {/* Image area — 160px tall */}
       <Link href={`/jobs/${job.id}`} className="block">
-        <div className="relative h-[160px] overflow-hidden bg-gradient-to-br from-periwinkle-50 via-periwinkle-100/50 to-periwinkle-50 border-l-4 border-periwinkle">
+        <div style={{ position: "relative", height: 160, overflow: "hidden", background: "rgba(139,143,212,0.05)" }}>
           <FacilityImage src={job.facilityImage} specialty={job.specialty} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-          {/* Shift badge — top-right glass pill */}
-          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-[10px] font-bold text-text tracking-wide shadow-sm">
+          {/* Shift badge — top-right frosted pill */}
+          <div style={{
+            position: "absolute", top: 10, right: 10,
+            background: "rgba(255,255,255,0.92)", backdropFilter: "blur(8px)",
+            borderRadius: 20, padding: "4px 12px",
+            fontSize: 10, fontWeight: 700, color: "#1E1E2E", letterSpacing: "0.02em",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            fontFamily: "Manrope, sans-serif",
+          }}>
             {job.scheduleType}
           </div>
 
-          {/* Sign-on bonus badge — top right below shift */}
+          {/* Sign-on bonus — amber gradient bottom strip */}
           {(job.signOnBonus ?? 0) > 0 && (
-            <div className="absolute top-10 right-3 bg-[#2ECC71] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md z-10">
-              +${job.signOnBonus!.toLocaleString()} Bonus
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, right: 0,
+              background: "linear-gradient(90deg, #F4A942ee, #F4C542aa)",
+              padding: "6px 14px",
+              display: "flex", alignItems: "center", gap: 6,
+              fontFamily: "Manrope, sans-serif",
+            }}>
+              <span style={{ fontSize: 13 }}>⭐</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "white", textShadow: "0 1px 2px rgba(0,0,0,0.15)" }}>
+                ${job.signOnBonus!.toLocaleString()} Sign-On Bonus
+              </span>
             </div>
           )}
-
-          {/* Pay ribbon — bottom of photo */}
-          <div className="absolute bottom-0 left-0 right-0">
-            {isPayHidden ? (
-              <div className="mx-3 mb-3 bg-white border-2 border-periwinkle rounded-2xl px-4 py-2.5" style={{ boxShadow: "var(--shadow-ribbon)" }}>
-                <div className="text-base font-extrabold text-periwinkle leading-none">
-                  Pay Available
-                </div>
-                <p className="text-[10px] font-medium text-periwinkle/70 mt-0.5 flex items-center gap-1">
-                  <span>💡</span> Hidden elsewhere. Shown here.
-                </p>
-              </div>
-            ) : (
-              <div className="mx-3 mb-3 rounded-2xl px-4 py-2.5" style={{ background: "linear-gradient(135deg, #8B8FD4, #6B6FB4)", boxShadow: "var(--shadow-ribbon)" }}>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-extrabold text-white leading-none font-serif">
-                    {payDisplay}
-                  </span>
-                  <span className="text-xs font-semibold text-white/70">/{job.payUnit} base</span>
-                </div>
-                {/* Shift differential pills */}
-                {(job.nightDifferential || job.weekendDifferential) && (
-                  <div className="flex gap-1.5 mt-1.5">
-                    {job.nightDifferential ? (
-                      <span className="text-[10px] font-semibold text-white bg-white/20 rounded-full px-2 py-0.5">
-                        +${job.nightDifferential}/hr nights
-                      </span>
-                    ) : null}
-                    {job.weekendDifferential ? (
-                      <span className="text-[10px] font-semibold text-white bg-white/20 rounded-full px-2 py-0.5">
-                        +${job.weekendDifferential}/hr weekends
-                      </span>
-                    ) : null}
-                  </div>
-                )}
-                {!job.nightDifferential && !job.weekendDifferential && job.annualPayRange && (
-                  <p className="text-[11px] text-white/70 mt-0.5 font-medium">
-                    ${job.annualPayRange.min.toLocaleString()}–${job.annualPayRange.max.toLocaleString()}/yr
-                  </p>
-                )}
-                {job.payHiddenElsewhere && !job.nightDifferential && !job.weekendDifferential && (
-                  <p className="text-[10px] font-medium text-white/60 mt-0.5 flex items-center gap-1">
-                    <span>💡</span> Pay shown here — hidden on other job boards
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
         </div>
       </Link>
 
-      <div className="p-5 flex flex-col flex-1">
-        {/* Title + Verified badge */}
-        <Link href={`/jobs/${job.id}`} className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="text-[15px] font-bold text-text group-hover:text-periwinkle transition-colors leading-snug font-serif flex-1">
-            {job.title}
-          </h3>
-          {job.patientRatioVerified && (
-            <span className="inline-flex items-center gap-1 text-[9px] font-bold text-[#7BA68E] bg-[#7BA68E]/10 px-2 py-1 rounded-full uppercase tracking-wider whitespace-nowrap flex-shrink-0">
-              <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
-                <path d="M10 3L5 9L2 6" stroke="#7BA68E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Verified
-            </span>
-          )}
+      {/* Card body */}
+      <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", flex: 1 }}>
+        {/* Title + Verified */}
+        <Link href={`/jobs/${job.id}`} style={{ textDecoration: "none" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
+            <h3
+              className="group-hover:text-[#8B8FD4] transition-colors"
+              style={{
+                fontSize: 15, fontWeight: 700, color: "#1E1E2E", lineHeight: 1.35,
+                fontFamily: "Manrope, sans-serif", flex: 1, margin: 0,
+              }}
+            >
+              {job.title}
+            </h3>
+            {job.patientRatioVerified && (
+              <span style={{
+                display: "inline-flex", alignItems: "center", gap: 3,
+                fontSize: 9, fontWeight: 700, color: "#7BA68E",
+                background: "rgba(123,166,142,0.1)", padding: "3px 8px", borderRadius: 20,
+                textTransform: "uppercase", letterSpacing: "0.05em", whiteSpace: "nowrap", flexShrink: 0,
+              }}>
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
+                  <path d="M10 3L5 9L2 6" stroke="#7BA68E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Verified
+              </span>
+            )}
+          </div>
         </Link>
 
-        {/* Employer · Location */}
-        <p className="text-xs text-text-muted mb-3 flex items-center gap-1">
-          <svg className="w-3 h-3 text-text-muted/60 flex-shrink-0" viewBox="0 0 16 16" fill="none">
+        {/* Employer + Location */}
+        <p style={{
+          fontSize: 12, color: "#777", margin: "0 0 8px 0",
+          display: "flex", alignItems: "center", gap: 4,
+          fontFamily: "Manrope, sans-serif", fontWeight: 500,
+        }}>
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, opacity: 0.5 }}>
             <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" stroke="currentColor" strokeWidth="1.3" />
             <circle cx="8" cy="6" r="1.5" fill="currentColor" />
           </svg>
           {job.facilityName} · {job.location.city}, {job.location.state}
         </p>
 
-        {/* Tag row: specialty, shift, type */}
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {job.specialty && (
-            <span className="text-[10px] font-bold bg-periwinkle/10 text-periwinkle px-2.5 py-1 rounded-full">
-              {job.specialty}
-            </span>
-          )}
-          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${shiftPillClass(job.scheduleType)}`}>
-            {job.scheduleType}
-          </span>
-          {job.type !== "Full-time" && (
-            <span className="text-[10px] font-semibold bg-warm-gray text-text-light px-2.5 py-1 rounded-full border border-periwinkle-100/40">
-              {job.type}
-            </span>
-          )}
-          {job.ehrSystem && (
-            <span className="text-[10px] font-medium text-text-muted bg-gray-50 px-2.5 py-1 rounded-full">
-              {job.ehrSystem}
-            </span>
-          )}
-          {job.newGradsWelcome && (
-            <span className="text-[10px] font-bold bg-success-light text-success px-2.5 py-1 rounded-full border border-success/20">
-              New Grads
-            </span>
-          )}
-          {job.bilingualPayDifferential && (
-            <span className="text-[10px] font-bold bg-info/10 text-info px-2.5 py-1 rounded-full border border-info/20">
-              Bilingual +6-8%
-            </span>
-          )}
-        </div>
-
-        {/* Special badges */}
-        {(job.union || job.magnetDesignated || job.loanForgiveness) && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {job.union && (
-              <span className="text-[10px] font-bold bg-amber/10 text-amber-dark px-2.5 py-1 rounded-full border border-amber/20">
-                Union
-              </span>
-            )}
-            {job.magnetDesignated && (
-              <span className="text-[10px] font-bold bg-periwinkle-50 text-periwinkle-dark px-2.5 py-1 rounded-full border border-periwinkle-100">
-                Magnet
-              </span>
-            )}
-            {job.loanForgiveness && (
-              <span className="text-[10px] font-bold bg-success-light text-success px-2.5 py-1 rounded-full border border-success/20">
-                Loan Forgiveness
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Benefits with interactive tuition popover */}
-        {benefits.length > 0 && (
-          <div className="flex items-center gap-1 mb-3">
-            {[...new Set(benefits)].map((tag) => {
-              const b = BENEFIT_ICONS[tag];
-              if (!b) return null;
-              if (tag === "tuition" && job.tuitionPopover) {
-                return <TuitionPopover key={tag} text={job.tuitionPopover} />;
-              }
-              return (
-                <span key={tag} className="w-7 h-7 flex items-center justify-center rounded-lg bg-warm-gray text-sm" title={b.label}>
-                  {b.icon}
-                </span>
-              );
-            })}
-          </div>
-        )}
+        {/* Pay display — boxed pills + scale bar */}
+        <PayDisplay job={job} />
 
         {/* Flor Fit Score */}
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-periwinkle/10">
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          marginTop: "auto", paddingTop: 12, borderTop: "1px solid rgba(139,143,212,0.1)",
+        }}>
           <FitScoreRing score={fitScore} />
         </div>
 
-        {/* CTA Button — outline by default, fills on card hover */}
-        <Link href={`/jobs/${job.id}`} className="block mt-3">
-          <button className="w-full border-[1.5px] border-periwinkle text-periwinkle font-bold py-2.5 rounded-xl text-sm transition-all duration-200 group-hover:bg-periwinkle group-hover:text-white group-hover:shadow-md active:scale-[0.97]">
+        {/* CTA Button — outline, fills on card hover */}
+        <Link href={`/jobs/${job.id}`} className="block" style={{ marginTop: 12 }}>
+          <button
+            className="group-hover:shadow-md"
+            style={{
+              width: "100%", border: `1.5px solid ${accentColor}`, color: accentColor,
+              fontWeight: 700, padding: "10px 0", borderRadius: 14, fontSize: 14,
+              background: "transparent", cursor: "pointer",
+              transition: "all 0.2s", fontFamily: "Manrope, sans-serif",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = accentColor;
+              e.currentTarget.style.color = "white";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = accentColor;
+            }}
+          >
             View Position →
           </button>
         </Link>
