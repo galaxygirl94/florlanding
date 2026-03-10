@@ -611,13 +611,13 @@ export default function NurseProfilePage() {
         )}
 
         {signupError && (
-          <div className="bg-danger-light border border-danger/20 rounded-xl p-4 mb-8 flex items-center gap-3 animate-fade-in-up max-w-4xl mx-auto">
-            <div className="w-8 h-8 rounded-full bg-danger flex items-center justify-center flex-shrink-0">
+          <div className="bg-amber/5 border border-amber/20 rounded-xl p-4 mb-8 flex items-center gap-3 animate-fade-in-up max-w-4xl mx-auto">
+            <div className="w-8 h-8 rounded-full bg-amber flex items-center justify-center flex-shrink-0">
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
               </svg>
             </div>
-            <p className="text-sm font-semibold text-danger">{signupError}</p>
+            <p className="text-sm font-semibold text-amber-dark">{signupError}</p>
           </div>
         )}
 
@@ -770,7 +770,7 @@ export default function NurseProfilePage() {
                       <p className="text-xs text-text-muted">{photoFileName}</p>
                       <button
                         onClick={() => { setPhotoPreview(""); setPhotoFileName(""); }}
-                        className="text-xs text-danger hover:text-danger font-bold"
+                        className="text-xs text-periwinkle hover:text-periwinkle-dark font-bold"
                       >
                         Remove
                       </button>
