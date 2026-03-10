@@ -8,6 +8,192 @@ import { employerApplications } from "@/data/seed-applications";
 import { demoNurses } from "@/data/demo-nurses";
 import type { Application, Interview, JobListing, NurseProfile } from "@/data/types";
 
+/* ── Import Job Modal Colors ────────────────────────────────────── */
+const _P = "#8B8FD4";
+const _NAVY = "#1E1E2E";
+const _GREEN = "#059669";
+const _AMBER = "#D97706";
+
+const IMPORT_SOURCES = [
+  { id: "url", icon: "🔗", label: "Import from URL", sub: "Paste any job posting link" },
+  { id: "indeed", icon: "🔵", label: "Import from Indeed", sub: "Paste an Indeed job URL" },
+  { id: "linkedin", icon: "💼", label: "Import from LinkedIn", sub: "Paste a LinkedIn Jobs URL" },
+  { id: "workday", icon: "⚙️", label: "Import from Workday", sub: "Paste your Workday posting URL" },
+  { id: "create", icon: "✏️", label: "Create from scratch", sub: "Build a new listing manually" },
+];
+
+const PARSED_EXAMPLE = {
+  title: "ICU RN — Intensive Care Unit",
+  employer: "Brown University Health",
+  location: "Providence, RI",
+  type: "Full-time · 36 hrs/wk",
+  pay: "$45–$52/hr",
+  schedule: "3×12hr · Nights · Weekend Rotation",
+  requirements: "RI RN License, BLS, ACLS",
+  missing: ["Patient-to-nurse ratio", "Sign-on bonus details", "Shift differential breakdown"],
+};
+
+const empNotifications = [
+  { id: 1, type: "action", icon: "📅", text: "Maya Torres accepted your interview request", sub: "ICU RN — Intensive Care Unit · Thu Mar 12, 2:00 PM", time: "2h ago", unread: true },
+  { id: 2, type: "action", icon: "✉️", text: "New application from Sara Lindqvist", sub: "ICU RN — Intensive Care Unit · 83% Flor Fit", time: "5h ago", unread: true },
+  { id: 3, type: "info", icon: "👁", text: "James Okafor viewed your facility profile", sub: "Brown University Health · ICU", time: "1d ago", unread: false },
+  { id: 4, type: "info", icon: "✅", text: "Your Ethics Pledge is verified", sub: "Ratio & pay data reviewed by Flor team", time: "3d ago", unread: false },
+];
+
+/* ── Import Job Modal ────────────────────────────────────────────── */
+
+function ImportJobModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
+  const [source, setSource] = useState<string | null>(null);
+  const [url, setUrl] = useState("");
+  const [parsing, setParsing] = useState(false);
+  const [parsed, setParsed] = useState<typeof PARSED_EXAMPLE | null>(null);
+  const [step, setStep] = useState("pick");
+
+  const handleParse = () => {
+    if (!url.trim()) return;
+    setParsing(true);
+    setTimeout(() => { setParsing(false); setParsed(PARSED_EXAMPLE); setStep("review"); }, 1600);
+  };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(30,30,46,.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 500, padding: 20 }} onClick={onClose}>
+      <div style={{ background: "white", borderRadius: 20, width: "100%", maxWidth: 520, boxShadow: "0 24px 64px rgba(30,30,46,.28)", overflow: "hidden" }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ background: _NAVY, padding: "20px 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontSize: 17, fontWeight: 800, color: "white" }}>Post a Job</div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,.5)", marginTop: 2 }}>
+              {step === "pick" && "Choose how to add your listing"}
+              {step === "enter" && `Importing from ${IMPORT_SOURCES.find((s) => s.id === source)?.label}`}
+              {step === "review" && "Review imported data"}
+              {step === "enhance" && "Add missing Flor details"}
+              {step === "done" && "Listing ready"}
+            </div>
+          </div>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(255,255,255,.5)", fontSize: 22, cursor: "pointer" }}>×</button>
+        </div>
+        <div style={{ padding: "24px 28px" }}>
+          {step === "pick" && (
+            <div>
+              <p style={{ fontSize: 14, color: "#6B7280", marginTop: 0, marginBottom: 18 }}>Import from an existing listing to save time, or start from scratch.</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {IMPORT_SOURCES.map((src) => (
+                  <div
+                    key={src.id}
+                    onClick={() => { setSource(src.id); setStep(src.id === "create" ? "done" : "enter"); }}
+                    style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderRadius: 12, border: "1.5px solid #E0E1F4", cursor: "pointer", background: "white", transition: "border-color .15s" }}
+                  >
+                    <span style={{ fontSize: 22 }}>{src.icon}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: _NAVY }}>{src.label}</div>
+                      <div style={{ fontSize: 12, color: "#9CA3AF" }}>{src.sub}</div>
+                    </div>
+                    <span style={{ color: "#C0C4D6", fontSize: 16 }}>›</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {step === "enter" && (
+            <div>
+              <p style={{ fontSize: 14, color: "#6B7280", marginTop: 0, marginBottom: 18 }}>Flor will extract job details automatically. You&apos;ll review and fill in anything missing before publishing.</p>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#6B7280", letterSpacing: "0.08em" }}>PASTE JOB URL</label>
+              <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://..." style={{ display: "block", width: "100%", borderRadius: 8, border: "1px solid #E0E1F4", padding: "11px 14px", fontSize: 14, marginTop: 6, marginBottom: 20, boxSizing: "border-box", outline: "none" }} />
+              <div style={{ background: "#F0F0FA", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#6B7280", marginBottom: 20, display: "flex", gap: 8 }}>
+                <span>💡</span><span>We&apos;ll auto-detect pay, schedule, and requirements. Flor-specific fields like patient ratios will be prompted separately.</span>
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={() => setStep("pick")} style={{ flex: 1, background: "#F3F4F6", color: "#6B7280", border: "none", borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>← Back</button>
+                <button onClick={handleParse} disabled={!url.trim() || parsing} style={{ flex: 2, background: url.trim() && !parsing ? _P : "#E2E4F0", color: url.trim() && !parsing ? "white" : "#9CA3AF", border: "none", borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: url.trim() && !parsing ? "pointer" : "not-allowed" }}>
+                  {parsing ? "Importing…" : "Import Job Listing"}
+                </button>
+              </div>
+            </div>
+          )}
+          {step === "review" && parsed && (
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                <span style={{ fontSize: 18 }}>✅</span>
+                <div style={{ fontSize: 14, fontWeight: 700, color: _GREEN }}>Import successful — review before publishing</div>
+              </div>
+              <div style={{ background: "#F9FAFB", borderRadius: 12, padding: 16, marginBottom: 16 }}>
+                {([["Job Title", parsed.title], ["Employer", parsed.employer], ["Location", parsed.location], ["Pay Range", parsed.pay], ["Schedule", parsed.schedule], ["Requirements", parsed.requirements]] as const).map(([k, v]) => (
+                  <div key={k} style={{ display: "flex", gap: 12, marginBottom: 8, fontSize: 13 }}>
+                    <span style={{ color: "#9CA3AF", minWidth: 90, flexShrink: 0 }}>{k}</span>
+                    <span style={{ color: _NAVY, fontWeight: 500 }}>{v}</span>
+                    <span style={{ marginLeft: "auto", color: _GREEN, fontSize: 11, fontWeight: 700 }}>✓</span>
+                  </div>
+                ))}
+              </div>
+              {parsed.missing.length > 0 && (
+                <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 10, padding: "12px 14px", marginBottom: 20 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: _AMBER, marginBottom: 6 }}>⚠ Missing Flor-required fields</div>
+                  {parsed.missing.map((m) => <div key={m} style={{ fontSize: 13, color: "#92400E", display: "flex", gap: 6, marginBottom: 4 }}><span>·</span>{m}</div>)}
+                  <div style={{ fontSize: 12, color: "#92400E", marginTop: 6 }}>Required before your listing goes live.</div>
+                </div>
+              )}
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={() => setStep("enter")} style={{ flex: 1, background: "#F3F4F6", color: "#6B7280", border: "none", borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>← Re-import</button>
+                <button onClick={() => setStep("enhance")} style={{ flex: 2, background: _P, color: "white", border: "none", borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Add Missing Fields →</button>
+              </div>
+            </div>
+          )}
+          {step === "enhance" && (
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: _NAVY, marginBottom: 4 }}>Add Flor-required details</div>
+              <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 18 }}>These fields make your listing stand out and are required for the Ethics Pledge.</p>
+              {[{ label: "PATIENT-TO-NURSE RATIO", placeholder: "e.g. 2:1", note: "Will show as Flor Verified once reviewed" }, { label: "SIGN-ON BONUS (if any)", placeholder: "e.g. $8,000 — leave blank if none", note: "" }, { label: "SHIFT DIFFERENTIAL", placeholder: "e.g. +$6/hr nights, +$4/hr weekends", note: "" }].map((f) => (
+                <div key={f.label} style={{ marginBottom: 14 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "#6B7280", letterSpacing: "0.08em" }}>{f.label}</label>
+                  <input placeholder={f.placeholder} style={{ display: "block", width: "100%", borderRadius: 8, border: "1px solid #E0E1F4", padding: "10px 12px", fontSize: 14, marginTop: 5, boxSizing: "border-box", outline: "none" }} />
+                  {f.note && <div style={{ fontSize: 11, color: _P, marginTop: 4 }}>ℹ {f.note}</div>}
+                </div>
+              ))}
+              <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+                <button onClick={() => setStep("review")} style={{ flex: 1, background: "#F3F4F6", color: "#6B7280", border: "none", borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>← Back</button>
+                <button onClick={() => setStep("done")} style={{ flex: 2, background: _NAVY, color: "white", border: "none", borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Publish Listing →</button>
+              </div>
+            </div>
+          )}
+          {step === "done" && (
+            <div style={{ textAlign: "center", padding: "8px 0 4px" }}>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>{source === "create" ? "✏️" : "✅"}</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: _NAVY, marginBottom: 6 }}>{source === "create" ? "Let's build your listing" : "Listing published!"}</div>
+              <p style={{ fontSize: 14, color: "#6B7280", lineHeight: 1.6, marginBottom: 24 }}>
+                {source === "create" ? "You'll be taken to the full job builder to fill in every detail, including Flor-specific fields nurses care most about." : "Your listing is live. Nurses matching your criteria will be notified."}
+              </p>
+              <button onClick={onSuccess} style={{ width: "100%", background: _P, color: "white", border: "none", borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>{source === "create" ? "Open Job Builder →" : "View in Dashboard"}</button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Notification Panel ──────────────────────────────────────────── */
+
+function EmpNotificationPanel({ onClose }: { onClose: () => void }) {
+  return (
+    <div style={{ position: "fixed", top: 70, right: 20, width: 360, background: "white", borderRadius: 14, boxShadow: "0 8px 32px rgba(30,30,46,.18)", border: "1px solid #ECEEF8", zIndex: 200, overflow: "hidden" }}>
+      <div style={{ padding: "14px 18px", borderBottom: "1px solid #F0F1F8", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ fontWeight: 700, color: _NAVY, fontSize: 14 }}>Notifications</span>
+        <button onClick={onClose} style={{ background: "none", border: "none", color: "#9CA3AF", cursor: "pointer", fontSize: 18 }}>×</button>
+      </div>
+      {empNotifications.map((n) => (
+        <div key={n.id} style={{ padding: "12px 18px", borderBottom: "1px solid #F9FAFB", display: "flex", gap: 12, alignItems: "flex-start", background: n.unread ? "#FAFBFF" : "white" }}>
+          <span style={{ fontSize: 18 }}>{n.icon}</span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: n.unread ? 600 : 400, color: _NAVY }}>{n.text}</div>
+            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{n.sub}</div>
+            <div style={{ fontSize: 11, color: "#C0C4D6", marginTop: 3 }}>{n.time}</div>
+          </div>
+          {n.unread && <div style={{ width: 8, height: 8, borderRadius: "50%", background: _P, marginTop: 4, flexShrink: 0 }} />}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ── Constants ────────────────────────────────────────────────────── */
 
 const TABS = ["Post & Manage Jobs", "Applicant Pipeline", "Interview Scheduling", "Hiring Dashboard"] as const;
@@ -132,6 +318,11 @@ export default function EmployerDashboard() {
   const [interviews, setInterviews] = useState<Interview[]>(SEED_INTERVIEWS);
   const [intForm, setIntForm] = useState({ applicantId: "", date: "", time: "", duration: "30", notes: "" });
 
+  /* Import modal + notifications */
+  const [showImport, setShowImport] = useState(false);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const unreadNotifs = empNotifications.filter((n) => n.unread).length;
+
   /* ── localStorage hydration ─────────────────────────────────────── */
 
   useEffect(() => {
@@ -228,6 +419,27 @@ export default function EmployerDashboard() {
     <div className="min-h-screen bg-[#FAFAFE]">
       <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-8 sm:py-12">
         <div className="animate-fade-in-up">
+          {/* Employer action bar */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <span className="rounded-full bg-[#ECFDF5] text-[#059669] px-3 py-1 text-xs font-bold">✓ Ethics Pledge Active</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <button onClick={() => setShowNotifs(!showNotifs)} className="relative p-1 hover:opacity-80">
+                  <span className="text-xl">🔔</span>
+                  {unreadNotifs > 0 && (
+                    <span className="absolute -top-0.5 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-[9px] text-white font-bold">{unreadNotifs}</span>
+                  )}
+                </button>
+              </div>
+              <button onClick={() => setShowImport(true)} className="bg-periwinkle hover:bg-periwinkle-dark text-white rounded-full px-5 py-2.5 text-sm font-bold transition-colors flex items-center gap-2">
+                <span className="text-base">+</span> Import Job
+              </button>
+            </div>
+          </div>
+          {showNotifs && <EmpNotificationPanel onClose={() => setShowNotifs(false)} />}
+
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
@@ -302,6 +514,7 @@ export default function EmployerDashboard() {
           )}
         </div>
       </div>
+      {showImport && <ImportJobModal onClose={() => setShowImport(false)} onSuccess={() => setShowImport(false)} />}
     </div>
   );
 }

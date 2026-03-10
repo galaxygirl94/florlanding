@@ -112,23 +112,39 @@ export default function Navbar() {
               </Link>
             ))}
             {/* Demo view toggle */}
-            <button
-              onClick={() => {
-                const next = !isEmployer;
-                setIsEmployer(next);
-                localStorage.setItem("flor_user_type", next ? "employer" : "nurse");
-              }}
-              className="hover:text-[#8B8FD4] hover:border-[#8B8FD4]/30"
-              style={{
-                fontSize: 11, fontWeight: 700, color: "#999",
-                padding: "6px 12px", borderRadius: 20,
-                border: `1px solid ${C.border}`, background: "transparent",
-                cursor: "pointer", transition: "all 0.2s",
-                fontFamily: "'Manrope', system-ui, sans-serif",
-              }}
-            >
-              {isEmployer ? "Switch to Nurse" : "Switch to Employer"}
-            </button>
+            {isEmployer ? (
+              <button
+                onClick={() => {
+                  setIsEmployer(false);
+                  localStorage.setItem("flor_user_type", "nurse");
+                }}
+                className="hover:text-[#8B8FD4] hover:border-[#8B8FD4]/30"
+                style={{
+                  fontSize: 11, fontWeight: 700, color: "#999",
+                  padding: "6px 12px", borderRadius: 20,
+                  border: `1px solid ${C.border}`, background: "transparent",
+                  cursor: "pointer", transition: "all 0.2s",
+                  fontFamily: "'Manrope', system-ui, sans-serif",
+                }}
+              >
+                Switch to Nurse
+              </button>
+            ) : (
+              <Link
+                href="/employer/demo"
+                className="hover:text-[#8B8FD4] hover:border-[#8B8FD4]/30"
+                style={{
+                  fontSize: 11, fontWeight: 700, color: "#999",
+                  padding: "6px 12px", borderRadius: 20,
+                  border: `1px solid ${C.border}`, background: "transparent",
+                  cursor: "pointer", transition: "all 0.2s",
+                  fontFamily: "'Manrope', system-ui, sans-serif",
+                  textDecoration: "none",
+                }}
+              >
+                Switch to Employer
+              </Link>
+            )}
             <div style={{ marginLeft: 8, paddingLeft: 16, borderLeft: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 12 }}>
               {/* Bell icon with coral dot */}
               <div style={{ position: "relative" }}>

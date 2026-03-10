@@ -1,127 +1,181 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { seedApplications } from "@/data/seed-applications";
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; dotColor: string; step: number }> = {
-  applied: { label: "Applied", color: "bg-info/10 text-info", dotColor: "bg-info", step: 1 },
-  new: { label: "Applied", color: "bg-info/10 text-info", dotColor: "bg-info", step: 1 },
-  viewed: { label: "Viewed", color: "bg-amber/10 text-amber-dark", dotColor: "bg-amber", step: 2 },
-  reviewing: { label: "Reviewing", color: "bg-amber/10 text-amber-dark", dotColor: "bg-amber", step: 2 },
-  responded: { label: "Responded", color: "bg-success-light text-success", dotColor: "bg-success", step: 3 },
-  interview: { label: "Interview", color: "bg-success-light text-success", dotColor: "bg-success", step: 3 },
-  offer: { label: "Offer", color: "bg-success-light text-success", dotColor: "bg-success", step: 3 },
-  hired: { label: "Hired", color: "bg-success-light text-success", dotColor: "bg-success", step: 3 },
-  passed: { label: "Passed", color: "bg-gray-100 text-text-muted", dotColor: "bg-gray-400", step: 0 },
+/* ── Colors ────────────────────────────────────────────────────── */
+const P = "#8B8FD4";
+const NAVY = "#1E1E2E";
+const GREEN = "#059669";
+const AMBER = "#D97706";
+
+/* ── Pipeline data ─────────────────────────────────────────────── */
+const PIPELINE_STAGES = ["Applied", "Under Review", "Viewed", "Interview", "Offer"];
+
+const STATUS_CFG: Record<string, { color: string; bg: string }> = {
+  Applied:        { color: P,         bg: "#F0F0FA" },
+  "Under Review": { color: AMBER,     bg: "#FFFBEB" },
+  Viewed:         { color: "#3B82F6", bg: "#EFF6FF" },
+  Interview:      { color: GREEN,     bg: "#ECFDF5" },
+  Offer:          { color: GREEN,     bg: "#D1FAE5" },
 };
 
-export default function TrackerPage() {
+const nurseApps = [
+  { id: 1, title: "Pediatric RN", unit: "Inpatient Pediatrics", employer: "Hasbro Children's Hospital", pay: "$38–$44/hr", status: "Interview", appliedDays: 18, nudge: "Interview request received — check your messages", nudgeType: "action" as const, fit: 92 },
+  { id: 2, title: "RN", unit: "Respiratory Intermediate Care", employer: "Rhode Island Hospital", pay: "$41–$48/hr", status: "Viewed", appliedDays: 13, nudge: "Employer viewed your profile 11 days ago", nudgeType: "info" as const, fit: 78 },
+  { id: 3, title: "ICU RN", unit: "Intensive Care Unit", employer: "Brown University Health", pay: "$45–$52/hr", status: "Applied", appliedDays: 9, nudge: "Most employers respond within 5–7 days", nudgeType: "neutral" as const, fit: 87 },
+];
+
+/* ── Shared components ─────────────────────────────────────────── */
+
+function FitBadge({ score, size = "sm" }: { score: number; size?: "sm" | "lg" }) {
+  const color = score >= 88 ? GREEN : score >= 75 ? P : AMBER;
+  const bg = score >= 88 ? "#ECFDF5" : score >= 75 ? "#F0F0FA" : "#FFFBEB";
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      <div className="animate-fade-in-up">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-text mb-2">Application Tracker</h1>
-        <p className="text-text-light mb-10 text-sm sm:text-base leading-relaxed">
-          Track the status of your applications in real time. No more wondering.
-        </p>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background: bg, borderRadius: size === "lg" ? 12 : 8, padding: size === "lg" ? "12px 16px" : "6px 10px", minWidth: size === "lg" ? 72 : 50 }}>
+      <span style={{ fontSize: size === "lg" ? 22 : 13, fontWeight: 800, color, lineHeight: 1 }}>{score}%</span>
+      <span style={{ fontSize: 9, fontWeight: 700, color, letterSpacing: "0.08em", marginTop: 2 }}>FLOR FIT</span>
+    </div>
+  );
+}
 
-        {/* Status summary */}
-        <div className="bg-white rounded-2xl border border-periwinkle-100/40 p-6 mb-10">
-          {/* Desktop steps */}
-          <div className="hidden sm:flex items-center justify-between">
-            {(["applied", "viewed", "responded"] as const).map((status, i) => {
-              const config = STATUS_CONFIG[status];
-              const count = seedApplications.filter((a) => a.status === status).length;
-              return (
-                <div key={status} className="flex items-center">
-                  <div className="text-center">
-                    <div className={`w-16 h-16 rounded-2xl ${config.color} flex items-center justify-center mx-auto mb-2`}>
-                      <div className="text-xl font-extrabold">{count}</div>
-                    </div>
-                    <div className="text-sm font-bold text-text">{config.label}</div>
-                  </div>
-                  {i < 2 && (
-                    <div className="w-20 lg:w-32 h-0.5 bg-periwinkle-100/60 mx-4 lg:mx-6 rounded-full" />
-                  )}
-                </div>
-              );
-            })}
+function StatusPill({ label, type }: { label: string; type: string }) {
+  const map: Record<string, { bg: string; color: string }> = {
+    action: { bg: "#ECFDF5", color: GREEN },
+    new: { bg: "#F0F0FA", color: P },
+    review: { bg: "#FFFBEB", color: AMBER },
+    info: { bg: "#EFF6FF", color: "#3B82F6" },
+    neutral: { bg: "#F3F4F6", color: "#9CA3AF" },
+  };
+  const s = map[type] || map.neutral;
+  return <span style={{ background: s.bg, color: s.color, borderRadius: 20, padding: "3px 11px", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>{label}</span>;
+}
+
+/* ── Pipeline bar ──────────────────────────────────────────────── */
+
+function PipelineBar({ status }: { status: string }) {
+  const ai = PIPELINE_STAGES.indexOf(status);
+  return (
+    <div style={{ display: "flex", alignItems: "center", marginTop: 14 }}>
+      {PIPELINE_STAGES.map((stage, i) => {
+        const isActive = i === ai;
+        const isPast = i < ai;
+        const isLast = i === PIPELINE_STAGES.length - 1;
+        const cfg = STATUS_CFG[status];
+        return (
+          <div key={stage} style={{ display: "flex", alignItems: "center", flex: isLast ? 0 : 1 }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+              <div style={{ width: isActive ? 10 : 7, height: isActive ? 10 : 7, borderRadius: "50%", background: isActive ? cfg.color : isPast ? P : "#E2E4F0", boxShadow: isActive ? `0 0 0 3px ${cfg.bg}` : "none", transition: "all .2s" }} />
+              <span style={{ fontSize: 9.5, fontWeight: isActive ? 700 : 400, color: isActive ? cfg.color : isPast ? "#6B7280" : "#C0C4D6", whiteSpace: "nowrap" }}>{stage}</span>
+            </div>
+            {!isLast && <div style={{ height: 2, flex: 1, background: isPast ? P : "#E2E4F0", margin: "0 2px 14px" }} />}
           </div>
+        );
+      })}
+    </div>
+  );
+}
 
-          {/* Mobile steps */}
-          <div className="sm:hidden space-y-4">
-            {(["applied", "viewed", "responded"] as const).map((status, i) => {
-              const config = STATUS_CONFIG[status];
-              const count = seedApplications.filter((a) => a.status === status).length;
-              return (
-                <div key={status}>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-xl ${config.color} flex items-center justify-center flex-shrink-0`}>
-                      <span className="text-lg font-extrabold">{count}</span>
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold text-text">{config.label}</div>
-                      <div className="text-xs text-text-muted">{count} application{count !== 1 ? "s" : ""}</div>
-                    </div>
-                  </div>
-                  {i < 2 && (
-                    <div className="ml-6 w-0.5 h-4 bg-periwinkle-100/60 rounded-full" />
-                  )}
-                </div>
-              );
-            })}
+/* ── Nurse Profile (tab) ───────────────────────────────────────── */
+
+function NurseProfile() {
+  return (
+    <div style={{ maxWidth: 600 }}>
+      <h2 style={{ fontSize: 22, fontWeight: 800, color: NAVY, margin: "0 0 20px" }}>My Profile</h2>
+      <div style={{ background: "white", borderRadius: 14, border: "1px solid #ECEEF8", padding: 28 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 20 }}>
+          <div style={{ width: 64, height: 64, borderRadius: "50%", background: P, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: 800, color: "white" }}>G</div>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: NAVY }}>Grace Mathews</div>
+            <div style={{ fontSize: 14, color: "#6B7280" }}>grace@florfornurses.com</div>
+            <div style={{ fontSize: 12, color: P, fontWeight: 600, marginTop: 3 }}>RN · ICU / Critical Care</div>
           </div>
         </div>
+        <div style={{ height: 1, background: "#F0F1F8", margin: "20px 0" }} />
+        {([["License", "RI RN — Active through 2027"], ["Specialty", "ICU / Critical Care"], ["Experience", "6 years"], ["Certifications", "CCRN, BLS, ACLS"], ["Preferred shift", "Nights, 3×12hr"], ["Location", "Providence, RI"]] as const).map(([k, v]) => (
+          <div key={k} style={{ display: "flex", gap: 16, marginBottom: 10, fontSize: 14 }}>
+            <span style={{ color: "#9CA3AF", minWidth: 110 }}>{k}</span>
+            <span style={{ color: NAVY, fontWeight: 500 }}>{v}</span>
+          </div>
+        ))}
+        <div style={{ height: 1, background: "#F0F1F8", margin: "20px 0" }} />
+        <Link href="/nurse-profile" style={{ display: "inline-block", background: P, color: "white", border: "none", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 700, cursor: "pointer", textDecoration: "none" }}>Edit Profile</Link>
+      </div>
+    </div>
+  );
+}
 
-        {/* Application cards */}
-        <div className="space-y-4">
-          {seedApplications.map((app, i) => {
-            const config = STATUS_CONFIG[app.status];
-            return (
-              <div
-                key={app.id}
-                className={`bg-white rounded-2xl border border-periwinkle-100/40 p-5 sm:p-6 hover:-translate-y-0.5 hover:border-periwinkle/30 transition-all duration-300 ${
-                  i === 0 ? "animate-fade-in-up" : i === 1 ? "animate-fade-in-up-delay-1" : "animate-fade-in-up-delay-2"
-                }`}
-              >
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                  <div className="min-w-0">
-                    <Link
-                      href={`/jobs/${app.jobId}`}
-                      className="text-base sm:text-lg font-bold hover:text-periwinkle transition-colors"
-                    >
-                      {app.jobTitle}
-                    </Link>
-                    <p className="text-sm text-text-muted mt-0.5">{app.facilityName}</p>
-                  </div>
-                  <span className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-bold self-start ${config.color}`}>
-                    <span className={`w-2 h-2 rounded-full ${config.dotColor}`} />
-                    {config.label}
-                  </span>
-                </div>
+/* ── Tracker (tab) ─────────────────────────────────────────────── */
 
-                {/* Progress bar */}
-                <div className="mt-4">
-                  <div className="flex gap-1.5">
-                    {[1, 2, 3].map((step) => (
-                      <div
-                        key={step}
-                        className={`h-2 rounded-full flex-1 transition-all duration-500 ${
-                          step <= config.step ? "bg-periwinkle" : "bg-periwinkle-50"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
+function NurseTracker() {
+  const actionable = nurseApps.filter((a) => a.nudgeType === "action").length;
+  const sorted = [...nurseApps].sort(
+    (a, b) => ({ action: 0, info: 1, neutral: 2 }[a.nudgeType] - { action: 0, info: 1, neutral: 2 }[b.nudgeType])
+  );
+  return (
+    <div>
+      <h2 style={{ fontSize: 22, fontWeight: 800, color: NAVY, margin: 0 }}>Application Tracker</h2>
+      <p style={{ fontSize: 14, color: "#6B7280", marginTop: 4, marginBottom: 24 }}>
+        {nurseApps.length} active applications
+        {actionable > 0 && (
+          <span style={{ color: GREEN, fontWeight: 600 }}>
+            {" "}· {actionable} need{actionable === 1 ? "s" : ""} your attention
+          </span>
+        )}
+      </p>
 
-                <div className="mt-3.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-text-muted">
-                  <span>Applied: {app.appliedDate}</span>
-                  <span className="hidden sm:inline text-periwinkle-100">|</span>
-                  <span>Last update: {app.lastUpdate}</span>
-                </div>
-              </div>
-            );
-          })}
+      {sorted.map((app) => (
+        <div key={app.id} style={{ background: "white", borderRadius: 14, padding: "20px 24px", border: "1px solid #ECEEF8", boxShadow: "0 1px 4px rgba(139,143,212,.06)", marginBottom: 12 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>{app.title} — {app.unit}</div>
+              <div style={{ fontSize: 14, color: "#6B7280", marginTop: 2 }}>{app.employer}</div>
+              <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 2 }}>{app.pay} · Applied {app.appliedDays} days ago</div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <FitBadge score={app.fit} />
+              <StatusPill label={app.status} type={app.nudgeType === "action" ? "action" : app.status === "Viewed" ? "info" : "neutral"} />
+            </div>
+          </div>
+          <PipelineBar status={app.status} />
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: { action: "#ECFDF5", info: "#EFF6FF", neutral: "#F9FAFB" }[app.nudgeType], color: { action: GREEN, info: "#3B82F6", neutral: "#9CA3AF" }[app.nudgeType], borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: app.nudgeType === "action" ? 600 : 400, marginTop: 8 }}>
+            <span style={{ fontSize: 10 }}>{app.nudgeType === "action" ? "→" : app.nudgeType === "info" ? "●" : "○"}</span>
+            {app.nudge}
+          </div>
         </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Page ───────────────────────────────────────────────────────── */
+
+export default function TrackerPage() {
+  const [tab, setTab] = useState<"tracker" | "profile">("tracker");
+
+  return (
+    <div style={{ fontFamily: "'DM Sans','Outfit',system-ui,sans-serif", background: "#F7F8FC", minHeight: "100vh" }}>
+      {/* Sub-nav tabs */}
+      <div style={{ background: "white", borderBottom: "1px solid #ECEEF8", padding: "0 32px", display: "flex", gap: 4 }}>
+        {([["tracker", "Application Tracker"], ["profile", "My Profile"]] as const).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            style={{
+              background: "none", border: "none", padding: "14px 16px", fontSize: 14,
+              fontWeight: tab === key ? 700 : 400, color: tab === key ? P : "#6B7280",
+              cursor: "pointer", borderBottom: tab === key ? `2px solid ${P}` : "2px solid transparent",
+              marginBottom: -1,
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ maxWidth: 780, margin: "0 auto", padding: "32px 24px" }}>
+        {tab === "tracker" && <NurseTracker />}
+        {tab === "profile" && <NurseProfile />}
       </div>
     </div>
   );
