@@ -34,13 +34,14 @@
   --color-rose-light: #FDF2F7;
 
   --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Playfair Display', 'Georgia', serif;
 }
 
 @layer base {
   body {
     font-family: var(--font-sans);
     color: var(--color-text);
-    background-color: #FFFFFF;
+    background-color: #F7F7FF;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -265,4 +266,31 @@ input:focus, select:focus, textarea:focus {
   object-fit: cover;
   width: 100%;
   height: 100%;
+}
+
+/* ---- Serif heading utility ---- */
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* ---- Warm card styling ---- */
+
+.card-warm {
+  box-shadow:
+    0 1px 3px rgba(30, 30, 46, 0.04),
+    0 6px 24px rgba(139, 143, 212, 0.08);
+  border-left: 3px solid var(--color-periwinkle);
+}
+
+.card-warm:hover {
+  box-shadow:
+    0 4px 12px rgba(30, 30, 46, 0.06),
+    0 16px 48px rgba(139, 143, 212, 0.14);
+}
+
+/* ---- Periwinkle divider ---- */
+
+.divider-periwinkle {
+  border-color: rgba(139, 143, 212, 0.2);
 }

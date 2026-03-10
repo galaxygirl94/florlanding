@@ -27,12 +27,15 @@ function ExclusiveBadge() {
 function FilterSection({ title, defaultOpen = false, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-periwinkle-100/40 last:border-b-0">
+    <div className="border-b border-periwinkle/15 last:border-b-0">
       <button
-        className="w-full flex items-center justify-between py-3.5 text-sm font-bold text-text hover:text-periwinkle transition-colors"
+        className="w-full flex items-center justify-between py-4 text-sm font-bold text-text hover:text-periwinkle transition-colors"
         onClick={() => setOpen(!open)}
       >
-        {title}
+        <span className="flex items-center gap-2">
+          <span className="w-1 h-4 rounded-full bg-periwinkle/30" />
+          {title}
+        </span>
         <svg className={`w-4 h-4 text-text-muted transition-transform ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
         </svg>
@@ -247,9 +250,9 @@ export default function JobListingsPage() {
   );
 
   return (
-    <div>
+    <div className="bg-[#F7F7FF]">
       {/* Page Header with photo banner */}
-      <div className="relative overflow-hidden h-[200px] sm:h-[280px]">
+      <div className="relative overflow-hidden h-[220px] sm:h-[300px]">
         <Image
           src="/nurse-tablet.jpg"
           alt="Two nurses looking at a phone together"
@@ -257,11 +260,11 @@ export default function JobListingsPage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1E1E2E]/80 via-[#1E1E2E]/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1E1E2E]/85 via-[#1E1E2E]/55 to-transparent" />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 w-full">
             <div className="animate-fade-in-up">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white">Find Nursing Jobs</h1>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white font-serif">Find Nursing Jobs</h1>
               <p className="text-white/75 mt-3 text-base sm:text-lg max-w-lg leading-relaxed">
                 Every listing shows real pay and honest schedules. No guesswork, no ghost posts.
               </p>
@@ -270,7 +273,34 @@ export default function JobListingsPage() {
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-8 sm:py-12">
+      {/* Dark navy stats/trust band */}
+      <div className="bg-[#1E1E2E]">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-center">
+            <div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-white font-serif">{filteredJobs.length}</p>
+              <p className="text-xs text-white/50 font-medium mt-0.5">Open Positions</p>
+            </div>
+            <div className="w-px h-8 bg-white/10 hidden sm:block" />
+            <div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-periwinkle-light font-serif">100%</p>
+              <p className="text-xs text-white/50 font-medium mt-0.5">Pay Transparent</p>
+            </div>
+            <div className="w-px h-8 bg-white/10 hidden sm:block" />
+            <div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-white font-serif">0</p>
+              <p className="text-xs text-white/50 font-medium mt-0.5">Recruiter Middlemen</p>
+            </div>
+            <div className="w-px h-8 bg-white/10 hidden sm:block" />
+            <div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-periwinkle-light font-serif">Direct</p>
+              <p className="text-xs text-white/50 font-medium mt-0.5">Apply In-Platform</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-10 sm:py-14">
         {/* Mobile filter button */}
         <button
           className="lg:hidden w-full mb-5 bg-white border border-periwinkle-100/60 rounded-xl px-4 py-3.5 text-sm font-bold text-periwinkle flex items-center justify-center gap-2 min-h-[44px]"
@@ -296,8 +326,8 @@ export default function JobListingsPage() {
                 onClick={() => setSpecialty(s)}
                 className={`whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 min-h-[44px] ${
                   specialty === s
-                    ? "bg-periwinkle text-white shadow-sm"
-                    : "bg-white text-text-light border border-periwinkle-100/60"
+                    ? "bg-periwinkle text-white shadow-md shadow-periwinkle/25"
+                    : "bg-white text-text-light border border-periwinkle-100/60 hover:border-periwinkle/40"
                 }`}
               >
                 {s === "All" ? "All" : s}
@@ -307,12 +337,12 @@ export default function JobListingsPage() {
         </div>
 
         {/* Desktop: sidebar + content */}
-        <div className="flex gap-8">
+        <div className="flex gap-10">
           {/* Desktop sidebar */}
           <aside className="hidden lg:block w-72 flex-shrink-0">
-            <div className="sticky top-24 bg-white rounded-2xl border border-periwinkle-100/40 p-5 max-h-[calc(100vh-120px)] overflow-y-auto">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-sm font-bold text-text">Filters</h2>
+            <div className="sticky top-24 bg-white rounded-2xl border border-periwinkle-100/40 p-6 max-h-[calc(100vh-120px)] overflow-y-auto section-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-bold text-text font-serif">Filters</h2>
                 {activeFilters > 0 && (
                   <button onClick={clearAll} className="text-xs text-periwinkle hover:text-periwinkle-dark font-bold">
                     Clear all ({activeFilters})
@@ -326,10 +356,11 @@ export default function JobListingsPage() {
           {/* Main content */}
           <div className="flex-1 min-w-0">
             {/* Results count */}
-            <div className="mb-6 flex items-center gap-3">
-              <span className="text-sm font-semibold text-text">
+            <div className="mb-8 flex items-center gap-3">
+              <span className="text-base font-bold text-text">
                 {filteredJobs.length} {filteredJobs.length === 1 ? "job" : "jobs"} found
               </span>
+              <span className="h-px flex-1 bg-periwinkle-100/40" />
               {activeFilters > 0 && (
                 <button
                   onClick={clearAll}
@@ -341,7 +372,7 @@ export default function JobListingsPage() {
             </div>
 
             {/* Job cards grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
               {filteredJobs.map((job, i) => (
                 <JobCard key={job.id} job={job} index={i} />
               ))}
@@ -354,7 +385,7 @@ export default function JobListingsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-text">No jobs match your filters</h3>
+                <h3 className="text-lg font-bold mb-2 text-text font-serif">No jobs match your filters</h3>
                 <p className="text-text-muted text-sm mb-4">Try adjusting your filters to see more results.</p>
                 <button onClick={clearAll} className="text-periwinkle hover:text-periwinkle-dark font-bold text-sm">
                   Clear all filters
@@ -377,7 +408,7 @@ export default function JobListingsPage() {
             <div className="flex-shrink-0 pt-3 pb-2 px-6 border-b border-periwinkle-100/40">
               <div className="w-10 h-1 bg-periwinkle-100 rounded-full mx-auto mb-3" />
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-bold text-text">Filters</h2>
+                <h2 className="text-lg font-bold text-text font-serif">Filters</h2>
                 <div className="flex items-center gap-3">
                   {activeFilters > 0 && (
                     <button onClick={clearAll} className="text-xs text-periwinkle font-bold">Clear all</button>

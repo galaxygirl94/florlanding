@@ -82,7 +82,7 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
       : `$${job.payRange.min % 1 === 0 ? job.payRange.min : job.payRange.min.toFixed(2)}–$${job.payRange.max % 1 === 0 ? job.payRange.max : job.payRange.max.toFixed(2)}`;
 
   return (
-    <div className={`bg-white rounded-2xl border border-periwinkle-100/40 overflow-hidden hover:border-periwinkle/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full flex flex-col ${delayClass}`}>
+    <div className={`bg-white rounded-2xl border border-periwinkle-100/40 overflow-hidden hover:border-periwinkle/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full flex flex-col card-warm ${delayClass}`}>
       {/* 1. Employer photo header */}
       <Link href={`/jobs/${job.id}`} className="block">
         <div className="relative h-36 sm:h-40 overflow-hidden bg-gradient-to-br from-periwinkle-50 via-periwinkle-100 to-periwinkle-200">
@@ -118,7 +118,7 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
         </div>
       </Link>
 
-      <div className="p-5 sm:p-6 flex flex-col flex-1">
+      <div className="p-6 sm:p-7 flex flex-col flex-1">
         {/* 2. Job title — prominent */}
         <Link href={`/jobs/${job.id}`}>
           <h3 className="text-lg font-bold text-text group-hover:text-periwinkle transition-colors leading-snug mb-3">
@@ -191,7 +191,7 @@ export default function JobCard({ job, index = 0 }: JobCardProps) {
         </div>
 
         {/* 6. Flor Fit Score + 7. Benefits icon row */}
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-periwinkle-100/30">
+        <div className="flex items-center justify-between mt-auto pt-4 border-t border-periwinkle/15">
           <FitScoreRing score={fitScore} />
 
           {/* 7. Benefits icons */}
