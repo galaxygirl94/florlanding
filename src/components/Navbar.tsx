@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
@@ -13,11 +13,34 @@ const C = {
   border: "#E4E4EC",
 };
 
+const seedNotifications = [
+  { id: 1, icon: "📅", text: "Interview requested from Memorial Hospital", time: "2h ago", unread: true },
+  { id: 2, icon: "✨", text: "New job match: ICU Nurse at City Medical (87% match)", time: "5h ago", unread: true },
+  { id: 3, icon: "👤", text: "Complete your profile to unlock more matches", time: "1d ago", unread: false },
+  { id: 4, icon: "📅", text: "Interview confirmed with Sunrise Health", time: "2d ago", unread: false },
+  { id: 5, icon: "✨", text: "New job match: ER Nurse at Valley Hospital (79% match)", time: "3d ago", unread: false },
+];
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notifsOpen, setNotifsOpen] = useState(false);
   const { user, isLoggedIn, logout } = useAuth();
 
   const [isEmployer, setIsEmployer] = useState(false);
+  const unreadCount = seedNotifications.filter((n) => n.unread).length;
+  const notifsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (notifsRef.current && !notifsRef.current.contains(e.target as Node)) {
+        setNotifsOpen(false);
+      }
+    }
+    if (notifsOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [notifsOpen]);
 
   useEffect(() => {
     setIsEmployer(localStorage.getItem("flor_user_type") === "employer");
@@ -38,6 +61,7 @@ export default function Navbar() {
 
   return (
     <nav
+      ref={notifsRef}
       style={{
         position: "sticky",
         top: 0,
@@ -107,23 +131,72 @@ export default function Navbar() {
             </button>
             <div style={{ marginLeft: 8, paddingLeft: 16, borderLeft: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 12 }}>
               {/* Bell icon with coral dot */}
-              <button
-                style={{
-                  position: "relative", background: "none", border: "none",
-                  cursor: "pointer", padding: 2,
-                }}
-                title="Notifications"
-              >
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke={C.navy} strokeWidth="1.8" strokeLinecap="round">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-                <span style={{
-                  position: "absolute", top: -3, right: -3,
-                  width: 8, height: 8, borderRadius: "50%",
-                  background: C.coral, border: `1.5px solid ${C.white}`,
-                }} />
-              </button>
+              <div style={{ position: "relative" }}>
+                <button
+                  onClick={() => setNotifsOpen(!notifsOpen)}
+                  style={{
+                    position: "relative", background: "none", border: "none",
+                    cursor: "pointer", padding: 2,
+                  }}
+                  title="Notifications"
+                >
+                  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke={C.navy} strokeWidth="1.8" strokeLinecap="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+                  {unreadCount > 0 && (
+                    <span style={{
+                      position: "absolute", top: -3, right: -3,
+                      width: 8, height: 8, borderRadius: "50%",
+                      background: C.coral, border: `1.5px solid ${C.white}`,
+                    }} />
+                  )}
+                </button>
+                {notifsOpen && (
+                  <div style={{
+                    position: "absolute", top: "calc(100% + 10px)", right: -60,
+                    width: 340, background: C.white, borderRadius: 16,
+                    boxShadow: "0 8px 32px rgba(30,30,46,0.13)", border: `1px solid ${C.border}`,
+                    zIndex: 100, overflow: "hidden",
+                    fontFamily: "'Manrope', system-ui, sans-serif",
+                  }}>
+                    <div style={{ padding: "16px 20px 12px", borderBottom: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: C.navy }}>Notifications</span>
+                      {unreadCount > 0 && (
+                        <span style={{ fontSize: 11, fontWeight: 700, color: C.white, background: C.coral, borderRadius: 10, padding: "2px 8px" }}>
+                          {unreadCount} new
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ maxHeight: 340, overflowY: "auto" }}>
+                      {seedNotifications.map((n) => (
+                        <div key={n.id} style={{
+                          padding: "14px 20px", display: "flex", gap: 12, alignItems: "flex-start",
+                          borderBottom: `1px solid ${C.border}`,
+                          background: n.unread ? "rgba(139,143,212,0.05)" : "transparent",
+                          cursor: "pointer", transition: "background 0.15s",
+                        }}>
+                          <span style={{ fontSize: 20, lineHeight: 1, flexShrink: 0, marginTop: 1 }}>{n.icon}</span>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 13, fontWeight: n.unread ? 600 : 500, color: C.navy, lineHeight: 1.4 }}>
+                              {n.text}
+                            </div>
+                            <div style={{ fontSize: 11, color: "#999", marginTop: 4 }}>{n.time}</div>
+                          </div>
+                          {n.unread && (
+                            <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.coral, flexShrink: 0, marginTop: 5 }} />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ padding: "12px 20px", textAlign: "center", borderTop: `1px solid ${C.border}` }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: C.periwinkle, cursor: "pointer" }}>
+                        View all notifications
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {isLoggedIn ? (
                 <>
@@ -179,22 +252,71 @@ export default function Navbar() {
 
           {/* Mobile — bell + hamburger in navy */}
           <div className="md:hidden" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => { setNotifsOpen(!notifsOpen); setMenuOpen(false); }}
+                style={{ position: "relative", background: "none", border: "none", cursor: "pointer", padding: 2 }}
+                title="Notifications"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.navy} strokeWidth="1.8" strokeLinecap="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                {unreadCount > 0 && (
+                  <span style={{
+                    position: "absolute", top: -3, right: -3,
+                    width: 8, height: 8, borderRadius: "50%",
+                    background: C.coral, border: `1.5px solid ${C.white}`,
+                  }} />
+                )}
+              </button>
+              {notifsOpen && (
+                <div style={{
+                  position: "absolute", top: "calc(100% + 10px)", right: -12,
+                  width: "calc(100vw - 40px)", maxWidth: 340, background: C.white, borderRadius: 16,
+                  boxShadow: "0 8px 32px rgba(30,30,46,0.13)", border: `1px solid ${C.border}`,
+                  zIndex: 100, overflow: "hidden",
+                  fontFamily: "'Manrope', system-ui, sans-serif",
+                }}>
+                  <div style={{ padding: "16px 20px 12px", borderBottom: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: C.navy }}>Notifications</span>
+                    {unreadCount > 0 && (
+                      <span style={{ fontSize: 11, fontWeight: 700, color: C.white, background: C.coral, borderRadius: 10, padding: "2px 8px" }}>
+                        {unreadCount} new
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ maxHeight: 340, overflowY: "auto" }}>
+                    {seedNotifications.map((n) => (
+                      <div key={n.id} style={{
+                        padding: "14px 20px", display: "flex", gap: 12, alignItems: "flex-start",
+                        borderBottom: `1px solid ${C.border}`,
+                        background: n.unread ? "rgba(139,143,212,0.05)" : "transparent",
+                        cursor: "pointer", transition: "background 0.15s",
+                      }}>
+                        <span style={{ fontSize: 20, lineHeight: 1, flexShrink: 0, marginTop: 1 }}>{n.icon}</span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: n.unread ? 600 : 500, color: C.navy, lineHeight: 1.4 }}>
+                            {n.text}
+                          </div>
+                          <div style={{ fontSize: 11, color: "#999", marginTop: 4 }}>{n.time}</div>
+                        </div>
+                        {n.unread && (
+                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.coral, flexShrink: 0, marginTop: 5 }} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ padding: "12px 20px", textAlign: "center", borderTop: `1px solid ${C.border}` }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: C.periwinkle, cursor: "pointer" }}>
+                      View all notifications
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
             <button
-              style={{ position: "relative", background: "none", border: "none", cursor: "pointer", padding: 2 }}
-              title="Notifications"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.navy} strokeWidth="1.8" strokeLinecap="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              <span style={{
-                position: "absolute", top: -3, right: -3,
-                width: 8, height: 8, borderRadius: "50%",
-                background: C.coral, border: `1.5px solid ${C.white}`,
-              }} />
-            </button>
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={() => { setMenuOpen(!menuOpen); setNotifsOpen(false); }}
               aria-label="Toggle menu"
               style={{ padding: 2, background: "none", border: "none", cursor: "pointer" }}
             >
