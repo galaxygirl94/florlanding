@@ -4,9 +4,9 @@ export const seedApplications: Application[] = [
   // Nurse-side applications (existing user's view)
   {
     id: "app-1",
-    jobId: "job-1",
-    jobTitle: "Med Surg RN — Day Center",
-    facilityName: "PACE Organization of Rhode Island",
+    jobId: "job-rih-resp",
+    jobTitle: "RN — Respiratory Intermediate Care Unit",
+    facilityName: "Rhode Island Hospital",
     status: "viewed",
     appliedDate: "2026-02-25",
     lastUpdate: "2026-02-27",

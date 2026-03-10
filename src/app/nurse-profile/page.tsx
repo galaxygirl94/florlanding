@@ -354,8 +354,8 @@ export default function NurseProfilePage() {
                   },
                   {
                     type: "viewed",
-                    title: "PACE Organization of Rhode Island viewed your profile",
-                    detail: "Med Surg RN — Day Center",
+                    title: "Rhode Island Hospital viewed your profile",
+                    detail: "RN — Respiratory Intermediate Care Unit",
                     time: "5 days ago",
                     icon: (
                       <div className="w-8 h-8 rounded-full bg-amber/10 flex items-center justify-center flex-shrink-0">

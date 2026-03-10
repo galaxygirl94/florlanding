@@ -45,6 +45,12 @@ export interface JobListing {
   remoteEligible?: boolean;
   status?: "active" | "paused" | "closed" | "draft";
   applicantCount?: number;
+  facilityImage?: string;
+  payHiddenElsewhere?: boolean;
+  benefitTags?: string[];
+  bilingualPayDifferential?: boolean;
+  communityTravel?: boolean;
+  newGradsWelcome?: boolean;
 }
 
 export interface QAItem {
@@ -101,6 +107,7 @@ export interface FacilityProfile {
   reviews: FacilityReview[];
   logoUrl?: string;
   website?: string;
+  headerImage?: string;
 }
 
 export interface FacilityReview {

@@ -5,13 +5,13 @@ import Image from "next/image";
 import JobCard from "@/components/JobCard";
 import { seedJobs } from "@/data/seed-jobs";
 
-const SPECIALTIES = ["All", "Med Surg", "ICU", "ER", "Peds", "Home Health", "School Nurse", "L&D", "OR", "Outpatient"];
-const FACILITY_TYPES = ["All", "Hospital", "PACE", "Home health", "School", "Clinic", "Long-term care", "Urgent care"];
-const SHIFT_TYPES = ["All", "Morning", "Days", "Evening", "Night", "Rotating"];
+const SPECIALTIES = ["All", "Med Surg", "ICU", "ED", "Peds", "Psych", "Ortho", "Community Health", "Home Health", "Rehab", "SNF/LTC", "School Nurse", "Outpatient/Clinic", "L&D", "OR"];
+const FACILITY_TYPES = ["All", "Acute Care Hospital", "Hospital", "Psychiatric Hospital", "Community Health / Nonprofit", "Outpatient clinic", "SNF/Long-term care", "Rehab", "Home health", "School"];
+const SHIFT_TYPES = ["All", "Days", "Nights", "Evenings", "Rotating"];
 const WEEKEND_OPTIONS = ["All", "No Weekends", "Optional", "Required"];
 const ON_CALL_OPTIONS = ["All", "No", "Optional", "Yes"];
-const HOUR_TYPES = ["All", "Full-time", "Part-time", "PRN/Per Diem"];
-const LOCATIONS = ["All", "Providence, RI", "Cranston, RI", "Warwick, RI"];
+const HOUR_TYPES = ["All", "Full-time", "Part-time", "Per diem"];
+const LOCATIONS = ["All", "Providence, RI", "Cranston, RI", "Warwick, RI", "Wakefield, RI", "East Greenwich, RI", "East Providence, RI"];
 
 function ExclusiveBadge() {
   return (
