@@ -1,5 +1,43 @@
 @import "tailwindcss";
 
+:root {
+  /* Core brand */
+  --flor-periwinkle: #8B8FD4;
+  --flor-periwinkle-dark: #6B6FB4;
+  --flor-periwinkle-light: #C5C7EB;
+  --flor-periwinkle-tint: #F4F4FB;
+  --flor-navy: #1E1E2E;
+  --flor-navy-mid: #2A2A3E;
+  /* Warmth palette */
+  --flor-cream: #FDFCF8;
+  --flor-warm-white: #FAF9F6;
+  --flor-warm-gray: #8A8A8A;
+  --flor-muted: #6B6B7A;
+  /* Accent */
+  --flor-green: #2ECC71;
+  --flor-gold: #C9A84C;
+  /* Typography */
+  --font-display: 'Playfair Display', 'DM Serif Display', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', 'DM Sans', system-ui, sans-serif;
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  /* Shadows */
+  --shadow-card: 0 4px 24px rgba(139, 143, 212, 0.10);
+  --shadow-card-hover: 0 8px 40px rgba(139, 143, 212, 0.20);
+  --shadow-ribbon: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
 @theme {
   /* Primary palette */
   --color-periwinkle: #8B8FD4;
@@ -33,8 +71,8 @@
   --color-rose: #E8A0BF;
   --color-rose-light: #FDF2F7;
 
-  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-serif: 'Playfair Display', 'Georgia', serif;
+  --font-sans: 'Plus Jakarta Sans', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Playfair Display', 'DM Serif Display', 'Georgia', serif;
 }
 
 @layer base {
@@ -49,6 +87,11 @@
   ::selection {
     background-color: var(--color-periwinkle-100);
     color: var(--color-periwinkle-dark);
+  }
+
+  /* Serif headings globally */
+  h1, h2 {
+    font-family: var(--font-serif);
   }
 
   /* Smooth scroll */
@@ -271,22 +314,18 @@ input:focus, select:focus, textarea:focus {
 /* ---- Serif heading utility ---- */
 
 .font-serif {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
 }
 
 /* ---- Warm card styling ---- */
 
 .card-warm {
-  box-shadow:
-    0 1px 3px rgba(30, 30, 46, 0.04),
-    0 6px 24px rgba(139, 143, 212, 0.08);
+  box-shadow: var(--shadow-card);
   border-left: 3px solid var(--color-periwinkle);
 }
 
 .card-warm:hover {
-  box-shadow:
-    0 4px 12px rgba(30, 30, 46, 0.06),
-    0 16px 48px rgba(139, 143, 212, 0.14);
+  box-shadow: var(--shadow-card-hover);
 }
 
 /* ---- Periwinkle divider ---- */
