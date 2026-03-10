@@ -54,6 +54,8 @@ export interface JobListing {
   tuitionPopover?: string;
   annualPayRange?: { min: number; max: number };
   payHidden?: boolean;
+  nightDifferential?: number;
+  weekendDifferential?: number;
   directScheduling?: boolean;
   schedulingAvailability?: {
     days: string[];
