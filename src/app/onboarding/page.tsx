@@ -466,24 +466,32 @@ export default function OnboardingPage() {
 
   if (profileComplete) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F8F8FA]">
-        <div className="text-center animate-fade-in-up max-w-md mx-auto px-6">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-periwinkle/10 flex items-center justify-center">
-            <SparklesIcon className="w-10 h-10 text-periwinkle" />
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-text mb-3">Your profile is ready!</h1>
-          <p className="text-text-muted text-base mb-8">
-            We have everything we need to start finding your ideal matches.
-          </p>
-          <Link
-            href="/jobs/matched"
-            className="inline-flex items-center gap-2 bg-periwinkle hover:bg-periwinkle-dark text-white rounded-full px-8 py-3.5 font-bold text-base transition-all duration-200 shadow-lg shadow-periwinkle/20 hover:shadow-xl hover:shadow-periwinkle/30 hover:-translate-y-0.5"
+      <div className="min-h-screen flex items-center justify-center bg-[#1E1E2E]">
+        <div className="text-center animate-fade-in-up max-w-lg mx-auto px-6">
+          <div className="text-periwinkle text-3xl mb-5">✦</div>
+          <h1
+            className="text-3xl sm:text-4xl font-extrabold text-white mb-3"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
           >
-            Let&apos;s find your matches
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          </Link>
+            One more thing — help us build Flor for nurses like you.
+          </h1>
+          <p className="text-white/60 text-base mb-8 leading-relaxed">
+            It takes ~5 minutes and directly influences what we build next.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/survey"
+              className="inline-flex items-center justify-center gap-2 bg-periwinkle hover:bg-periwinkle-dark text-white rounded-full px-8 py-3.5 font-bold text-base transition-all duration-200 shadow-lg shadow-periwinkle/20 hover:shadow-xl hover:shadow-periwinkle/30 hover:-translate-y-0.5"
+            >
+              Take the Survey →
+            </Link>
+            <Link
+              href="/jobs/matched"
+              className="inline-flex items-center justify-center gap-2 text-white/50 hover:text-white font-medium text-sm transition-colors"
+            >
+              Skip for now
+            </Link>
+          </div>
         </div>
       </div>
     );

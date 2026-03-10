@@ -32,6 +32,7 @@ export default function Navbar() {
         { href: "/students", label: "For Students" },
         { href: "/nurse-profile", label: "My Profile" },
         { href: "/tracker", label: "Applications" },
+        { href: "/survey", label: "Share Feedback" },
       ];
 
   return (

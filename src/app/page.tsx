@@ -48,6 +48,12 @@ export default function HomePage() {
               >
                 Create Your Profile
               </Link>
+              <Link
+                href="/survey"
+                className="w-full sm:w-auto bg-transparent hover:bg-periwinkle hover:text-white text-periwinkle-light font-bold px-8 py-4 rounded-full text-base sm:text-lg border-2 border-periwinkle/60 transition-all duration-200 text-center"
+              >
+                Shape What Flor Builds →
+              </Link>
             </div>
 
             <p className="mt-6 text-sm text-white/40 font-medium">
