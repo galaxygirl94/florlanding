@@ -318,10 +318,8 @@ export default function EmployerDashboard() {
   const [interviews, setInterviews] = useState<Interview[]>(SEED_INTERVIEWS);
   const [intForm, setIntForm] = useState({ applicantId: "", date: "", time: "", duration: "30", notes: "" });
 
-  /* Import modal + notifications */
+  /* Import modal */
   const [showImport, setShowImport] = useState(false);
-  const [showNotifs, setShowNotifs] = useState(false);
-  const unreadNotifs = empNotifications.filter((n) => n.unread).length;
 
   /* ── localStorage hydration ─────────────────────────────────────── */
 
@@ -425,20 +423,11 @@ export default function EmployerDashboard() {
               <span className="rounded-full bg-[#ECFDF5] text-[#059669] px-3 py-1 text-xs font-bold">✓ Ethics Pledge Active</span>
             </div>
             <div className="flex items-center gap-4">
-              <div className="relative">
-                <button onClick={() => setShowNotifs(!showNotifs)} className="relative p-1 hover:opacity-80">
-                  <span className="text-xl">🔔</span>
-                  {unreadNotifs > 0 && (
-                    <span className="absolute -top-0.5 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-[9px] text-white font-bold">{unreadNotifs}</span>
-                  )}
-                </button>
-              </div>
               <button onClick={() => setShowImport(true)} className="bg-periwinkle hover:bg-periwinkle-dark text-white rounded-full px-5 py-2.5 text-sm font-bold transition-colors flex items-center gap-2">
                 <span className="text-base">+</span> Import Job
               </button>
             </div>
           </div>
-          {showNotifs && <EmpNotificationPanel onClose={() => setShowNotifs(false)} />}
 
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">

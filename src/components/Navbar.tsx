@@ -218,9 +218,13 @@ export default function Navbar() {
 
               {isLoggedIn ? (
                 <>
-                  <span style={{ fontSize: 13, fontWeight: 500, color: "#777", fontFamily: "'Manrope', system-ui, sans-serif" }}>
+                  <Link
+                    href="/nurse-profile"
+                    style={{ fontSize: 13, fontWeight: 500, color: "#777", fontFamily: "'Manrope', system-ui, sans-serif", textDecoration: "none", transition: "all 0.2s" }}
+                    className="hover:text-[#8B8FD4] hover:underline decoration-[#8B8FD4]/50 underline-offset-2"
+                  >
                     Hi, {user?.firstName}
-                  </span>
+                  </Link>
                   <button
                     onClick={logout}
                     className="hover:border-[#8B8FD4]/50 hover:bg-[#8B8FD4]/5"
@@ -378,9 +382,14 @@ export default function Navbar() {
               ))}
               {isLoggedIn ? (
                 <>
-                  <div style={{ padding: "8px 16px", fontSize: 13, color: "#999", fontFamily: "'Manrope', system-ui, sans-serif" }}>
+                  <Link
+                    href="/nurse-profile"
+                    style={{ padding: "8px 16px", fontSize: 13, color: "#999", fontFamily: "'Manrope', system-ui, sans-serif", textDecoration: "none", display: "block" }}
+                    className="hover:text-[#8B8FD4] hover:underline decoration-[#8B8FD4]/50 underline-offset-2"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     Signed in as {user?.firstName} {user?.lastName}
-                  </div>
+                  </Link>
                   <button
                     onClick={() => { logout(); setMenuOpen(false); }}
                     style={{

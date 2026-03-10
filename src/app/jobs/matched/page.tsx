@@ -129,7 +129,8 @@ export default function MatchedJobsPage() {
           </h1>
           <p className="text-periwinkle-light mt-2 text-lg animate-fade-in-up-delay-1">
             {nurseProfile
-              ? `Personalized for ${nurseProfile.firstName} — sorted by Flor Fit Score`
+              ? <>Personalized for <Link href="/nurse-profile" className="text-periwinkle-light hover:underline decoration-periwinkle-light/60 underline-offset-2 transition-all">{nurseProfile.firstName}</Link> — sorted by Flor Fit Score</>
+
               : "Complete your profile to see personalized Fit Scores"}
           </p>
           {!nurseProfile && (
