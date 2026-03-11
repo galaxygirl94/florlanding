@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "scrape:ri": "tsx src/scrapers/ri-gov-scraper.ts"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.2.1",
@@ -20,6 +21,7 @@
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
+    "tsx": "^4.19.0",
     "typescript": "5.9.3"
   }
 }
