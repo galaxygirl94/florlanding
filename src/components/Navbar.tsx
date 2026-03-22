@@ -49,7 +49,7 @@ export default function Navbar() {
 
   const links = isEmployer
     ? [
-        { href: "/employer", label: "Dashboard" },
+        { href: "/employer/dashboard", label: "Dashboard" },
         { href: "/employer/post", label: "Post Job" },
       ]
     : [

@@ -26,17 +26,46 @@ interface JobCardProps {
   onToggleSave?: (id: string) => void;
 }
 
+/* ── Specialty → image mapping (no photo should repeat across visible cards) ── */
+const SPECIALTY_IMAGE_MAP: Record<string, string> = {
+  "Med Surg": "/nurse-confident.jpg",
+  "Telemetry": "/nurse-confident.jpg",
+  "ICU": "/nurse-hero.jpg",
+  "Acute Care": "/nurse-hero.jpg",
+  "Peds": "/nurse-mom.jpg",
+  "Psych": "/nurse-community.jpg",
+  "Behavioral Health": "/nurse-community.jpg",
+  "Outpatient/Clinic": "/nurse-community.jpg",
+  "Community Health": "/nurse-community.jpg",
+  "SNF/LTC": "/nurse-tablet.jpg",
+  "Hospice": "/nurse-tablet.jpg",
+  "School Nurse": "/nurse-tablet.jpg",
+  "Rehab": "/nurse-group.jpg",
+  "Ortho": "/nurse-group.jpg",
+  "Home Health": "/nurse-commute.jpg",
+  "ED": "/nurse-burnout.jpg",
+  "OR": "/nurse-hands.jpg",
+  "Pulmonology": "/nurse-hands.jpg",
+  "Cardiac": "/nurse-hero.jpg",
+};
+
+function getSpecialtyImage(specialty?: string): string | undefined {
+  if (!specialty) return undefined;
+  return SPECIALTY_IMAGE_MAP[specialty];
+}
+
 /* ── Smart facility image with illustrated fallback ── */
 function FacilityImage({ src, specialty, accentColor }: { src?: string; specialty?: string; accentColor: string }) {
-  const [failed, setFailed] = useState(!src);
+  const resolvedSrc = src || getSpecialtyImage(specialty);
+  const [failed, setFailed] = useState(!resolvedSrc);
 
-  if (failed || !src) {
+  if (failed || !resolvedSrc) {
     return <SpecialtyIllustration specialty={specialty} color={accentColor} className="w-full h-full" />;
   }
 
   return (
     <Image
-      src={src}
+      src={resolvedSrc}
       alt={specialty || "Facility"}
       fill
       className="object-cover group-hover:scale-105 transition-transform duration-500"

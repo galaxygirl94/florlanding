@@ -1,5 +1,5 @@
 // Mock Nursys License Verification Service
-// Swappable with real QuickConfirm API later
+// TODO: Replace mock with Nursys e-Notify API (not QuickConfirm — Nursys does not offer a QuickConfirm API)
 
 export interface NursysVerificationResult {
   status: "active" | "inactive" | "expired" | "encumbered" | "not_found";
