@@ -62,6 +62,8 @@ export default function OnboardingWizardPage() {
   const [resumeFileName, setResumeFileName] = useState<string | null>(null);
   const [licenseState, setLicenseState] = useState("");
   const [licenseNumber, setLicenseNumber] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [verifyResult, setVerifyResult] = useState<{ verified: boolean; status: string; expirationDate?: string } | null>(null);
   const [dragOver, setDragOver] = useState(false);
 
   /* Final screen */
@@ -513,11 +515,71 @@ export default function OnboardingWizardPage() {
                     <input
                       type="text"
                       value={licenseNumber}
-                      onChange={(e) => setLicenseNumber(e.target.value)}
+                      onChange={(e) => { setLicenseNumber(e.target.value); setVerifyResult(null); }}
                       placeholder="e.g. RN-2018-RI-44821"
                       className="w-full border border-periwinkle-100/60 rounded-2xl px-5 py-4 text-base hover:border-periwinkle/40 focus:outline-none focus:ring-2 focus:ring-periwinkle/30 transition-all text-text placeholder:text-text-muted/50"
                     />
                   </div>
+
+                  {/* Verify button */}
+                  {licenseState && licenseNumber && !verifyResult && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setVerifying(true);
+                        try {
+                          const res = await fetch("/api/verify-license", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ licenseState, licenseNumber, nameOnLicense: "Demo Nurse", licenseType: nurseType || "RN" }),
+                          });
+                          const data = await res.json();
+                          setVerifyResult(data);
+                        } catch {
+                          setVerifyResult({ verified: false, status: "error" });
+                        } finally {
+                          setVerifying(false);
+                        }
+                      }}
+                      disabled={verifying}
+                      className="w-full bg-periwinkle/10 hover:bg-periwinkle/20 text-periwinkle rounded-2xl px-5 py-4 font-bold text-sm transition-all disabled:opacity-50"
+                    >
+                      {verifying ? "Verifying..." : "Verify My License"}
+                    </button>
+                  )}
+
+                  {/* Verification result */}
+                  {verifyResult && (
+                    <div className={`rounded-2xl p-5 flex items-start gap-3 ${verifyResult.verified ? "bg-success-light" : "bg-amber-50 border border-amber-200"}`}>
+                      {verifyResult.verified ? (
+                        <>
+                          <div className="w-8 h-8 rounded-full bg-success flex items-center justify-center flex-shrink-0">
+                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="font-bold text-success text-sm">License Verified via Nursys e-Notify</p>
+                            <p className="text-xs text-text-muted mt-1">
+                              Status: Active{verifyResult.expirationDate ? ` · Expires ${new Date(verifyResult.expirationDate).toLocaleDateString("en-US", { month: "long", year: "numeric" })}` : ""}
+                            </p>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-8 h-8 rounded-full bg-amber flex items-center justify-center flex-shrink-0">
+                            <span className="text-white text-sm font-bold">!</span>
+                          </div>
+                          <div>
+                            <p className="font-bold text-amber-dark text-sm">Could not verify license</p>
+                            <p className="text-xs text-text-muted mt-1">
+                              Check your license number and state. You can always verify later from your profile.
+                            </p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

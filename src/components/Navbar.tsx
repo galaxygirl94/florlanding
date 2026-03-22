@@ -55,11 +55,10 @@ export default function Navbar() {
     : [
         { href: "/jobs/matched", label: "Find Jobs" },
         { href: "/jobs/community", label: "Community" },
-        { href: "/students", label: "For Students" },
         { href: "/interview-intel", label: "Interview Intel" },
+        { href: "/pay-intelligence", label: "Pay Intel" },
         { href: "/nurse-profile", label: "My Profile" },
         { href: "/tracker", label: "Applications" },
-        { href: "/survey", label: "Share Feedback" },
       ];
 
   return (
