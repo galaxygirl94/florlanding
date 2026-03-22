@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { JobListing } from "@/data/types";
+import PayDisplay from "@/components/jobs/PayDisplay";
 
 interface JobCardProps {
   job: JobListing;
@@ -29,6 +30,9 @@ export default function JobCard({ job, fitScore, index = 0 }: JobCardProps) {
               {job.title}
             </h3>
             <p className="text-sm text-text-light mt-0.5 truncate">{job.facilityName}</p>
+            {job.source === "scraped" && (
+              <p className="text-[10px] text-text-light mt-0.5">Sourced listing — apply via facility website</p>
+            )}
           </div>
           {fitScore && (
             <div className="flex-shrink-0 bg-periwinkle-50 rounded-xl px-3 py-2 text-center self-start">
@@ -38,14 +42,18 @@ export default function JobCard({ job, fitScore, index = 0 }: JobCardProps) {
           )}
         </div>
 
-        {/* Pay — most prominent */}
-        <div className="bg-periwinkle-50 rounded-xl p-3 sm:p-4 mb-4">
-          <div className="text-xl sm:text-2xl font-bold text-periwinkle">
-            ${job.payRange.min.toFixed(2)} - ${job.payRange.max.toFixed(2)}
-            <span className="text-sm font-normal text-periwinkle-dark">/{job.payUnit}</span>
-          </div>
-          <p className="text-xs text-text-light mt-1">{job.payExplained}</p>
-        </div>
+        {/* Pay — context-aware display */}
+        <PayDisplay
+          payMin={job.payRange.min}
+          payMax={job.payRange.max}
+          payUnit={job.payUnit}
+          payExplained={job.payExplained}
+          paySource={job.paySource}
+          payConfidence={job.payConfidence}
+          facilityName={job.facilityName}
+          specialty={job.specialty}
+          variant="card"
+        />
 
         {/* Schedule badges */}
         <div className="flex flex-wrap gap-2 mb-3">

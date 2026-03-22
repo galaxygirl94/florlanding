@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { JobListing } from "@/data/types";
+import PayDisplay from "@/components/jobs/PayDisplay";
 
 export default function JobDetailClient({ job }: { job: JobListing }) {
   const [newQuestion, setNewQuestion] = useState("");
@@ -33,6 +34,11 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
                 <span>{job.location.city}, {job.location.state}</span>
                 <span>{job.type}{job.hoursPerWeek ? `, ${job.hoursPerWeek} hours/week` : ""}</span>
               </div>
+              {job.source === "scraped" && (
+                <p className="text-xs text-text-light mt-2 bg-gray-50 rounded-lg px-3 py-1.5 inline-block">
+                  Sourced listing — nurses apply via the facility website until Flor has a direct employer relationship.
+                </p>
+              )}
             </div>
             {job.union && (
               <div className="bg-amber/20 rounded-xl px-4 py-2 text-center flex-shrink-0 self-start">
@@ -42,20 +48,18 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
             )}
           </div>
 
-          {/* Pay Explained — most prominent */}
-          <div className="bg-periwinkle-50 rounded-2xl p-5 sm:p-6 mb-6">
-            <div className="text-xs font-semibold text-periwinkle-dark uppercase tracking-wider mb-2">
-              Pay Information
-            </div>
-            <div className="text-3xl sm:text-4xl font-bold text-periwinkle mb-2">
-              ${job.payRange.min.toFixed(2)} - ${job.payRange.max.toFixed(2)}
-              <span className="text-base font-normal text-periwinkle-dark">/{job.payUnit}</span>
-            </div>
-            <div className="bg-white/60 rounded-xl p-3 sm:p-4 mt-3">
-              <div className="text-xs font-semibold text-periwinkle-dark mb-1">Pay Explained</div>
-              <p className="text-sm text-text leading-relaxed">{job.payExplained}</p>
-            </div>
-          </div>
+          {/* Pay — context-aware display */}
+          <PayDisplay
+            payMin={job.payRange.min}
+            payMax={job.payRange.max}
+            payUnit={job.payUnit}
+            payExplained={job.payExplained}
+            paySource={job.paySource}
+            payConfidence={job.payConfidence}
+            facilityName={job.facilityName}
+            specialty={job.specialty}
+            variant="detail"
+          />
 
           {/* Schedule */}
           <div className="mb-6">

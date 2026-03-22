@@ -25,6 +25,12 @@ export interface JobListing {
   experienceRange?: { min: number; max: number };
   questions: QAItem[];
   postedDate: string;
+  // Scraper/pay intelligence fields
+  paySource?: string | null;      // 'facility', 'community', 'bls_estimate', 'glassdoor_estimate'
+  payConfidence?: string | null;  // 'high', 'medium', 'estimated'
+  source?: string;                // 'direct' or 'scraped'
+  sourceUrl?: string;
+  applyUrl?: string;
 }
 
 export interface QAItem {
