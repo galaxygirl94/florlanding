@@ -4,6 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { JobListing } from "@/data/types";
 
+function fmtPay(n: number): string {
+  return Number.isInteger(n) ? `$${n}` : `$${n.toFixed(2)}`;
+}
+
 export default function JobDetailClient({ job }: { job: JobListing }) {
   const [newQuestion, setNewQuestion] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -48,7 +52,7 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
               Pay Information
             </div>
             <div className="text-3xl sm:text-4xl font-bold text-periwinkle mb-2">
-              ${job.payRange.min.toFixed(2)} - ${job.payRange.max.toFixed(2)}
+              {fmtPay(job.payRange.min)} – {fmtPay(job.payRange.max)}
               <span className="text-base font-normal text-periwinkle-dark">/{job.payUnit}</span>
             </div>
             <div className="bg-white/60 rounded-xl p-3 sm:p-4 mt-3">

@@ -31,7 +31,7 @@ export default function HomePage() {
                 Browse Jobs
               </Link>
               <Link
-                href="/nurse-profile"
+                href="/nurse-signup"
                 className="w-full sm:w-auto bg-white hover:bg-periwinkle-50 text-periwinkle-dark font-semibold px-8 py-4 rounded-full text-base sm:text-lg border border-periwinkle-light transition-colors"
               >
                 Create Profile
@@ -121,7 +121,7 @@ export default function HomePage() {
             fit your skills, schedule, and goals.
           </p>
           <Link
-            href="/nurse-profile"
+            href="/nurse-signup"
             className="inline-block bg-amber hover:bg-amber-dark text-white font-bold px-8 py-4 rounded-full text-lg transition-colors shadow-lg"
           >
             Get Started — It&apos;s Free

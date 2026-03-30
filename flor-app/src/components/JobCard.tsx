@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { JobListing } from "@/data/types";
 
+function fmtPay(n: number): string {
+  return Number.isInteger(n) ? `$${n}` : `$${n.toFixed(2)}`;
+}
+
 interface JobCardProps {
   job: JobListing;
   fitScore?: { score: number; topMatch: string; topGap: string } | null;
@@ -41,7 +45,7 @@ export default function JobCard({ job, fitScore, index = 0 }: JobCardProps) {
         {/* Pay — most prominent */}
         <div className="bg-periwinkle-50 rounded-xl p-3 sm:p-4 mb-4">
           <div className="text-xl sm:text-2xl font-bold text-periwinkle">
-            ${job.payRange.min.toFixed(2)} - ${job.payRange.max.toFixed(2)}
+            {fmtPay(job.payRange.min)} – {fmtPay(job.payRange.max)}
             <span className="text-sm font-normal text-periwinkle-dark">/{job.payUnit}</span>
           </div>
           <p className="text-xs text-text-light mt-1">{job.payExplained}</p>
