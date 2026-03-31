@@ -129,10 +129,14 @@ export default async function FacilityProfilePage({ params }: { params: Promise<
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <div>
                         <h3 className="font-semibold text-sm">{job.title}</h3>
-                        <p className="text-xs text-text-light mt-0.5">{job.type} · {job.location.city}, {job.location.state}</p>
+                        <p className="text-xs text-text-light mt-0.5">{job.employmentType} · {job.location.city}, {job.location.state}</p>
                       </div>
                       <div className="text-lg font-bold text-periwinkle self-start sm:self-auto">
-                        ${job.payRange.min}-${job.payRange.max}/{job.payUnit}
+                        {job.payMin != null && job.payMax != null
+                          ? `$${job.payMin}–$${job.payMax}/${job.payUnit}`
+                          : job.payRange
+                          ? `$${job.payRange.min}–$${job.payRange.max}/${job.payUnit}`
+                          : "Pay on request"}
                       </div>
                     </div>
                   </div>

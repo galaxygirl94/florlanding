@@ -15,6 +15,12 @@
   --color-success: #4CAF50;
   --color-info: #2196F3;
 
+  /* Dark footer palette */
+  --color-flor-dark: #0F1117;
+  --color-flor-dark-card: #1A1D27;
+  --color-flor-dark-border: #2A2D3A;
+  --color-flor-dark-text: #9CA3AF;
+
   --font-sans: 'Plus Jakarta Sans', 'Nunito', ui-sans-serif, system-ui, sans-serif;
 }
 

@@ -31,7 +31,7 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
               </Link>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-sm text-text-light">
                 <span>{job.location.city}, {job.location.state}</span>
-                <span>{job.type}{job.hoursPerWeek ? `, ${job.hoursPerWeek} hours/week` : ""}</span>
+                <span>{job.employmentType}{job.hoursPerWeek ? `, ${job.hoursPerWeek} hours/week` : ""}</span>
               </div>
             </div>
             {job.union && (
@@ -48,7 +48,11 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
               Pay Information
             </div>
             <div className="text-3xl sm:text-4xl font-bold text-periwinkle mb-2">
-              ${job.payRange.min.toFixed(2)} - ${job.payRange.max.toFixed(2)}
+              {job.payMin != null && job.payMax != null
+                ? `$${job.payMin} – $${job.payMax}`
+                : job.payRange
+                ? `$${job.payRange.min} – $${job.payRange.max}`
+                : "Pay on request"}
               <span className="text-base font-normal text-periwinkle-dark">/{job.payUnit}</span>
             </div>
             <div className="bg-white/60 rounded-xl p-3 sm:p-4 mt-3">
@@ -108,8 +112,8 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
                 {job.preferredExperience && (
                   <li className="text-text-light">Preferred: {job.preferredExperience}</li>
                 )}
-                {job.note && (
-                  <li className="text-text-light italic">Note: {job.note}</li>
+                {job.certificationsPreferred && job.certificationsPreferred.length > 0 && (
+                  <li className="text-text-light">Preferred: {job.certificationsPreferred.join(", ")}</li>
                 )}
               </ul>
             </div>

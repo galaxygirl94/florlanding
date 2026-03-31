@@ -1,31 +1,17 @@
-export interface JobListing {
-  id: string;
-  facilityId: string;
-  facilityName: string;
-  title: string;
-  payRange: { min: number; max: number };
-  payUnit: string;
-  payExplained: string;
-  type: string;
-  hoursPerWeek?: number;
-  location: { city: string; state: string };
-  schedule: string;
-  scheduleType: string;
-  scheduleBadges: string[];
-  licenseRequired: { type: string; state: string };
-  certificationsRequired: string[];
-  certificationsPreferred?: string[];
-  preferredExperience?: string;
-  drivingRequired: boolean;
-  ehrSystem?: string;
-  specialty?: string;
-  union: boolean;
-  unionName?: string;
-  note?: string;
-  experienceRange?: { min: number; max: number };
-  questions: QAItem[];
-  postedDate: string;
-}
+export type ShiftType = "Days" | "Nights" | "Evenings" | "Rotating";
+export type EmploymentType = "Full Time" | "Part Time" | "Per Diem";
+export type FacilityType =
+  | "Acute Care Hospital"
+  | "Hospital"
+  | "Psychiatric Hospital"
+  | "Community Health/Nonprofit"
+  | "Outpatient clinic"
+  | "SNF/Long-term care"
+  | "Rehab"
+  | "Home health"
+  | "School";
+export type WeekendsRequirement = "none" | "optional" | "required";
+export type OnCallRequirement = "none" | "optional" | "required";
 
 export interface QAItem {
   id: string;
@@ -34,6 +20,48 @@ export interface QAItem {
   answeredBy?: string;
   answeredDate?: string;
   askedDate: string;
+}
+
+export interface JobListing {
+  id: string;
+  facilityId: string;
+  facilityName: string;
+  facilityType: FacilityType;
+  title: string;
+  specialty: string;
+  payMin?: number;
+  payMax?: number;
+  payUnit: string;
+  payExplained: string;
+  nightDifferential?: number;
+  weekendDifferential?: number;
+  signOnBonus?: number;
+  loanForgivenessEligible?: boolean;
+  employmentType: EmploymentType;
+  shift: ShiftType;
+  hoursPerWeek?: number;
+  weekends: WeekendsRequirement;
+  onCall: OnCallRequirement;
+  location: { city: string; state: string };
+  schedule: string;
+  scheduleBadges: string[];
+  licenseRequired: { type: string; state: string };
+  certificationsRequired: string[];
+  certificationsPreferred?: string[];
+  preferredExperience?: string;
+  experienceRange?: { min: number; max: number };
+  drivingRequired: boolean;
+  ehrSystem?: string;
+  union: boolean;
+  unionName?: string;
+  verified?: boolean;
+  questions: QAItem[];
+  postedDate: string;
+  // Legacy compat
+  payRange?: { min: number; max: number };
+  scheduleType?: string;
+  type?: string;
+  note?: string;
 }
 
 export interface NurseProfile {
@@ -51,6 +79,9 @@ export interface NurseProfile {
   schedulePreference?: string;
   locationCity?: string;
   locationState?: string;
+  maxCommute?: number;
+  payExpectation?: number;
+  culturePreferences?: string[];
   unionPreference?: boolean;
   resumeUrl?: string;
   resumeFileName?: string;
@@ -62,7 +93,7 @@ export interface FacilityProfile {
   name: string;
   description: string;
   location: { city: string; state: string; address?: string };
-  type: string;
+  type: FacilityType;
   culture: string;
   ehrSystem?: string;
   starRating: number;
@@ -86,7 +117,11 @@ export interface Application {
   jobId: string;
   jobTitle: string;
   facilityName: string;
-  status: "applied" | "viewed" | "responded";
-  appliedDate: string;
-  lastUpdate: string;
+  location: string;
+  payDisplay: string;
+  appliedDaysAgo: number;
+  florFit: number;
+  status: "applied" | "under-review" | "viewed" | "interview" | "offer";
+  statusMessage: string;
+  needsAttention: boolean;
 }

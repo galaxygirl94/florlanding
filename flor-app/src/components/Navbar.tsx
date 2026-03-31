@@ -6,40 +6,51 @@ import Link from "next/link";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const links = [
-    { href: "/", label: "Home" },
-    { href: "/jobs", label: "Find Jobs" },
-    { href: "/nurse-profile", label: "My Profile" },
-    { href: "/tracker", label: "Applications" },
-  ];
-
   return (
-    <nav className="bg-white/80 backdrop-blur-sm border-b border-periwinkle-100 sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <nav className="bg-white/90 backdrop-blur-sm border-b border-periwinkle-100 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
             <div className="w-8 h-8 rounded-full bg-periwinkle flex items-center justify-center">
               <span className="text-white font-bold text-sm">F</span>
             </div>
             <span className="text-xl font-bold text-periwinkle-dark">Flor</span>
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-text-light hover:text-periwinkle transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
+          {/* Desktop center nav */}
+          <div className="hidden md:flex items-center gap-1">
+            <Link href="/jobs" className="text-sm font-medium text-text-light hover:text-periwinkle px-3 py-2 rounded-lg hover:bg-periwinkle-50 transition-colors">
+              Find Jobs
+            </Link>
+            <Link href="/community" className="text-sm font-medium text-text-light hover:text-periwinkle px-3 py-2 rounded-lg hover:bg-periwinkle-50 transition-colors">
+              Community
+            </Link>
+            <Link href="/interview-intel" className="text-sm font-medium text-text-light hover:text-periwinkle px-3 py-2 rounded-lg hover:bg-periwinkle-50 transition-colors">
+              Interview Intel
+            </Link>
+            <Link href="/pay-intel" className="text-sm font-medium text-text-light hover:text-periwinkle px-3 py-2 rounded-lg hover:bg-periwinkle-50 transition-colors">
+              Pay Intel
+            </Link>
+          </div>
+
+          {/* Desktop right actions */}
+          <div className="hidden md:flex items-center gap-2">
+            <Link href="/nurse-profile" className="text-sm font-medium text-text-light hover:text-periwinkle px-3 py-2 rounded-lg hover:bg-periwinkle-50 transition-colors">
+              My Profile
+            </Link>
+            <Link href="/tracker" className="text-sm font-medium text-text-light hover:text-periwinkle px-3 py-2 rounded-lg hover:bg-periwinkle-50 transition-colors">
+              Applications
+            </Link>
+            <span className="text-periwinkle-100 mx-1">|</span>
+            <button className="text-sm font-medium text-text-light hover:text-periwinkle px-3 py-2 rounded-lg hover:bg-periwinkle-50 transition-colors">
+              Log In
+            </button>
             <Link
               href="/nurse-profile"
               className="bg-periwinkle text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-periwinkle-dark transition-colors"
             >
-              Sign Up
+              Get Started
             </Link>
           </div>
 
@@ -62,8 +73,15 @@ export default function Navbar() {
         {/* Mobile menu */}
         {menuOpen && (
           <div className="md:hidden pb-4 border-t border-periwinkle-100 mt-2 pt-3">
-            <div className="flex flex-col gap-2">
-              {links.map((link) => (
+            <div className="flex flex-col gap-1">
+              {[
+                { href: "/jobs", label: "Find Jobs" },
+                { href: "/community", label: "Community" },
+                { href: "/interview-intel", label: "Interview Intel" },
+                { href: "/pay-intel", label: "Pay Intel" },
+                { href: "/nurse-profile", label: "My Profile" },
+                { href: "/tracker", label: "Applications" },
+              ].map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -73,13 +91,15 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="/nurse-profile"
-                className="mt-2 bg-periwinkle text-white px-4 py-3 rounded-full text-base font-semibold text-center hover:bg-periwinkle-dark transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                Sign Up
-              </Link>
+              <div className="mt-3">
+                <Link
+                  href="/nurse-profile"
+                  className="block bg-periwinkle text-white px-4 py-3 rounded-full text-base font-semibold text-center hover:bg-periwinkle-dark transition-colors"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Get Started
+                </Link>
+              </div>
             </div>
           </div>
         )}
