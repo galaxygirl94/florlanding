@@ -5,9 +5,9 @@ import Image from "next/image";
 import JobCard from "@/components/JobCard";
 import { seedJobs } from "@/data/seed-jobs";
 
-const SPECIALTIES = ["All", "Med Surg", "ICU", "ED", "Peds", "Psych", "Ortho", "Community Health", "Home Health", "Rehab", "SNF/LTC", "School Nurse", "Outpatient/Clinic", "L&D", "OR"];
-const FACILITY_TYPES = ["All", "Acute Care Hospital", "Hospital", "Psychiatric Hospital", "Community Health / Nonprofit", "Outpatient clinic", "SNF/Long-term care", "Rehab", "Home health", "School"];
-const SHIFT_TYPES = ["All", "Days", "Nights", "Evenings", "Rotating"];
+const SPECIALTIES = ["All", "Medical-Surgical", "ICU/Critical Care", "Emergency", "OR/Perioperative", "Labor & Delivery", "Pediatrics", "Behavioral Health", "Home Health", "Long-Term Care", "Oncology", "Chemotherapy", "Rehabilitation", "Telemetry", "Cardiac", "Outpatient/Clinic", "SNF/LTC", "Psych", "School Nursing", "Esthetics", "Infusions", "Dialysis/Renal", "Neuro/Stroke", "Respiratory", "Mother-Baby", "NICU", "PICU", "PACU", "Step-Down", "Dementia Care", "Women's Health", "Community Health", "Occupational Health", "Nurse Administrator", "MDS Coordination", "Case Management", "Ambulatory Care", "Hospice/Palliative"];
+const FACILITY_TYPES = ["All", "Acute Care Hospital", "Hospital", "Psychiatric Hospital", "Community Health / Nonprofit", "Outpatient clinic", "SNF/Long-term care", "Rehab", "Home health", "School", "Private", "Not-for-Profit"];
+const SHIFT_TYPES = ["Days", "Nights", "Evenings", "Rotating", "M-F", "No On-Call", "No Weekends/Holidays"];
 const WEEKEND_OPTIONS = ["All", "No Weekends", "Optional", "Required"];
 const ON_CALL_OPTIONS = ["All", "No", "Optional", "Yes"];
 const HOUR_TYPES = ["All", "Full-time", "Part-time", "Per diem"];
@@ -49,7 +49,7 @@ export default function JobListingsPage() {
   // Filter state
   const [specialty, setSpecialty] = useState("All");
   const [facilityType, setFacilityType] = useState("All");
-  const [shift, setShift] = useState("All");
+  const [shift, setShift] = useState<string[]>([]);
   const [weekends, setWeekends] = useState("All");
   const [onCall, setOnCall] = useState("All");
   const [hourType, setHourType] = useState("All");
@@ -60,6 +60,7 @@ export default function JobListingsPage() {
   const [signOnBonus, setSignOnBonus] = useState(false);
   const [relocation, setRelocation] = useState(false);
   const [tuition, setTuition] = useState(false);
+  const [studentLoanReimbursement, setStudentLoanReimbursement] = useState(false);
   const [unionOnly, setUnionOnly] = useState(false);
   const [magnetOnly, setMagnetOnly] = useState(false);
   const [minFitScore, setMinFitScore] = useState(0);
@@ -91,7 +92,12 @@ export default function JobListingsPage() {
       }
       if (specialty !== "All" && job.specialty !== specialty) return false;
       if (facilityType !== "All" && job.facilityType !== facilityType) return false;
-      if (shift !== "All" && job.scheduleType !== shift) return false;
+      if (shift.length > 0 && !shift.some(s => {
+        if (s === "M-F") return job.scheduleBadges?.includes("Mon-Fri") || job.schedule?.toLowerCase().includes("monday");
+        if (s === "No On-Call") return job.onCall === "No";
+        if (s === "No Weekends/Holidays") return job.weekends === "No Weekends";
+        return job.scheduleType === s;
+      })) return false;
       if (weekends !== "All" && job.weekends !== weekends) return false;
       if (onCall !== "All" && job.onCall !== onCall) return false;
       if (hourType !== "All" && job.type !== hourType) return false;
@@ -105,6 +111,7 @@ export default function JobListingsPage() {
       if (signOnBonus && !(job.signOnBonus && job.signOnBonus > 0)) return false;
       if (relocation && !job.relocationAssistance) return false;
       if (tuition && !job.tuitionReimbursement) return false;
+      if (studentLoanReimbursement && !job.loanForgiveness) return false;
       if (unionOnly && !job.union) return false;
       if (magnetOnly && !job.magnetDesignated) return false;
       if (minFitScore > 0 && (job.fitScore ?? 0) < minFitScore) return false;
@@ -121,7 +128,7 @@ export default function JobListingsPage() {
       switch (key) {
         case "specialty": return value === "All" ? true : job.specialty === value;
         case "facilityType": return value === "All" ? true : job.facilityType === value;
-        case "shift": return value === "All" ? true : job.scheduleType === value;
+        case "shift": return job.scheduleType === value;
         case "weekends": return value === "All" ? true : job.weekends === value;
         case "onCall": return value === "All" ? true : job.onCall === value;
         case "hourType": return value === "All" ? true : job.type === value;
@@ -133,16 +140,17 @@ export default function JobListingsPage() {
     }).length;
   };
 
-  const activeFilters = [specialty, facilityType, shift, weekends, onCall, hourType, location].filter((f) => f !== "All").length
-    + (loanForgiveness ? 1 : 0) + (signOnBonus ? 1 : 0) + (relocation ? 1 : 0) + (tuition ? 1 : 0)
+  const activeFilters = [specialty, facilityType, weekends, onCall, hourType, location].filter((f) => f !== "All").length
+    + shift.length
+    + (loanForgiveness ? 1 : 0) + (signOnBonus ? 1 : 0) + (relocation ? 1 : 0) + (tuition ? 1 : 0) + (studentLoanReimbursement ? 1 : 0)
     + (unionOnly ? 1 : 0) + (magnetOnly ? 1 : 0) + (minFitScore > 0 ? 1 : 0) + (verifiedRatioOnly ? 1 : 0)
     + (payMin > 0 ? 1 : 0) + (payMax < 100 ? 1 : 0);
 
   const clearAll = () => {
-    setSpecialty("All"); setFacilityType("All"); setShift("All"); setWeekends("All");
+    setSpecialty("All"); setFacilityType("All"); setShift([]); setWeekends("All");
     setOnCall("All"); setHourType("All"); setLocation("All"); setPayMin(0); setPayMax(100);
     setLoanForgiveness(false); setSignOnBonus(false); setRelocation(false); setTuition(false);
-    setUnionOnly(false); setMagnetOnly(false); setMinFitScore(0); setVerifiedRatioOnly(false);
+    setStudentLoanReimbursement(false); setUnionOnly(false); setMagnetOnly(false); setMinFitScore(0); setVerifiedRatioOnly(false);
   };
 
   const selectClass = "w-full border border-periwinkle-100/60 rounded-xl px-3 py-2.5 text-sm bg-white min-h-[40px]";
@@ -170,10 +178,23 @@ export default function JobListingsPage() {
       <FilterSection title="Schedule & Flexibility" defaultOpen={true}>
         <div className="space-y-3">
           <div>
-            <label className="text-xs text-text-muted font-medium block mb-1.5">Shift</label>
-            <select value={shift} onChange={(e) => setShift(e.target.value)} className={selectClass}>
-              {SHIFT_TYPES.map((s) => <option key={s} value={s}>{s === "All" ? "All Shifts" : s} ({countFor("shift", s)})</option>)}
-            </select>
+            <label className="text-xs text-text-muted font-medium block mb-1.5">Schedule <span className="text-periwinkle">(select all that apply)</span></label>
+            <div className="flex flex-wrap gap-1.5">
+              {SHIFT_TYPES.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setShift(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])}
+                  className={`px-2.5 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150 ${
+                    shift.includes(s)
+                      ? "bg-periwinkle text-white border-periwinkle"
+                      : "bg-white text-text-light border-periwinkle-100/60 hover:border-periwinkle/40"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
           <div>
             <label className="text-xs text-text-muted font-medium block mb-1.5">Weekends</label>
@@ -224,6 +245,11 @@ export default function JobListingsPage() {
             <input type="checkbox" checked={tuition} onChange={(e) => setTuition(e.target.checked)}
               className="w-4 h-4 rounded border-periwinkle-100 accent-periwinkle" />
             <span className="text-sm text-text">Tuition reimbursement</span>
+          </label>
+          <label className={checkClass}>
+            <input type="checkbox" checked={studentLoanReimbursement} onChange={(e) => setStudentLoanReimbursement(e.target.checked)}
+              className="w-4 h-4 rounded border-periwinkle-100 accent-periwinkle" />
+            <span className="text-sm text-text">Student loan reimbursement</span>
           </label>
         </div>
       </FilterSection>

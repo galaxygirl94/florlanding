@@ -9,7 +9,13 @@ import { seedApplications } from "@/data/seed-applications";
 const SPECIALTIES = [
   "Medical-Surgical", "ICU/Critical Care", "Emergency", "OR/Perioperative",
   "Labor & Delivery", "Pediatrics", "Behavioral Health", "Home Health",
-  "Long-Term Care", "Oncology", "Rehabilitation", "CNA",
+  "Long-Term Care", "Oncology", "Chemotherapy", "Rehabilitation", "Telemetry",
+  "Cardiac", "Outpatient/Clinic", "SNF/LTC", "Psych", "School Nursing",
+  "Esthetics", "Infusions", "Dialysis/Renal", "Neuro/Stroke", "Respiratory",
+  "Mother-Baby", "NICU", "PICU", "PACU", "Step-Down", "Dementia Care",
+  "Women's Health", "Community Health", "Occupational Health",
+  "Nurse Administrator", "MDS Coordination", "Case Management",
+  "Ambulatory Care", "Hospice/Palliative",
 ];
 
 const CERTIFICATIONS = [
@@ -17,8 +23,8 @@ const CERTIFICATIONS = [
   "CPR Certification", "Driver's License",
 ];
 
-const EHR_SYSTEMS = ["Epic", "Cerner", "Meditech", "LifeChart", "Allscripts", "PointClickCare", "Other"];
-const SCHEDULE_PREFS = ["Days", "Evenings", "Nights", "Rotating", "Flexible"];
+const EHR_SYSTEMS = ["Epic", "Cerner", "Meditech", "LifeChart", "Allscripts", "PointClickCare", "Kinsser", "Axxess", "HCHB", "Carehub", "Oasis", "Matrix", "Other"];
+const SCHEDULE_PREFS = ["Days", "Evenings", "Nights", "Rotating", "Flexible", "M-F", "No On-Call", "No Weekends/Holidays"];
 const COMMUTE_OPTIONS = ["10", "20", "30", "45", "60"];
 const CULTURE_PREFS = [
   "Team-oriented",
@@ -30,7 +36,7 @@ const CULTURE_PREFS = [
   "Low staff turnover",
   "Mission-driven",
 ];
-const LICENSE_TYPES = ["RN", "LPN", "CNA", "APRN", "NP"];
+const LICENSE_TYPES = ["RN", "LPN", "CNA", "APRN", "NP", "DNP", "CRNA", "CNM", "FNP", "PNP", "PMHNP", "WHNP", "CNS", "Nurse Educator", "Nursing Student", "New Grad"];
 const STATES = ["RI", "MA", "CT", "NY", "CA", "FL", "TX", "PA", "OH", "IL"];
 
 /* ── Florence Nightingale Demo Profile ─────────────────────────────── */
@@ -175,6 +181,7 @@ export default function NurseProfilePage() {
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedCerts, setSelectedCerts] = useState<string[]>([]);
   const [selectedEhr, setSelectedEhr] = useState<string[]>([]);
+  const [selectedSchedule, setSelectedSchedule] = useState<string[]>([]);
   const [resumeFile, setResumeFile] = useState<string>("");
   const [photoPreview, setPhotoPreview] = useState<string>("");
   const [photoFileName, setPhotoFileName] = useState<string>("");
@@ -933,11 +940,23 @@ export default function NurseProfilePage() {
 
             {/* Schedule */}
             <div className="mb-7">
-              <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Schedule Preference</label>
-              <select className="w-full sm:w-72 border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors">
-                <option value="">Select</option>
-                {SCHEDULE_PREFS.map((s) => <option key={s} value={s}>{s}</option>)}
-              </select>
+              <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Schedule Preferences <span className="text-periwinkle font-normal normal-case">(select all that apply)</span></label>
+              <div className="flex flex-wrap gap-2">
+                {SCHEDULE_PREFS.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => toggleItem(s, selectedSchedule, setSelectedSchedule)}
+                    className={`px-3 py-2 rounded-full text-sm font-semibold border transition-all duration-150 ${
+                      selectedSchedule.includes(s)
+                        ? "bg-periwinkle text-white border-periwinkle"
+                        : "bg-white text-text-light border-periwinkle-100/60 hover:border-periwinkle/40"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Location & Commute */}
