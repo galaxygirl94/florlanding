@@ -33,12 +33,6 @@ const PARSED_EXAMPLE = {
   missing: ["Patient-to-nurse ratio", "Sign-on bonus details", "Shift differential breakdown"],
 };
 
-const empNotifications = [
-  { id: 1, type: "action", icon: "📅", text: "Maya Torres accepted your interview request", sub: "ICU RN — Intensive Care Unit · Thu Mar 12, 2:00 PM", time: "2h ago", unread: true },
-  { id: 2, type: "action", icon: "✉️", text: "New application from Sara Lindqvist", sub: "ICU RN — Intensive Care Unit · 83% Flor Fit", time: "5h ago", unread: true },
-  { id: 3, type: "info", icon: "👁", text: "James Okafor viewed your facility profile", sub: "Brown University Health · ICU", time: "1d ago", unread: false },
-  { id: 4, type: "info", icon: "✅", text: "Your Ethics Pledge is verified", sub: "Ratio & pay data reviewed by Flor team", time: "3d ago", unread: false },
-];
 
 /* ── Import Job Modal ────────────────────────────────────────────── */
 
@@ -172,24 +166,49 @@ function ImportJobModal({ onClose, onSuccess }: { onClose: () => void; onSuccess
 
 /* ── Notification Panel ──────────────────────────────────────────── */
 
-function EmpNotificationPanel({ onClose }: { onClose: () => void }) {
+interface EmpNotif {
+  id: string;
+  text: string;
+  sub_text?: string;
+  icon?: string;
+  unread: boolean;
+  created_at: string;
+}
+
+function EmpNotificationPanel({ onClose, employerId }: { onClose: () => void; employerId?: string }) {
+  const [notifs, setNotifs] = useState<EmpNotif[] | null>(null);
+
+  useEffect(() => {
+    if (!employerId) { setNotifs([]); return; }
+    fetch(`/api/employer/notifications?employer_id=${encodeURIComponent(employerId)}`)
+      .then((r) => r.json())
+      .then((data) => setNotifs(Array.isArray(data) ? data : []))
+      .catch(() => setNotifs([]));
+  }, [employerId]);
+
   return (
     <div style={{ position: "fixed", top: 70, right: 20, width: 360, background: "white", borderRadius: 14, boxShadow: "0 8px 32px rgba(30,30,46,.18)", border: "1px solid #ECEEF8", zIndex: 200, overflow: "hidden" }}>
       <div style={{ padding: "14px 18px", borderBottom: "1px solid #F0F1F8", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontWeight: 700, color: _NAVY, fontSize: 14 }}>Notifications</span>
         <button onClick={onClose} style={{ background: "none", border: "none", color: "#9CA3AF", cursor: "pointer", fontSize: 18 }}>×</button>
       </div>
-      {empNotifications.map((n) => (
-        <div key={n.id} style={{ padding: "12px 18px", borderBottom: "1px solid #F9FAFB", display: "flex", gap: 12, alignItems: "flex-start", background: n.unread ? "#FAFBFF" : "white" }}>
-          <span style={{ fontSize: 18 }}>{n.icon}</span>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: n.unread ? 600 : 400, color: _NAVY }}>{n.text}</div>
-            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{n.sub}</div>
-            <div style={{ fontSize: 11, color: "#C0C4D6", marginTop: 3 }}>{n.time}</div>
+      {notifs === null ? (
+        <div style={{ padding: "24px 18px", textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
+      ) : notifs.length === 0 ? (
+        <div style={{ padding: "24px 18px", textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>No notifications yet.</div>
+      ) : (
+        notifs.map((n) => (
+          <div key={n.id} style={{ padding: "12px 18px", borderBottom: "1px solid #F9FAFB", display: "flex", gap: 12, alignItems: "flex-start", background: n.unread ? "#FAFBFF" : "white" }}>
+            {n.icon && <span style={{ fontSize: 18 }}>{n.icon}</span>}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 13, fontWeight: n.unread ? 600 : 400, color: _NAVY }}>{n.text}</div>
+              {n.sub_text && <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{n.sub_text}</div>}
+              <div style={{ fontSize: 11, color: "#C0C4D6", marginTop: 3 }}>{new Date(n.created_at).toLocaleDateString()}</div>
+            </div>
+            {n.unread && <div style={{ width: 8, height: 8, borderRadius: "50%", background: _P, marginTop: 4, flexShrink: 0 }} />}
           </div>
-          {n.unread && <div style={{ width: 8, height: 8, borderRadius: "50%", background: _P, marginTop: 4, flexShrink: 0 }} />}
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }

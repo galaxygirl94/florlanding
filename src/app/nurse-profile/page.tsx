@@ -210,11 +210,31 @@ export default function NurseProfilePage() {
   const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>("idle");
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Notifications from Supabase
+  interface ProfileNotification {
+    id: string;
+    text: string;
+    sub_text?: string;
+    icon?: string;
+    type?: string;
+    unread: boolean;
+    created_at: string;
+  }
+  const [profileNotifs, setProfileNotifs] = useState<ProfileNotification[] | null>(null);
+
   useEffect(() => {
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isLoggedIn || !user?.email) return;
+    fetch(`/api/nurse/notifications?nurse_id=${encodeURIComponent(user.email)}`)
+      .then((r) => r.json())
+      .then((data) => setProfileNotifs(Array.isArray(data) ? data : []))
+      .catch(() => setProfileNotifs([]));
+  }, [isLoggedIn, user?.email]);
 
   const pollVerificationStatus = () => {
     if (pollRef.current) clearInterval(pollRef.current);
@@ -413,62 +433,41 @@ export default function NurseProfilePage() {
                     <p className="text-xs text-text-muted">Updates on your applications and messages</p>
                   </div>
                 </div>
-                <span className="bg-periwinkle text-white text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0">3 new</span>
+                {profileNotifs && profileNotifs.filter((n) => n.unread).length > 0 && (
+                  <span className="bg-periwinkle text-white text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0">
+                    {profileNotifs.filter((n) => n.unread).length} new
+                  </span>
+                )}
               </div>
 
-              <div className="space-y-3">
-                {[
-                  {
-                    type: "response",
-                    title: "Hasbro Children's Hospital responded to your application",
-                    detail: "Pediatric RN — Inpatient Pediatrics",
-                    time: "2 days ago",
-                    icon: (
-                      <div className="w-8 h-8 rounded-full bg-success-light flex items-center justify-center flex-shrink-0">
-                        <svg className="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+              {profileNotifs === null ? (
+                <div className="py-8 text-center text-sm text-text-muted">Loading…</div>
+              ) : profileNotifs.length === 0 ? (
+                <div className="py-8 text-center text-sm text-text-muted">No notifications yet.</div>
+              ) : (
+                <div className="space-y-3">
+                  {profileNotifs.map((notif) => (
+                    <div key={notif.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-periwinkle-50/30 transition-colors cursor-pointer">
+                      {notif.icon ? (
+                        <span className="text-lg flex-shrink-0 mt-0.5">{notif.icon}</span>
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-periwinkle-50 flex items-center justify-center flex-shrink-0">
+                          <svg className="w-4 h-4 text-periwinkle" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                          </svg>
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm text-text ${notif.unread ? "font-semibold" : "font-medium"}`}>{notif.text}</p>
+                        {notif.sub_text && <p className="text-xs text-text-muted mt-0.5">{notif.sub_text}</p>}
                       </div>
-                    ),
-                  },
-                  {
-                    type: "viewed",
-                    title: "Rhode Island Hospital viewed your profile",
-                    detail: "RN — Respiratory Intermediate Care Unit",
-                    time: "5 days ago",
-                    icon: (
-                      <div className="w-8 h-8 rounded-full bg-amber/10 flex items-center justify-center flex-shrink-0">
-                        <svg className="w-4 h-4 text-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                      </div>
-                    ),
-                  },
-                  {
-                    type: "comment",
-                    title: "New answer on your question about shift differentials",
-                    detail: "Brown University Health — ICU RN",
-                    time: "1 week ago",
-                    icon: (
-                      <div className="w-8 h-8 rounded-full bg-periwinkle-50 flex items-center justify-center flex-shrink-0">
-                        <svg className="w-4 h-4 text-periwinkle" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-                        </svg>
-                      </div>
-                    ),
-                  },
-                ].map((notif, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl hover:bg-periwinkle-50/30 transition-colors cursor-pointer">
-                    {notif.icon}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-text">{notif.title}</p>
-                      <p className="text-xs text-text-muted mt-0.5">{notif.detail}</p>
+                      <span className="text-xs text-text-muted whitespace-nowrap flex-shrink-0">
+                        {new Date(notif.created_at).toLocaleDateString()}
+                      </span>
                     </div>
-                    <span className="text-xs text-text-muted whitespace-nowrap flex-shrink-0">{notif.time}</span>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* Applications */}
