@@ -13,14 +13,7 @@ const C = {
   border: "#E4E4EC",
 };
 
-const seedNotifications = [
-  { id: 1, icon: "📅", text: "Interview request from Hasbro Children's Hospital — Pediatric RN", time: "2h ago", unread: true },
-  { id: 2, icon: "✨", text: "New job match: ICU RN at Brown University Health (87% Flor Fit)", time: "5h ago", unread: true },
-  { id: 3, icon: "👁", text: "Rhode Island Hospital viewed your profile", time: "11d ago", unread: true },
-  { id: 4, icon: "👤", text: "Complete your profile to unlock more matches", time: "1d ago", unread: false },
-  { id: 5, icon: "📅", text: "Interview confirmed with Sunrise Health — ER RN", time: "2d ago", unread: false },
-  { id: 6, icon: "✨", text: "New job match: ER Nurse at Valley Hospital (79% Flor Fit)", time: "3d ago", unread: false },
-];
+const seedNotifications: { id: number; icon: string; text: string; time: string; unread: boolean }[] = [];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -187,30 +180,11 @@ export default function Navbar() {
                       )}
                     </div>
                     <div style={{ maxHeight: 340, overflowY: "auto" }}>
-                      {seedNotifications.map((n) => (
-                        <div key={n.id} style={{
-                          padding: "14px 20px", display: "flex", gap: 12, alignItems: "flex-start",
-                          borderBottom: `1px solid ${C.border}`,
-                          background: n.unread ? "rgba(139,143,212,0.05)" : "transparent",
-                          cursor: "pointer", transition: "background 0.15s",
-                        }}>
-                          <span style={{ fontSize: 20, lineHeight: 1, flexShrink: 0, marginTop: 1 }}>{n.icon}</span>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 13, fontWeight: n.unread ? 600 : 500, color: C.navy, lineHeight: 1.4 }}>
-                              {n.text}
-                            </div>
-                            <div style={{ fontSize: 11, color: "#999", marginTop: 4 }}>{n.time}</div>
-                          </div>
-                          {n.unread && (
-                            <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.coral, flexShrink: 0, marginTop: 5 }} />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    <div style={{ padding: "12px 20px", textAlign: "center", borderTop: `1px solid ${C.border}` }}>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: C.periwinkle, cursor: "pointer" }}>
-                        View all notifications
-                      </span>
+                      <div style={{ padding: "36px 20px", textAlign: "center" }}>
+                        <div style={{ fontSize: 28, marginBottom: 8 }}>🌸</div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: C.navy, marginBottom: 4 }}>You&apos;re all caught up</div>
+                        <div style={{ fontSize: 12, color: "#999" }}>Notifications will show up here.</div>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -309,30 +283,11 @@ export default function Navbar() {
                     )}
                   </div>
                   <div style={{ maxHeight: 340, overflowY: "auto" }}>
-                    {seedNotifications.map((n) => (
-                      <div key={n.id} style={{
-                        padding: "14px 20px", display: "flex", gap: 12, alignItems: "flex-start",
-                        borderBottom: `1px solid ${C.border}`,
-                        background: n.unread ? "rgba(139,143,212,0.05)" : "transparent",
-                        cursor: "pointer", transition: "background 0.15s",
-                      }}>
-                        <span style={{ fontSize: 20, lineHeight: 1, flexShrink: 0, marginTop: 1 }}>{n.icon}</span>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: n.unread ? 600 : 500, color: C.navy, lineHeight: 1.4 }}>
-                            {n.text}
-                          </div>
-                          <div style={{ fontSize: 11, color: "#999", marginTop: 4 }}>{n.time}</div>
-                        </div>
-                        {n.unread && (
-                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.coral, flexShrink: 0, marginTop: 5 }} />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ padding: "12px 20px", textAlign: "center", borderTop: `1px solid ${C.border}` }}>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: C.periwinkle, cursor: "pointer" }}>
-                      View all notifications
-                    </span>
+                    <div style={{ padding: "36px 20px", textAlign: "center" }}>
+                      <div style={{ fontSize: 28, marginBottom: 8 }}>🌸</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: C.navy, marginBottom: 4 }}>You&apos;re all caught up</div>
+                      <div style={{ fontSize: 12, color: "#999" }}>Notifications will show up here.</div>
+                    </div>
                   </div>
                 </div>
               )}
