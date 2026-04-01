@@ -1,83 +1,120 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const SYSTEM_PROMPT = `You are a nursing resume parser for Flor, a healthcare job matching platform. Extract the following fields and return ONLY valid JSON with no other text:
+const SYSTEM_PROMPT = `You are extracting structured nurse profile data from a resume.
+Return ONLY a JSON object with no preamble or markdown.
+Extract exactly these fields (use null if not found or not applicable):
 {
-  "name": null,
-  "email": null,
-  "phone": null,
-  "zip_code": null,
-  "license_state": null,
-  "license_number": null,
-  "education": [],
-  "specialties": [],
-  "certifications": [],
-  "years_total_experience": null,
-  "years_primary_specialty": null,
-  "shift_history": [],
-  "schedule_types": [],
-  "care_settings": [],
-  "patient_populations": [],
-  "ehr_systems": []
+  "firstName": null,
+  "lastName": null,
+  "licenseType": null,
+  "licenseState": null,
+  "specialty": null,
+  "yearsExperience": null,
+  "longestRoleHeld": null,
+  "currentlyPerDiem": null,
+  "perDiemDuration": null,
+  "caseloadExperience": null,
+  "languagesSpoken": null
 }
-Map specialties to: Med Surg, ICU, ED, OR, L&D, NICU, Peds, Psych, Home Health, Oncology, Rehab, School Nurse, Telemetry, Cardiac, Outpatient/Clinic, SNF/LTC
-Map certifications to: BLS, ACLS, PALS, NRP, TNCC, CCRN, CEN, RNC
-Map care settings to: Acute care/Hospital, SNF/Long-term care, Outpatient clinic, Home health, School, Ambulatory surgery, Rehab, Psych facility
-Map patient populations to: Adult, Geriatric, Pediatric, Neonatal, Maternal, Psychiatric
-Map EHR systems to: Epic, Cerner/Oracle Health, Meditech, PointClickCare, Athenahealth
-Be smart about nursing context. "5 South Med/Surg Tele" = Med Surg AND Telemetry. "PACU RN" = OR-adjacent. "Charge nurse in a 30-bed SNF" = SNF/LTC setting, Geriatric population. Calculate years from earliest to most recent nursing role. Only include items you're confident about.`;
+
+Rules:
+- licenseType must be one of: "RN" | "PN" | "NP" | "CNM" | "CRNA" | "CNS" — or null
+- licenseState: two-letter US state abbreviation, or null
+- specialty must be one of: "Med Surg" | "ICU/Critical Care" | "Community Health" | "Pediatrics" | "Geriatrics/Long-Term Care" | "Psychiatric/Mental Health" | "Oncology" | "OR" | "ED" | "Labor & Delivery" | "Home Health" | "Other" — pick closest match, or null
+- yearsExperience must be one of: "Less than 1" | "1-3" | "3-5" | "5-10" | "10+" — calculate from earliest to most recent nursing role
+- longestRoleHeld must be one of: "Less than 1 year" | "1-2 years" | "2-5 years" | "5+ years" — calculate from all job durations listed
+- currentlyPerDiem: true if resume shows active per diem work, false if explicitly not, null if unclear
+- perDiemDuration: one of "Less than 6 months" | "6-12 months" | "1-2 years" | "2+ years" — only if currentlyPerDiem is true, else null
+- caseloadExperience: true if resume mentions ongoing patient caseload, panel, or census management (PACE, home health, outpatient), false or null otherwise
+- languagesSpoken: array of language strings found on resume, or null`;
+
+async function callClaude(
+  body: object,
+  extraHeaders: Record<string, string> = {}
+): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY!;
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      ...extraHeaders,
+    },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`Anthropic ${res.status}: ${await res.text()}`);
+  const data = await res.json();
+  return data.content?.[0]?.text ?? "";
+}
+
+function extractJson(text: string): Record<string, unknown> {
+  const match = text.match(/\{[\s\S]*\}/);
+  if (!match) return {};
+  try {
+    return JSON.parse(match[0]);
+  } catch {
+    return {};
+  }
+}
 
 export async function POST(request: NextRequest) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json({ error: "API key not configured" }, { status: 500 });
+  }
+
   try {
-    const { content } = await request.json();
+    const contentType = request.headers.get("content-type") ?? "";
 
-    if (!content) {
-      return NextResponse.json({ error: "No content provided" }, { status: 400 });
-    }
+    if (contentType.includes("multipart/form-data")) {
+      // ── PDF file upload ─────────────────────────────────────────────────
+      const formData = await request.formData();
+      const file = formData.get("file") as File | null;
+      if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
+      if (!file.type.includes("pdf")) {
+        return NextResponse.json(
+          { error: "Please upload a PDF. Word docs (.docx) are not supported yet." },
+          { status: 400 }
+        );
+      }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "API key not configured" }, { status: 500 });
-    }
+      const base64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+      const text = await callClaude(
+        {
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1024,
+          system: SYSTEM_PROMPT,
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "document",
+                  source: { type: "base64", media_type: "application/pdf", data: base64 },
+                },
+                { type: "text", text: "Extract the nursing profile data from this resume." },
+              ],
+            },
+          ],
+        },
+        { "anthropic-beta": "pdfs-2024-09-25" }
+      );
+      return NextResponse.json(extractJson(text));
+    } else {
+      // ── Legacy text path (backward-compatible) ──────────────────────────
+      const { content } = await request.json();
+      if (!content) return NextResponse.json({ error: "No content provided" }, { status: 400 });
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
+      const text = await callClaude({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 2048,
+        max_tokens: 1024,
         system: SYSTEM_PROMPT,
-        messages: [
-          {
-            role: "user",
-            content: `Parse this nursing resume and return the structured JSON:\n\n${content}`,
-          },
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Anthropic API error:", errorText);
-      return NextResponse.json({ error: "Failed to parse resume" }, { status: 500 });
+        messages: [{ role: "user", content: `Parse this nursing resume:\n\n${content}` }],
+      });
+      return NextResponse.json(extractJson(text));
     }
-
-    const data = await response.json();
-    const text = data.content?.[0]?.text || "";
-
-    // Extract JSON from response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      return NextResponse.json({ error: "Could not parse response" }, { status: 500 });
-    }
-
-    const parsed = JSON.parse(jsonMatch[0]);
-    return NextResponse.json(parsed);
-  } catch (error) {
-    console.error("Resume parsing error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  } catch (err) {
+    console.error("[parse-resume]", err);
+    return NextResponse.json({}); // empty → nurse fills manually
   }
 }

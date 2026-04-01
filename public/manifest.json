@@ -1,27 +1,24 @@
 {
-  "name": "Flor — Transparent Nursing Jobs",
+  "name": "Flor for Nurses",
   "short_name": "Flor",
-  "description": "The transparency-first nursing job marketplace. Built by nurses, for nurses.",
+  "description": "Direct-hire nursing jobs in Rhode Island. Real pay, real caseloads, no recruiters.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFFFFF",
-  "theme_color": "#8B8FD4",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF7D",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/icons/icon-192x192.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icons/icon-512x512.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ],
-  "categories": ["medical", "health", "business"],
-  "screenshots": [],
-  "prefer_related_applications": false
+  ]
 }
