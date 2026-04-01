@@ -1,66 +1,87 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyLicense, NursysVerificationResult } from "@/lib/nursys-mock";
-
-// TODO: Replace mock with Nursys e-Notify API call
-// This is Nursys e-Notify (NOT QuickConfirm — Nursys does not offer a QuickConfirm API).
-//
-// Required fields for Nursys e-Notify:
-//   - licenseType: "RN" | "LPN" | "APRN"
-//   - licenseState: two-letter state abbreviation
-//   - licenseNumber: state-issued license number
-//   - nameOnLicense: full name exactly as it appears on the license
-//
-// Environment variable: NURSYS_API_KEY
-// Endpoint: https://www.nursys.com/api/e-notify/v1/verify (placeholder)
-
-const NURSYS_API_KEY = process.env.NURSYS_API_KEY;
+import { supabaseAdmin } from "@/lib/supabase";
+import { submitEnrollment } from "@/lib/nursys";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { licenseType, licenseState, licenseNumber, nameOnLicense } = body;
+    const {
+      nurse_id,
+      jurisdictionAbbreviation,
+      licenseNumber,
+      licenseType,
+      address1,
+      city,
+      state,
+      zip,
+      lastFourSSN,
+      birthYear,
+      email,
+    } = body;
 
-    if (!licenseState || !licenseNumber || !nameOnLicense) {
+    if (!nurse_id) {
+      return NextResponse.json({ error: "Missing nurse_id" }, { status: 400 });
+    }
+    if (
+      !jurisdictionAbbreviation ||
+      !licenseNumber ||
+      !licenseType ||
+      !address1 ||
+      !city ||
+      !state ||
+      !zip ||
+      !lastFourSSN ||
+      !birthYear
+    ) {
       return NextResponse.json(
-        { error: "Missing required fields: licenseState, licenseNumber, nameOnLicense" },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    let result: NursysVerificationResult;
+    const { enroll_transaction_id } = await submitEnrollment({
+      jurisdictionAbbreviation,
+      licenseNumber,
+      licenseType,
+      address1,
+      city,
+      state,
+      zip,
+      lastFourSSN,
+      birthYear,
+      recordId: nurse_id,
+      email,
+    });
 
-    if (NURSYS_API_KEY) {
-      // TODO: Replace mock with Nursys e-Notify API call
-      // const response = await fetch("https://www.nursys.com/api/e-notify/v1/verify", {
-      //   method: "POST",
-      //   headers: {
-      //     "Authorization": `Bearer ${NURSYS_API_KEY}`,
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     licenseType,
-      //     licenseState,
-      //     licenseNumber,
-      //     nameOnLicense,
-      //   }),
-      // });
-      // result = await response.json();
-      console.log("[Nursys] API key configured but using mock until integration is complete");
-      result = await verifyLicense(nameOnLicense, licenseState, licenseNumber);
-    } else {
-      console.log("[Nursys MOCK] Verifying license:", { licenseType, licenseState, licenseNumber, nameOnLicense });
-      result = await verifyLicense(nameOnLicense, licenseState, licenseNumber);
+    const { error: dbError } = await supabaseAdmin
+      .from("nurse_license_verifications")
+      .upsert(
+        {
+          nurse_id,
+          enroll_transaction_id,
+          verification_status: "pending",
+          jurisdiction_abbreviation: jurisdictionAbbreviation,
+          license_number: licenseNumber,
+          license_type: licenseType,
+          address1,
+          city,
+          state,
+          zip,
+        },
+        { onConflict: "nurse_id" }
+      );
+
+    if (dbError) {
+      console.error("[verify-license] DB error:", dbError);
+      return NextResponse.json(
+        { error: "Failed to save verification" },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({
-      verified: result.status === "active",
-      status: result.status,
-      expirationDate: result.expirationDate,
-      state: result.state || licenseState,
-      disciplineFlags: result.disciplineFlags,
-      source: NURSYS_API_KEY ? "nursys-e-notify" : "mock",
-    });
-  } catch {
+    return NextResponse.json({ success: true, message: "Verification submitted" });
+  } catch (err) {
+    console.error("[verify-license] Error:", err);
     return NextResponse.json(
       { error: "Verification failed" },
       { status: 500 }

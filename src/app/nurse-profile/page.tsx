@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
@@ -195,6 +195,85 @@ export default function NurseProfilePage() {
   const [desiredPayMax, setDesiredPayMax] = useState("");
   const [maxCommute, setMaxCommute] = useState("");
   const [selectedCulture, setSelectedCulture] = useState<string[]>([]);
+
+  // License verification fields
+  const [licenseType, setLicenseType] = useState("");
+  const [licenseState, setLicenseState] = useState("");
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [licenseAddress1, setLicenseAddress1] = useState("");
+  const [licenseCity, setLicenseCity] = useState("");
+  const [licenseHomeState, setLicenseHomeState] = useState("");
+  const [licenseZip, setLicenseZip] = useState("");
+  const [lastFourSSN, setLastFourSSN] = useState("");
+  const [birthYear, setBirthYear] = useState("");
+  type VerifyStatus = "idle" | "submitting" | "pending" | "verified" | "flagged" | "failed";
+  const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>("idle");
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, []);
+
+  const pollVerificationStatus = () => {
+    if (pollRef.current) clearInterval(pollRef.current);
+    pollRef.current = setInterval(async () => {
+      try {
+        const res = await fetch(
+          `/api/nurse/verification-status?nurse_id=${encodeURIComponent(user?.email ?? "")}`
+        );
+        const data = await res.json();
+        const status: string | null = data.verification_status;
+        if (status === "verified") {
+          setVerifyStatus("verified");
+          if (pollRef.current) clearInterval(pollRef.current);
+        } else if (status === "flagged") {
+          setVerifyStatus("flagged");
+          if (pollRef.current) clearInterval(pollRef.current);
+        } else if (status === "failed") {
+          setVerifyStatus("failed");
+          if (pollRef.current) clearInterval(pollRef.current);
+        }
+      } catch {
+        // silent — keep polling
+      }
+    }, 30_000);
+  };
+
+  const handleVerifyLicense = async () => {
+    if (!licenseType || !licenseState || !licenseNumber || !licenseAddress1 || !licenseCity || !licenseHomeState || !licenseZip || !lastFourSSN || !birthYear) {
+      return;
+    }
+    setVerifyStatus("submitting");
+    try {
+      const res = await fetch("/api/verify-license", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nurse_id: user?.email,
+          jurisdictionAbbreviation: licenseState,
+          licenseNumber,
+          licenseType,
+          address1: licenseAddress1,
+          city: licenseCity,
+          state: licenseHomeState,
+          zip: licenseZip,
+          lastFourSSN,
+          birthYear,
+          email: user?.email,
+        }),
+      });
+      if (!res.ok) {
+        setVerifyStatus("failed");
+        return;
+      }
+      setVerifyStatus("pending");
+      pollVerificationStatus();
+    } catch {
+      setVerifyStatus("failed");
+    }
+  };
 
   const toggleItem = (
     item: string,
@@ -796,35 +875,156 @@ export default function NurseProfilePage() {
                 <p className="text-xs text-text-muted">We verify through Nursys — no manual uploads needed.</p>
               </div>
             </div>
+
+            {/* Status banner */}
+            {verifyStatus === "verified" && (
+              <div className="mb-6 flex items-center gap-3 bg-success-light/40 border border-success/20 rounded-xl px-4 py-3">
+                <div className="w-6 h-6 rounded-full bg-success flex items-center justify-center flex-shrink-0">
+                  <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span className="text-sm font-bold text-success">Flor Verified — your license is confirmed.</span>
+              </div>
+            )}
+            {verifyStatus === "flagged" && (
+              <div className="mb-6 flex items-center gap-3 bg-amber/10 border border-amber/20 rounded-xl px-4 py-3">
+                <svg className="w-5 h-5 text-amber flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+                <span className="text-sm font-semibold text-amber-dark">Please review your license record.</span>
+              </div>
+            )}
+            {verifyStatus === "failed" && (
+              <div className="mb-6 flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span className="text-sm font-semibold text-red-600">We couldn&apos;t verify this license. Please check your info and try again.</span>
+              </div>
+            )}
+            {verifyStatus === "pending" && (
+              <div className="mb-6 flex items-center gap-3 bg-periwinkle-50/60 border border-periwinkle-100/60 rounded-xl px-4 py-3">
+                <svg className="w-5 h-5 text-periwinkle flex-shrink-0 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                <span className="text-sm font-semibold text-periwinkle-dark">Verification in progress — we&apos;ll update this automatically.</span>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">License Type</label>
-                <select className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors">
+                <select
+                  value={licenseType}
+                  onChange={(e) => setLicenseType(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                >
                   <option value="">Select license type</option>
                   {LICENSE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">License State</label>
-                <select className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors">
+                <select
+                  value={licenseState}
+                  onChange={(e) => setLicenseState(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                >
                   <option value="">Select state</option>
                   {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">License Number</label>
-                <input type="text" className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors" placeholder="License number" />
+                <input
+                  type="text"
+                  value={licenseNumber}
+                  onChange={(e) => setLicenseNumber(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="License number"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Street Address</label>
+                <input
+                  type="text"
+                  value={licenseAddress1}
+                  onChange={(e) => setLicenseAddress1(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="123 Main St"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">City</label>
+                <input
+                  type="text"
+                  value={licenseCity}
+                  onChange={(e) => setLicenseCity(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="City"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Home State</label>
+                <select
+                  value={licenseHomeState}
+                  onChange={(e) => setLicenseHomeState(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm bg-white min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                >
+                  <option value="">Select state</option>
+                  {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">ZIP Code</label>
+                <input
+                  type="text"
+                  value={licenseZip}
+                  onChange={(e) => setLicenseZip(e.target.value)}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="02903"
+                  maxLength={10}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Last 4 of SSN</label>
+                <input
+                  type="password"
+                  value={lastFourSSN}
+                  onChange={(e) => setLastFourSSN(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="••••"
+                  maxLength={4}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-2">Birth Year</label>
+                <input
+                  type="text"
+                  value={birthYear}
+                  onChange={(e) => setBirthYear(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                  className="w-full border border-periwinkle-100/60 rounded-xl px-4 py-3 text-sm min-h-[44px] hover:border-periwinkle/40 transition-colors"
+                  placeholder="1985"
+                  maxLength={4}
+                />
               </div>
             </div>
-            <div className="mt-5 flex items-center gap-2.5 bg-periwinkle-50/60 rounded-xl p-4">
-              <div className="w-5 h-5 rounded-full bg-periwinkle flex items-center justify-center flex-shrink-0">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-xs text-periwinkle-dark font-semibold">
-                Verification badge appears after we confirm your credentials
-              </span>
+
+            <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <button
+                onClick={handleVerifyLicense}
+                disabled={verifyStatus === "submitting" || verifyStatus === "pending" || verifyStatus === "verified"}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-periwinkle text-white text-sm font-bold hover:bg-periwinkle-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+              >
+                {verifyStatus === "submitting" ? "Submitting…" : "Verify License"}
+              </button>
+              {verifyStatus === "idle" && (
+                <span className="text-xs text-text-muted font-semibold">
+                  Verification badge appears after we confirm your credentials
+                </span>
+              )}
             </div>
           </section>
 
