@@ -13,14 +13,7 @@ const C = {
   border: "#E4E4EC",
 };
 
-interface NavNotification {
-  id: string;
-  text: string;
-  sub_text?: string;
-  icon?: string;
-  unread: boolean;
-  created_at: string;
-}
+const seedNotifications: { id: number; icon: string; text: string; time: string; unread: boolean }[] = [];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -28,11 +21,9 @@ export default function Navbar() {
   const { user, isLoggedIn, logout } = useAuth();
 
   const [isEmployer, setIsEmployer] = useState(false);
-  const [notifications, setNotifications] = useState<NavNotification[]>([]);
   const notifsRef = useRef<HTMLDivElement>(null);
-  const fetchedRef = useRef(false);
 
-  const unreadCount = notifications.filter((n) => n.unread).length;
+  const unreadCount = seedNotifications.filter((n) => n.unread).length;
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -49,16 +40,6 @@ export default function Navbar() {
   useEffect(() => {
     setIsEmployer(localStorage.getItem("flor_user_type") === "employer");
   }, []);
-
-  // Fetch notifications once when the dropdown opens (nurse only)
-  useEffect(() => {
-    if (!notifsOpen || !isLoggedIn || isEmployer || fetchedRef.current) return;
-    fetchedRef.current = true;
-    fetch(`/api/nurse/notifications?nurse_id=${encodeURIComponent(user?.email ?? "")}`)
-      .then((r) => r.json())
-      .then((data) => setNotifications(Array.isArray(data) ? data : []))
-      .catch(() => setNotifications([]));
-  }, [notifsOpen, isLoggedIn, isEmployer, user?.email]);
 
   const links = isEmployer
     ? [
@@ -98,12 +79,14 @@ export default function Navbar() {
         )}
       </div>
       <div style={{ maxHeight: 340, overflowY: "auto" }}>
-        {notifications.length === 0 ? (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>
-            No notifications yet.
+        {seedNotifications.length === 0 ? (
+          <div style={{ padding: "32px 20px", textAlign: "center" }}>
+            <div style={{ fontSize: 22, marginBottom: 8 }}>🌸</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: C.navy, marginBottom: 4 }}>You&apos;re all caught up</div>
+            <div style={{ fontSize: 12, color: "#9CA3AF" }}>Notifications will show up here.</div>
           </div>
         ) : (
-          notifications.map((n) => (
+          seedNotifications.map((n) => (
             <div key={n.id} style={{
               padding: "14px 20px", display: "flex", gap: 12, alignItems: "flex-start",
               borderBottom: `1px solid ${C.border}`,
@@ -117,12 +100,7 @@ export default function Navbar() {
                 <div style={{ fontSize: 13, fontWeight: n.unread ? 600 : 500, color: C.navy, lineHeight: 1.4 }}>
                   {n.text}
                 </div>
-                {n.sub_text && (
-                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 3 }}>{n.sub_text}</div>
-                )}
-                <div style={{ fontSize: 11, color: "#999", marginTop: 4 }}>
-                  {new Date(n.created_at).toLocaleDateString()}
-                </div>
+                <div style={{ fontSize: 11, color: "#999", marginTop: 4 }}>{n.time}</div>
               </div>
               {n.unread && (
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.coral, flexShrink: 0, marginTop: 5 }} />
