@@ -20,7 +20,6 @@ export default function Navbar() {
   const [notifsOpen, setNotifsOpen] = useState(false);
   const { user, isLoggedIn, logout } = useAuth();
 
-  const [isEmployer, setIsEmployer] = useState(false);
   const unreadCount = seedNotifications.filter((n) => n.unread).length;
   const notifsRef = useRef<HTMLDivElement>(null);
 
@@ -36,23 +35,14 @@ export default function Navbar() {
     }
   }, [notifsOpen]);
 
-  useEffect(() => {
-    setIsEmployer(localStorage.getItem("flor_user_type") === "employer");
-  }, []);
-
-  const links = isEmployer
-    ? [
-        { href: "/employer/dashboard", label: "Dashboard" },
-        { href: "/employer/post", label: "Post Job" },
-      ]
-    : [
-        { href: "/jobs/matched", label: "Find Jobs" },
-        { href: "/jobs/community", label: "Community" },
-        { href: "/interview-intel", label: "Interview Intel" },
-        { href: "/pay-intelligence", label: "Pay Intel" },
-        { href: "/nurse-profile", label: "My Profile" },
-        { href: "/tracker", label: "Applications" },
-      ];
+  const links = [
+    { href: "/jobs/matched", label: "Find Jobs" },
+    { href: "/jobs/community", label: "Community" },
+    { href: "/interview-intel", label: "Interview Intel" },
+    { href: "/pay-intelligence", label: "Pay Intel" },
+    { href: "/nurse-profile", label: "My Profile" },
+    { href: "/tracker", label: "Applications" },
+  ];
 
   return (
     <nav
@@ -106,40 +96,6 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {/* Demo view toggle */}
-            {isEmployer ? (
-              <button
-                onClick={() => {
-                  setIsEmployer(false);
-                  localStorage.setItem("flor_user_type", "nurse");
-                }}
-                className="hover:text-[#8B8FD4] hover:border-[#8B8FD4]/30"
-                style={{
-                  fontSize: 11, fontWeight: 700, color: "#999",
-                  padding: "6px 12px", borderRadius: 20,
-                  border: `1px solid ${C.border}`, background: "transparent",
-                  cursor: "pointer", transition: "all 0.2s",
-                  fontFamily: "'Manrope', system-ui, sans-serif",
-                }}
-              >
-                Switch to Nurse
-              </button>
-            ) : (
-              <Link
-                href="/employer/demo"
-                className="hover:text-[#8B8FD4] hover:border-[#8B8FD4]/30"
-                style={{
-                  fontSize: 11, fontWeight: 700, color: "#999",
-                  padding: "6px 12px", borderRadius: 20,
-                  border: `1px solid ${C.border}`, background: "transparent",
-                  cursor: "pointer", transition: "all 0.2s",
-                  fontFamily: "'Manrope', system-ui, sans-serif",
-                  textDecoration: "none",
-                }}
-              >
-                Switch to Employer
-              </Link>
-            )}
             <div style={{ marginLeft: 8, paddingLeft: 16, borderLeft: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 12 }}>
               {/* Bell icon with coral dot */}
               <div style={{ position: "relative" }}>

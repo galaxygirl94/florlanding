@@ -2,12 +2,10 @@
 
 import { useState, useMemo } from "react";
 import type { Application, JobListing, NurseProfile } from "@/data/types";
-import { demoNurses } from "@/data/demo-nurses";
-
 /* ── Helpers ──────────────────────────────────────────────────────── */
 
-function nurseById(id?: string): NurseProfile | undefined {
-  return demoNurses.find((n) => n.id === id);
+function nurseById(_id?: string): NurseProfile | undefined {
+  return undefined;
 }
 
 function fitBadgeColor(score: number): string {

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { seedJobs } from "@/data/seed-jobs";
-import { employerApplications } from "@/data/seed-applications";
 import { seedFacilities } from "@/data/seed-facilities";
 import EmployerSidebar, { type Screen } from "@/components/employer/EmployerSidebar";
 import DashboardHome from "@/components/employer/DashboardHome";
@@ -14,7 +13,7 @@ import FacilityProfileEditor from "@/components/employer/FacilityProfileEditor";
 
 const DEFAULT_FACILITY = seedFacilities.find((f) => f.id === "facility-bayside") || seedFacilities[0];
 const facilityJobs = seedJobs.filter((j) => j.facilityId === DEFAULT_FACILITY.id);
-const facilityApps = employerApplications.filter((a) => a.facilityName === DEFAULT_FACILITY.name);
+const facilityApps: import("@/data/types").Application[] = [];
 
 export default function EmployerDashboardPage() {
   const [screen, setScreen] = useState<Screen>("dashboard");

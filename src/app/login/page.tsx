@@ -48,24 +48,6 @@ export default function LoginPage() {
     }
   };
 
-  // Demo quick-login for employer
-  const demoEmployerLogin = () => {
-    signup("demo@bayside.com", "demo123", "Demo", "Admin");
-    login("demo@bayside.com", "demo123");
-    localStorage.setItem("flor_user_type", "employer");
-    router.push("/employer");
-  };
-
-  const demoNurseLogin = () => {
-    signup("sarah.chen@email.com", "demo123", "Sarah", "Chen");
-    login("sarah.chen@email.com", "demo123");
-    localStorage.setItem("flor_user_type", "nurse");
-    // Load Sarah's profile
-    const { MOCK_RESUME_PROFILES } = require("@/data/demo-nurses");
-    localStorage.setItem("flor_nurse_profile", JSON.stringify(MOCK_RESUME_PROFILES[0]));
-    router.push("/jobs/matched");
-  };
-
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-[#F8F8FA]">
       <div className="w-full max-w-md mx-auto px-6 py-16">
@@ -170,24 +152,6 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {/* Demo login buttons */}
-          <div className="mt-6 pt-6 border-t border-periwinkle-100/40">
-            <p className="text-xs text-text-muted text-center mb-3">Quick demo access</p>
-            <div className="flex gap-2">
-              <button
-                onClick={demoNurseLogin}
-                className="flex-1 border border-periwinkle-100/60 hover:border-periwinkle/40 text-text rounded-xl py-2.5 text-xs font-bold transition-colors hover:bg-periwinkle-50"
-              >
-                Demo as Nurse
-              </button>
-              <button
-                onClick={demoEmployerLogin}
-                className="flex-1 border border-periwinkle-100/60 hover:border-periwinkle/40 text-text rounded-xl py-2.5 text-xs font-bold transition-colors hover:bg-periwinkle-50"
-              >
-                Demo as Employer
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -4,7 +4,6 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { seedApplications } from "@/data/seed-applications";
 
 const SPECIALTIES = [
   "Medical-Surgical", "ICU/Critical Care", "Emergency", "OR/Perioperative",
@@ -308,9 +307,9 @@ export default function NurseProfilePage() {
               {/* Quick stats */}
               <div className="grid grid-cols-3 lg:grid-cols-1 gap-4">
                 {[
-                  { label: "Applications", value: seedApplications.length, color: "text-periwinkle" },
-                  { label: "Viewed by Employers", value: seedApplications.filter(a => a.status === "viewed" || a.status === "responded").length, color: "text-amber" },
-                  { label: "Responses", value: seedApplications.filter(a => a.status === "responded").length, color: "text-success" },
+                  { label: "Applications", value: 0, color: "text-periwinkle" },
+                  { label: "Viewed by Employers", value: 0, color: "text-amber" },
+                  { label: "Responses", value: 0, color: "text-success" },
                 ].map((stat) => (
                   <div key={stat.label} className="bg-white rounded-2xl border border-periwinkle-100/40 p-4 text-center lg:text-left lg:flex lg:items-center lg:gap-4">
                     <span className={`text-2xl sm:text-3xl font-extrabold ${stat.color} block lg:inline`}>{stat.value}</span>
@@ -412,56 +411,13 @@ export default function NurseProfilePage() {
               </div>
 
               <div className="space-y-3">
-                {seedApplications.map((app) => {
-                  const statusMap: Record<string, { label: string; color: string; dot: string; step: number }> = {
-                    applied: { label: "Applied", color: "bg-periwinkle/10 text-periwinkle", dot: "bg-periwinkle", step: 1 },
-                    new: { label: "Applied", color: "bg-periwinkle/10 text-periwinkle", dot: "bg-periwinkle", step: 1 },
-                    viewed: { label: "Viewed", color: "bg-amber/10 text-amber", dot: "bg-amber", step: 2 },
-                    reviewing: { label: "Reviewing", color: "bg-amber/10 text-amber", dot: "bg-amber", step: 2 },
-                    responded: { label: "Responded", color: "bg-success-light text-success", dot: "bg-success", step: 3 },
-                    interview: { label: "Interview", color: "bg-success-light text-success", dot: "bg-success", step: 3 },
-                    offer: { label: "Offer", color: "bg-success-light text-success", dot: "bg-success", step: 3 },
-                    hired: { label: "Hired", color: "bg-success-light text-success", dot: "bg-success", step: 3 },
-                    passed: { label: "Passed", color: "bg-gray-100 text-text-muted", dot: "bg-gray-400", step: 0 },
-                  };
-                  const statusConfig = statusMap[app.status] || statusMap.applied;
-                  return (
-                    <Link
-                      key={app.id}
-                      href={`/jobs/${app.jobId}`}
-                      className="flex items-center gap-4 p-4 rounded-xl border border-periwinkle-100/30 hover:border-periwinkle/30 hover:bg-periwinkle-50/20 transition-all"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-text truncate">{app.jobTitle}</p>
-                        <p className="text-xs text-text-muted mt-0.5">{app.facilityName}</p>
-                      </div>
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        {/* Mini progress */}
-                        <div className="hidden sm:flex items-center gap-1">
-                          {[1, 2, 3].map((s) => (
-                            <div key={s} className={`w-6 h-1.5 rounded-full ${s <= statusConfig.step ? statusConfig.dot : "bg-periwinkle-50"}`} />
-                          ))}
-                        </div>
-                        <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full ${statusConfig.color}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot}`} />
-                          {statusConfig.label}
-                        </span>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-
-              <div className="mt-4 text-center">
-                <Link
-                  href="/jobs"
-                  className="inline-flex items-center gap-2 text-sm font-bold text-periwinkle hover:text-periwinkle-dark transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                  </svg>
-                  Browse more jobs
-                </Link>
+                <div className="py-8 text-center">
+                  <p className="text-sm font-semibold text-text-muted">No applications yet.</p>
+                  <p className="text-xs text-text-muted mt-1">Jobs you apply to will appear here.</p>
+                  <Link href="/jobs/matched" className="inline-block mt-3 text-sm font-bold text-periwinkle hover:text-periwinkle-dark transition-colors">
+                    Browse jobs →
+                  </Link>
+                </div>
               </div>
             </section>
 

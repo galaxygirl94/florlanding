@@ -3,25 +3,11 @@
 import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { MOCK_RESUME_PROFILES } from "@/data/demo-nurses";
-
 const ACCEPTED_TYPES = [
   "application/pdf",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const IS_MOCK =
-  process.env.NEXT_PUBLIC_MOCK_RESUME === undefined
-    ? true
-    : process.env.NEXT_PUBLIC_MOCK_RESUME === "true";
-
-let demoIndex = 0;
-
-function getNextMockProfile() {
-  const profile = MOCK_RESUME_PROFILES[demoIndex % MOCK_RESUME_PROFILES.length];
-  demoIndex++;
-  return profile;
-}
 
 function validateFile(file: File): string | null {
   if (!ACCEPTED_TYPES.includes(file.type)) {
@@ -42,20 +28,12 @@ export default function ResumeUploadPage() {
   const [fileName, setFileName] = useState<string | null>(null);
 
   const handleParsed = useCallback(
-    (data: (typeof MOCK_RESUME_PROFILES)[number]) => {
+    (data: Record<string, unknown>) => {
       localStorage.setItem("flor_resume_data", JSON.stringify(data));
       router.push("/onboarding");
     },
     [router],
   );
-
-  const simulateMockParse = useCallback(() => {
-    setState("loading");
-    setTimeout(() => {
-      const profile = getNextMockProfile();
-      handleParsed(profile);
-    }, 2000);
-  }, [handleParsed]);
 
   const parseViaApi = useCallback(
     async (file: File) => {
@@ -91,14 +69,9 @@ export default function ResumeUploadPage() {
       }
 
       setFileName(file.name);
-
-      if (IS_MOCK) {
-        simulateMockParse();
-      } else {
-        parseViaApi(file);
-      }
+      parseViaApi(file);
     },
-    [simulateMockParse, parseViaApi],
+    [parseViaApi],
   );
 
   const onDrop = useCallback(
@@ -311,37 +284,6 @@ export default function ResumeUploadPage() {
               Choose File
             </button>
           </div>
-
-          {/* Demo Button */}
-          {IS_MOCK && (
-            <div className="mt-5 text-center animate-fade-in-up-delay-1">
-              <button
-                type="button"
-                onClick={simulateMockParse}
-                className="inline-flex items-center gap-2 border-2 border-periwinkle-200 hover:border-periwinkle text-periwinkle hover:text-periwinkle-dark rounded-full px-8 py-3 font-bold text-sm transition-all duration-200 hover:-translate-y-0.5"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                Try Demo
-              </button>
-            </div>
-          )}
 
           {/* Skip Link */}
           <div className="mt-8 text-center">

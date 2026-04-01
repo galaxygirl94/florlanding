@@ -4,8 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { seedJobs } from "@/data/seed-jobs";
 import { seedFacilities } from "@/data/seed-facilities";
-import { employerApplications } from "@/data/seed-applications";
-import { demoNurses } from "@/data/demo-nurses";
 import type { Application, Interview, JobListing, NurseProfile } from "@/data/types";
 
 /* ── Import Job Modal Colors ────────────────────────────────────── */
@@ -227,8 +225,8 @@ const STATUS_LABEL: Record<string, string> = {
 
 /* ── Helpers ──────────────────────────────────────────────────────── */
 
-function nurseById(id?: string): NurseProfile | undefined {
-  return demoNurses.find((n) => n.id === id);
+function nurseById(_id?: string): NurseProfile | undefined {
+  return undefined;
 }
 
 function fitScoreColor(score: number): string {
@@ -307,7 +305,7 @@ export default function EmployerDashboard() {
   const [selectedFacilityId, setSelectedFacilityId] = useState<string>("all");
 
   /* Pipeline state persisted to localStorage */
-  const [pipelineApps, setPipelineApps] = useState<Application[]>(employerApplications);
+  const [pipelineApps, setPipelineApps] = useState<Application[]>([]);
   const [expandedAppId, setExpandedAppId] = useState<string | null>(null);
   const [pipelineJobFilter, setPipelineJobFilter] = useState<string>("all");
 
