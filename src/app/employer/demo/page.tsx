@@ -42,14 +42,6 @@ const DEMO_CANDIDATES = [
   { id: "c5", initials: "KM", name: "Kevin M.", score: 71, specialty: "New Grad", yrs: 1, verified: false, shift: "Days", distance: "12.1 mi", color: "#9CA3AF" },
 ];
 
-const DEMO_NOTIFICATIONS = [
-  { id: 1, text: "Priya P. applied for Pediatric RN — 100% Flor Fit", time: "2h ago", unread: true },
-  { id: 2, text: "Emily R. applied for Pediatric RN — 92% Flor Fit", time: "5h ago", unread: true },
-  { id: 3, text: "Interview request sent to Angela S. for Pediatric RN", time: "1d ago", unread: false },
-  { id: 4, text: "Your posting 'Per Diem RN' received 2 new applicants", time: "2d ago", unread: false },
-  { id: 5, text: "Ethics Pledge status: Active", time: "5d ago", unread: false },
-];
-
 const DEMO_ACTIVITY = [
   { id: 1, nurse: "Priya P.", initials: "PP", color: "#8B8FD4", score: 100, job: "Pediatric RN", action: "Applied", time: "2h ago" },
   { id: 2, nurse: "Emily R.", initials: "ER", color: "#E97D6B", score: 92, job: "Pediatric RN", action: "Applied", time: "5h ago" },
@@ -172,20 +164,6 @@ export default function EmployerDemoPage() {
               ))}
             </div>
 
-            {/* Notifications */}
-            <h2 className="text-lg font-extrabold mb-4" style={{ color: C.navy }}>Notifications</h2>
-            <div className="rounded-2xl border overflow-hidden mb-8" style={{ background: C.white, borderColor: C.border }}>
-              {DEMO_NOTIFICATIONS.map((n, i) => (
-                <div key={n.id} className="flex items-center gap-3 px-5 py-4" style={{
-                  borderBottom: i < DEMO_NOTIFICATIONS.length - 1 ? `1px solid #F0F0F5` : "none",
-                  background: n.unread ? "rgba(139,143,212,0.04)" : "transparent",
-                }}>
-                  {n.unread && <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: C.coral }} />}
-                  <span className="text-sm flex-1" style={{ color: C.navy, fontWeight: n.unread ? 600 : 400 }}>{n.text}</span>
-                  <span className="text-xs flex-shrink-0" style={{ color: "#9CA3AF" }}>{n.time}</span>
-                </div>
-              ))}
-            </div>
 
             {/* Activity feed */}
             <div className="flex items-center justify-between mb-4">
