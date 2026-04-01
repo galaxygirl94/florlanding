@@ -18,11 +18,6 @@ const founders = [
     role: "CCO",
     bio: "Med Surg and outpatient RN. Jessica is the authentic nursing voice behind everything Flor builds. She's lived the recruiter spam, the ghost jobs, the hidden pay — and she makes sure Flor never forgets what it's like to be a nurse looking for work.",
   },
-  {
-    name: "Linnea Totushek",
-    role: "CMO",
-    bio: "Linnea leads Flor's marketing with a deep conviction that nurses deserve to be spoken to like professionals, not leads. She's building a brand that earns trust by telling the truth — no buzzwords, no corporate speak.",
-  },
 ];
 
 export default function MissionPage() {
