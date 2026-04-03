@@ -24,6 +24,7 @@ interface JobCardProps {
   index?: number;
   isSaved?: boolean;
   onToggleSave?: (id: string) => void;
+  showExampleBadge?: boolean;
 }
 
 /* ── Specialty → image mapping (no photo should repeat across visible cards) ── */
@@ -43,7 +44,7 @@ const SPECIALTY_IMAGE_MAP: Record<string, string> = {
   "Rehab": "/nurse-group.jpg",
   "Ortho": "/nurse-group.jpg",
   "Home Health": "/nurse-commute.jpg",
-  "ED": "/nurse-burnout.jpg",
+  "ED": "/nurse-hero.jpg",
   "OR": "/nurse-hands.jpg",
   "Pulmonology": "/nurse-hands.jpg",
   "Cardiac": "/nurse-hero.jpg",
@@ -178,17 +179,12 @@ function PayDisplay({ job, accentColor }: { job: JobListing; accentColor: string
             }} />
           )}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
-          <span style={{ fontSize: 9, color: C.muted }}>${SCALE_MIN}/hr</span>
-          <span style={{ fontSize: 9, color: C.muted }}>avg range</span>
-          <span style={{ fontSize: 9, color: C.muted }}>${SCALE_MAX}/hr</span>
-        </div>
       </div>
     </div>
   );
 }
 
-export default function JobCard({ job, index = 0, isSaved, onToggleSave }: JobCardProps) {
+export default function JobCard({ job, index = 0, isSaved, onToggleSave, showExampleBadge }: JobCardProps) {
   const [hovered, setHovered] = useState(false);
   const delayClass =
     index === 0
@@ -240,12 +236,26 @@ export default function JobCard({ job, index = 0, isSaved, onToggleSave }: JobCa
             {job.scheduleType}
           </div>
 
-          {/* Save button — top right below shift */}
+          {/* Example Listing badge — shown for scraped jobs on public view */}
+          {showExampleBadge && job.isScraped && (
+            <div style={{
+              position: "absolute", top: 10, right: 10,
+              background: "rgba(30,30,46,0.75)", backdropFilter: "blur(6px)",
+              borderRadius: 20, padding: "3px 9px",
+              fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.80)",
+              letterSpacing: "0.05em", textTransform: "uppercase" as const,
+              border: "1px solid rgba(255,255,255,0.18)",
+            }}>
+              Example Listing
+            </div>
+          )}
+
+          {/* Save button — top right (shifted down when Example Listing badge is present) */}
           {onToggleSave && (
             <button
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleSave(job.id); }}
               style={{
-                position: "absolute", top: 8, right: 10,
+                position: "absolute", top: showExampleBadge && job.isScraped ? 36 : 8, right: 10,
                 background: "rgba(255,255,255,0.94)", backdropFilter: "blur(8px)",
                 border: "none", cursor: "pointer",
                 width: 30, height: 30, borderRadius: "50%",

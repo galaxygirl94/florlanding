@@ -9,6 +9,11 @@ const SPECIALTIES = [
   "Medical-Surgical", "ICU/Critical Care", "Emergency", "OR/Perioperative",
   "Labor & Delivery", "Pediatrics", "Behavioral Health", "Home Health",
   "Long-Term Care", "Oncology", "Rehabilitation", "CNA",
+  "Aesthetics", "Infusions", "Dialysis/Renal", "Neuro/Stroke", "Chemotherapy",
+  "Respiratory", "Mother-Baby", "NICU", "Dementia Care", "PICU", "PACU",
+  "Step-Down", "Women's Health", "Community Health", "Occupational Health",
+  "Nurse Administrator", "MDS Coordination", "Case Management",
+  "Ambulatory Care", "Outpatient Care", "Hospice/Palliative", "School Nursing",
 ];
 
 const CERTIFICATIONS = [
@@ -16,7 +21,11 @@ const CERTIFICATIONS = [
   "CPR Certification", "Driver's License",
 ];
 
-const EHR_SYSTEMS = ["Epic", "Cerner", "Meditech", "LifeChart", "Allscripts", "PointClickCare", "Other"];
+const EHR_SYSTEMS = [
+  "Epic", "Cerner", "Meditech", "LifeChart", "Allscripts", "PointClickCare",
+  "Kinnser", "Axxess", "HCHB (HomeCare HomeBase)", "CareHub", "Matrix",
+  "OASIS (documentation framework)", "Other",
+];
 const SCHEDULE_PREFS = ["Days", "Evenings", "Nights", "Rotating", "Flexible"];
 const COMMUTE_OPTIONS = ["10", "20", "30", "45", "60"];
 const CULTURE_PREFS = [
@@ -29,7 +38,11 @@ const CULTURE_PREFS = [
   "Low staff turnover",
   "Mission-driven",
 ];
-const LICENSE_TYPES = ["RN", "LPN", "CNA", "APRN", "NP"];
+const LICENSE_TYPES = [
+  "RN", "LPN", "CNA", "APRN", "NP",
+  "DNP", "CRNA", "CNM", "FNP", "PNP", "PMHNP", "WHNP", "CNS",
+  "Nurse Educator", "Nursing Student", "New Grad",
+];
 const STATES = ["RI", "MA", "CT", "NY", "CA", "FL", "TX", "PA", "OH", "IL"];
 
 /* ── Florence Nightingale Demo Profile ─────────────────────────────── */

@@ -10,6 +10,11 @@ const SPECIALTIES = [
   "Med Surg", "ICU", "ED", "OR", "L&D", "NICU", "Peds", "Psych",
   "Home Health", "Oncology", "Rehab", "School Nurse", "Telemetry",
   "Cardiac", "Outpatient/Clinic", "SNF/LTC",
+  "Aesthetics", "Infusions", "Dialysis/Renal", "Neuro/Stroke", "Chemotherapy",
+  "Respiratory", "Mother-Baby", "Dementia Care", "PICU", "PACU",
+  "Step-Down", "Women's Health", "Community Health", "Occupational Health",
+  "Nurse Administrator", "MDS Coordination", "Case Management",
+  "Ambulatory Care", "Outpatient Care", "Hospice/Palliative", "School Nursing",
 ];
 const SHIFTS = ["Days", "Evenings", "Nights", "Rotating"];
 const SCHEDULE_TYPES = ["Full-time", "Part-time", "Per diem"];
@@ -70,7 +75,8 @@ export default function MatchedJobsPage() {
     }
   }, []);
 
-  const activeJobs = seedJobs.filter((j) => !j.status || j.status === "active");
+  // Authenticated nurses never see scraped jobs
+  const activeJobs = seedJobs.filter((j) => (!j.status || j.status === "active") && !j.isScraped);
 
   const scoredJobs: ScoredJob[] = useMemo(() => {
     return activeJobs.map((job) => {

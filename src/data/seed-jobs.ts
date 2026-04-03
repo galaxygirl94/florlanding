@@ -790,6 +790,7 @@ export const seedJobs: JobListing[] = [
     signOnBonus: 8000,
     postedDate: "2026-02-18",
     status: "active",
+    isScraped: true,
     questions: [
       { id: "q2-1", question: "What does the tuition reimbursement program cover?", answer: "We offer up to $5,250/year for BSN, MSN, or DNP programs at accredited institutions. Many of our ICU nurses are pursuing their CCRN or MSN while working here.", answeredBy: "Nursing Education", answeredDate: "2026-02-20", askedDate: "2026-02-19" },
       { id: "q2-2", question: "How does the sign-on bonus work?", answer: "$8,000 total — $4,000 paid after 90 days, remaining $4,000 after 1 year. If you leave before 2 years, there's a pro-rated clawback. Full terms provided at offer.", answeredBy: "HR Team", answeredDate: "2026-02-21", askedDate: "2026-02-20" },
@@ -838,6 +839,7 @@ export const seedJobs: JobListing[] = [
     note: "Part of Brown University Health system. Child Life specialists on every unit.",
     postedDate: "2026-02-22",
     status: "active",
+    isScraped: true,
     questions: [
       { id: "q3-1", question: "What does the relocation assistance include?", answer: "We provide up to $3,000 for relocation expenses including moving costs, temporary housing, and travel. Available for candidates relocating 50+ miles.", answeredBy: "HR Team", answeredDate: "2026-02-24", askedDate: "2026-02-23" },
     ],
@@ -873,6 +875,7 @@ export const seedJobs: JobListing[] = [
     note: "Flexible scheduling — you build your own caseload. Mileage reimbursement included.",
     postedDate: "2026-02-25",
     status: "active",
+    isScraped: true,
     questions: [
       { id: "q4-1", question: "How many patients per day is typical?", answer: "Most nurses see 4-6 patients per day depending on visit complexity and geography. You manage your own route and scheduling.", answeredBy: "Clinical Director", answeredDate: "2026-02-27", askedDate: "2026-02-26" },
     ],
@@ -916,6 +919,7 @@ export const seedJobs: JobListing[] = [
     note: "Public employer — qualifies for Public Service Loan Forgiveness and state pension. Summers off with full benefits.",
     postedDate: "2026-02-19",
     status: "active",
+    isScraped: true,
     questions: [
       { id: "q5-1", question: "Is the school nurse certification required before starting?", answer: "We prefer candidates who already hold the certification, but we'll consider RNs willing to obtain it within the first year. The district covers the exam cost.", answeredBy: "Superintendent's Office", answeredDate: "2026-02-22", askedDate: "2026-02-20" },
     ],
@@ -956,6 +960,7 @@ export const seedJobs: JobListing[] = [
     signOnBonus: 5000,
     postedDate: "2026-02-15",
     status: "active",
+    isScraped: true,
     questions: [
       { id: "q6-1", question: "What does the on-call requirement look like?", answer: "On-call is 1 shift per month. Call-back pay is at 1.5x your base rate with a 2-hour minimum guarantee. Most months you won't get called in.", answeredBy: "ER Nurse Manager", answeredDate: "2026-02-18", askedDate: "2026-02-16" },
       { id: "q6-2", question: "How does the sign-on bonus work?", answer: "$5,000 total — $2,500 after 90 days, $2,500 after 1 year. Pro-rated clawback if you leave before 18 months.", answeredBy: "HR Team", answeredDate: "2026-02-20", askedDate: "2026-02-17" },
@@ -992,6 +997,7 @@ export const seedJobs: JobListing[] = [
     description: "Full-time RN position at Complete Care at Groton Regency. $5,000 sign-on bonus for full-time hires. Reciprocity fee reimbursement available.",
     postedDate: "2026-03-05",
     status: "active",
+    isScraped: true,
     questions: [],
   },
   {
@@ -1022,6 +1028,7 @@ export const seedJobs: JobListing[] = [
     onCall: "Optional",
     signOnBonus: 5000,
     annualPayRange: { min: 92000, max: 104000 },
+    isScraped: true,
     description: "Hospice RN Case Manager providing compassionate end-of-life care across Westerly and North Providence. $5,000 sign-on bonus. Autonomous practice with strong clinical support.",
     postedDate: "2026-03-04",
     status: "active",

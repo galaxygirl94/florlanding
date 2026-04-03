@@ -4,6 +4,10 @@ import JobCard from "@/components/JobCard";
 import { seedJobs } from "@/data/seed-jobs";
 
 export default function HomePage() {
+  const riJobCount = seedJobs.filter(
+    (j) => j.location.state === "RI" && (!j.status || j.status === "active") && !j.isScraped
+  ).length;
+
   return (
     <div>
       {/* ========== HERO — full viewport, edge-to-edge ========== */}
@@ -93,8 +97,8 @@ export default function HomePage() {
             <div className="order-2 lg:order-1 lg:col-span-6 animate-fade-in-up">
               <div className="relative rounded-3xl overflow-hidden hero-shadow aspect-[4/3] lg:aspect-[3/4] xl:aspect-[4/5]">
                 <Image
-                  src="/nurse-burnout.jpg"
-                  alt="Frustrated nurse at desk with head in hands"
+                  src="/nurse-commute.jpg"
+                  alt="Nurse in teal scrubs on subway commute looking thoughtful"
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -289,7 +293,7 @@ export default function HomePage() {
                 </div>
                 <div className="w-px h-12 bg-white/20" />
                 <div className="text-center">
-                  <div className="text-3xl lg:text-4xl font-extrabold text-white">6</div>
+                  <div className="text-3xl lg:text-4xl font-extrabold text-white">{riJobCount}</div>
                   <p className="text-sm text-white/60 mt-1">RI jobs live now</p>
                 </div>
                 <div className="w-px h-12 bg-white/20" />
@@ -672,7 +676,7 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-6">
             {seedJobs.map((job, i) => (
-              <JobCard key={job.id} job={job} index={i} />
+              <JobCard key={job.id} job={job} index={i} showExampleBadge={true} />
             ))}
           </div>
         </div>

@@ -4,8 +4,17 @@ import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import JobCard from "@/components/JobCard";
 import { seedJobs } from "@/data/seed-jobs";
+import { useAuth } from "@/context/AuthContext";
 
-const SPECIALTIES = ["All", "Med Surg", "ICU", "ED", "Peds", "Psych", "Ortho", "Community Health", "Home Health", "Rehab", "SNF/LTC", "School Nurse", "Outpatient/Clinic", "L&D", "OR"];
+const SPECIALTIES = [
+  "All", "Med Surg", "ICU", "ED", "Peds", "Psych", "Ortho", "Community Health", "Home Health",
+  "Rehab", "SNF/LTC", "School Nurse", "Outpatient/Clinic", "L&D", "OR",
+  "Aesthetics", "Infusions", "Dialysis/Renal", "Neuro/Stroke", "Chemotherapy",
+  "Respiratory", "Mother-Baby", "NICU", "Dementia Care", "PICU", "PACU",
+  "Step-Down", "Women's Health", "Occupational Health", "Nurse Administrator",
+  "MDS Coordination", "Case Management", "Ambulatory Care", "Outpatient Care",
+  "Hospice/Palliative", "School Nursing",
+];
 const FACILITY_TYPES = ["All", "Acute Care Hospital", "Hospital", "Psychiatric Hospital", "Community Health / Nonprofit", "Outpatient clinic", "SNF/Long-term care", "Rehab", "Home health", "School"];
 const SHIFT_TYPES = ["All", "Days", "Nights", "Evenings", "Rotating"];
 const WEEKEND_OPTIONS = ["All", "No Weekends", "Optional", "Required"];
@@ -46,6 +55,8 @@ function FilterSection({ title, defaultOpen = false, children }: { title: string
 }
 
 export default function JobListingsPage() {
+  const { isLoggedIn } = useAuth();
+
   // Filter state
   const [specialty, setSpecialty] = useState("All");
   const [facilityType, setFacilityType] = useState("All");
@@ -81,8 +92,11 @@ export default function JobListingsPage() {
     });
   };
 
+  // Authenticated nurses never see scraped jobs
+  const baseJobs = isLoggedIn ? seedJobs.filter((j) => !j.isScraped) : seedJobs;
+
   const filteredJobs = useMemo(() => {
-    return seedJobs.filter((job) => {
+    return baseJobs.filter((job) => {
       // Search query filter
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
@@ -111,11 +125,11 @@ export default function JobListingsPage() {
       if (verifiedRatioOnly && !job.patientRatioVerified) return false;
       return true;
     });
-  }, [specialty, facilityType, shift, weekends, onCall, hourType, location, payMin, payMax, loanForgiveness, signOnBonus, relocation, tuition, unionOnly, magnetOnly, minFitScore, verifiedRatioOnly]);
+  }, [baseJobs, specialty, facilityType, shift, weekends, onCall, hourType, location, payMin, payMax, loanForgiveness, signOnBonus, relocation, tuition, unionOnly, magnetOnly, minFitScore, verifiedRatioOnly]);
 
   // Count how many jobs match a specific filter value
   const countFor = (key: string, value: string | boolean) => {
-    return seedJobs.filter((job) => {
+    return baseJobs.filter((job) => {
       // Apply all current filters except the one being counted
       const base = filteredJobs;
       switch (key) {
@@ -442,7 +456,7 @@ export default function JobListingsPage() {
             {/* Job cards grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
               {filteredJobs.map((job, i) => (
-                <JobCard key={job.id} job={job} index={i} isSaved={savedIds.includes(job.id)} onToggleSave={toggleSave} />
+                <JobCard key={job.id} job={job} index={i} isSaved={savedIds.includes(job.id)} onToggleSave={toggleSave} showExampleBadge={!isLoggedIn} />
               ))}
             </div>
 
