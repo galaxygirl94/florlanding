@@ -18,30 +18,40 @@ const seedNotifications: { id: number; icon: string; text: string; time: string;
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifsOpen, setNotifsOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [resourcesExpanded, setResourcesExpanded] = useState(false);
   const { user, isLoggedIn, logout } = useAuth();
 
   const unreadCount = seedNotifications.filter((n) => n.unread).length;
   const notifsRef = useRef<HTMLDivElement>(null);
+  const resourcesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (notifsRef.current && !notifsRef.current.contains(e.target as Node)) {
         setNotifsOpen(false);
       }
+      if (resourcesRef.current && !resourcesRef.current.contains(e.target as Node)) {
+        setResourcesOpen(false);
+      }
     }
-    if (notifsOpen) {
+    if (notifsOpen || resourcesOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       return () => document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, [notifsOpen]);
+  }, [notifsOpen, resourcesOpen]);
 
   const links = [
     { href: "/jobs/matched", label: "Find Jobs" },
     { href: "/jobs/community", label: "Community" },
-    { href: "/interview-intel", label: "Interview Intel" },
-    { href: "/pay-intelligence", label: "Pay Intel" },
     { href: "/nurse-profile", label: "My Profile" },
     { href: "/tracker", label: "Applications" },
+  ];
+
+  const resourceLinks = [
+    { href: "/interview-intel", label: "Interview Intel" },
+    { href: "/pay-intelligence", label: "Pay Intel" },
+    { href: "/travel-off-ramp", label: "Travel Off-Ramp" },
   ];
 
   return (
@@ -96,6 +106,46 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            {/* Resources dropdown */}
+            <div ref={resourcesRef} style={{ position: "relative" }}>
+              <button
+                onClick={() => setResourcesOpen(!resourcesOpen)}
+                className="hover:text-[#8B8FD4] hover:bg-[#8B8FD4]/5"
+                style={{
+                  fontSize: 14, fontWeight: 600, color: "#555",
+                  padding: "8px 16px", borderRadius: 12, background: "none", border: "none",
+                  cursor: "pointer", transition: "all 0.2s", fontFamily: "'Manrope', system-ui, sans-serif",
+                  display: "flex", alignItems: "center", gap: 4,
+                }}
+              >
+                Resources
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: resourcesOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {resourcesOpen && (
+                <div style={{
+                  position: "absolute", top: "calc(100% + 8px)", left: 0,
+                  background: C.white, borderRadius: 14,
+                  boxShadow: "0 8px 32px rgba(30,30,46,0.12)", border: `1px solid ${C.border}`,
+                  zIndex: 100, overflow: "hidden", minWidth: 180,
+                  fontFamily: "'Manrope', system-ui, sans-serif",
+                }}>
+                  {resourceLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setResourcesOpen(false)}
+                      style={{ display: "block", padding: "10px 16px", fontSize: 14, fontWeight: 600, color: "#555", textDecoration: "none", transition: "background 0.15s" }}
+                      className="hover:bg-[#8B8FD4]/8 hover:text-[#8B8FD4]"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
             <div style={{ marginLeft: 8, paddingLeft: 16, borderLeft: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 12 }}>
               {/* Bell icon with coral dot */}
               <div style={{ position: "relative" }}>
@@ -284,6 +334,25 @@ export default function Navbar() {
                     padding: "14px 16px", fontSize: 15, fontWeight: 600,
                     color: "#555", borderRadius: 12, textDecoration: "none",
                     minHeight: 48, display: "flex", alignItems: "center",
+                    transition: "all 0.2s", fontFamily: "'Manrope', system-ui, sans-serif",
+                  }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <div style={{ padding: "6px 16px 2px", fontSize: 11, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>
+                Resources
+              </div>
+              {resourceLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="hover:text-[#8B8FD4] hover:bg-[#8B8FD4]/5"
+                  style={{
+                    padding: "12px 16px 12px 24px", fontSize: 14, fontWeight: 600,
+                    color: "#555", borderRadius: 12, textDecoration: "none",
+                    minHeight: 44, display: "flex", alignItems: "center",
                     transition: "all 0.2s", fontFamily: "'Manrope', system-ui, sans-serif",
                   }}
                   onClick={() => setMenuOpen(false)}

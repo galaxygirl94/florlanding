@@ -1,15 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { JobListing } from "@/data/types";
 import ScheduleInterviewModal from "@/components/ScheduleInterviewModal";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 export default function JobDetailClient({ job }: { job: JobListing }) {
+  const router = useRouter();
   const [newQuestion, setNewQuestion] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [showApplyConfirm, setShowApplyConfirm] = useState(false);
   const [interviewScheduled, setInterviewScheduled] = useState(false);
+  const [applied, setApplied] = useState(false);
+  const [applyLoading, setApplyLoading] = useState(false);
+  const [applyError, setApplyError] = useState("");
 
   const fitColor =
     (job.fitScore ?? 0) >= 90
@@ -17,6 +24,62 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
       : (job.fitScore ?? 0) >= 80
       ? "bg-periwinkle"
       : "bg-amber";
+
+  async function handleApply() {
+    setApplyLoading(true);
+    setApplyError("");
+
+    if (isSupabaseConfigured()) {
+      // Step 1 — Auth check
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push(`/login?redirect=/jobs/${job.id}`);
+        return;
+      }
+
+      // Step 2 — License verified check
+      const { data: profile } = await supabase
+        .from("nurse_profiles")
+        .select("license_verified, specialty, location_zip")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile?.license_verified) {
+        router.push("/nurse-profile?incomplete=license");
+        return;
+      }
+
+      // Step 3 — Profile completeness check
+      if (!profile.specialty || !profile.location_zip) {
+        router.push("/nurse-profile?incomplete=profile");
+        return;
+      }
+    }
+
+    // Step 4 — All checks pass: open apply flow
+    setApplyLoading(false);
+    if (job.directScheduling && (job.fitScore ?? 0) >= 85) {
+      setShowScheduleModal(true);
+    } else {
+      setShowApplyConfirm(true);
+    }
+  }
+
+  async function submitApplication(userId?: string) {
+    if (isSupabaseConfigured()) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("applications").upsert(
+          { nurse_id: user.id, job_id: job.id, status: "Applied" },
+          { onConflict: "nurse_id,job_id" }
+        );
+      }
+    }
+    setApplied(true);
+    setShowApplyConfirm(false);
+    setShowScheduleModal(false);
+    setInterviewScheduled(true);
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 pb-28 sm:pb-12">
@@ -235,27 +298,48 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
 
           {/* Desktop Apply */}
           <div className="hidden sm:block mt-8 pt-6 border-t border-periwinkle-100/30">
-            <div className="flex items-center gap-3 flex-wrap">
-              <button className="bg-periwinkle hover:bg-periwinkle-dark text-white font-bold px-10 py-4 rounded-full text-lg transition-all duration-200 shadow-lg shadow-periwinkle/20 hover:shadow-xl hover:shadow-periwinkle/30 hover:-translate-y-0.5">
-                Apply Now
-              </button>
-              {job.directScheduling && (job.fitScore ?? 0) >= 85 && !interviewScheduled && (
-                <button
-                  onClick={() => setShowScheduleModal(true)}
-                  className="border-2 border-periwinkle text-periwinkle font-bold px-8 py-3.5 rounded-full text-base hover:bg-periwinkle hover:text-white transition-all duration-150"
-                >
-                  📅 Schedule Interview →
-                </button>
-              )}
-              {interviewScheduled && (
-                <span className="inline-flex items-center gap-2 bg-success-light text-success font-bold px-6 py-3.5 rounded-full text-base border border-success/20">
+            {applied ? (
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center gap-2 bg-success-light text-success font-bold px-6 py-3.5 rounded-full text-base border border-success/20">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  Interview Scheduled
-                </span>
-              )}
-            </div>
+                  Application Submitted
+                </div>
+                <Link href="/tracker" className="text-sm font-semibold text-periwinkle hover:text-periwinkle-dark transition-colors">
+                  View in tracker →
+                </Link>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3 flex-wrap">
+                {applyError && (
+                  <p className="w-full text-sm text-red-600 mb-1">{applyError}</p>
+                )}
+                <button
+                  onClick={handleApply}
+                  disabled={applyLoading}
+                  className="bg-periwinkle hover:bg-periwinkle-dark disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold px-10 py-4 rounded-full text-lg transition-all duration-200 shadow-lg shadow-periwinkle/20 hover:shadow-xl hover:shadow-periwinkle/30 hover:-translate-y-0.5"
+                >
+                  {applyLoading ? "Checking…" : "Apply Now"}
+                </button>
+                {job.directScheduling && (job.fitScore ?? 0) >= 85 && !interviewScheduled && !applied && (
+                  <button
+                    onClick={() => setShowScheduleModal(true)}
+                    className="border-2 border-periwinkle text-periwinkle font-bold px-8 py-3.5 rounded-full text-base hover:bg-periwinkle hover:text-white transition-all duration-150"
+                  >
+                    📅 Schedule Interview →
+                  </button>
+                )}
+                {interviewScheduled && !applied && (
+                  <span className="inline-flex items-center gap-2 bg-success-light text-success font-bold px-6 py-3.5 rounded-full text-base border border-success/20">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Interview Scheduled
+                  </span>
+                )}
+              </div>
+            )}
             <p className="text-xs text-text-muted mt-2">Direct application — no recruiter middleman</p>
           </div>
         </div>
@@ -333,32 +417,76 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
       {/* Mobile sticky apply bar */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 glass border-t border-periwinkle-100/40 p-4 z-40">
         <div className="space-y-2">
-          <button className="w-full bg-periwinkle hover:bg-periwinkle-dark text-white font-bold py-4 rounded-full text-base transition-all duration-200 shadow-lg shadow-periwinkle/20 min-h-[44px]">
-            Apply Now
-          </button>
-          {job.directScheduling && (job.fitScore ?? 0) >= 85 && !interviewScheduled && (
-            <button
-              onClick={() => setShowScheduleModal(true)}
-              className="w-full border-2 border-periwinkle text-periwinkle font-bold py-3 rounded-full text-sm hover:bg-periwinkle hover:text-white transition-all duration-150"
-            >
-              📅 Schedule Interview →
-            </button>
-          )}
-          {interviewScheduled && (
-            <div className="w-full text-center bg-success-light text-success font-bold py-3 rounded-full text-sm border border-success/20">
-              ✓ Interview Scheduled
+          {applied ? (
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-full text-center bg-success-light text-success font-bold py-3.5 rounded-full text-base border border-success/20">
+                ✓ Application Submitted
+              </div>
+              <Link href="/tracker" className="text-sm font-semibold text-periwinkle">
+                View in tracker →
+              </Link>
             </div>
+          ) : (
+            <>
+              <button
+                onClick={handleApply}
+                disabled={applyLoading}
+                className="w-full bg-periwinkle hover:bg-periwinkle-dark disabled:opacity-60 text-white font-bold py-4 rounded-full text-base transition-all duration-200 shadow-lg shadow-periwinkle/20 min-h-[44px]"
+              >
+                {applyLoading ? "Checking…" : "Apply Now"}
+              </button>
+              {job.directScheduling && (job.fitScore ?? 0) >= 85 && !interviewScheduled && (
+                <button
+                  onClick={() => setShowScheduleModal(true)}
+                  className="w-full border-2 border-periwinkle text-periwinkle font-bold py-3 rounded-full text-sm hover:bg-periwinkle hover:text-white transition-all duration-150"
+                >
+                  📅 Schedule Interview →
+                </button>
+              )}
+              {interviewScheduled && (
+                <div className="w-full text-center bg-success-light text-success font-bold py-3 rounded-full text-sm border border-success/20">
+                  ✓ Interview Scheduled
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
+
+      {/* Simple Apply Confirm Modal (non-directScheduling jobs) */}
+      {showApplyConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-2xl">
+            <h3 className="text-xl font-extrabold text-text mb-2">Confirm Application</h3>
+            <p className="text-sm text-text-light mb-6 leading-relaxed">
+              You&apos;re applying to <strong>{job.title}</strong> at <strong>{job.facilityName}</strong>.
+              Your profile will be shared directly with the hiring team — no recruiter involved.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => submitApplication()}
+                className="flex-1 bg-periwinkle hover:bg-periwinkle-dark text-white font-bold py-3.5 rounded-full text-base transition-all duration-200"
+              >
+                Submit Application
+              </button>
+              <button
+                onClick={() => setShowApplyConfirm(false)}
+                className="px-6 py-3.5 rounded-full text-base font-semibold text-text-muted border border-periwinkle-100/60 hover:border-periwinkle/30 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+            <p className="text-xs text-text-muted mt-3 text-center">Direct application — no recruiter middleman</p>
+          </div>
+        </div>
+      )}
 
       {/* Schedule Interview Modal */}
       {showScheduleModal && (
         <ScheduleInterviewModal
           job={job}
           onClose={() => setShowScheduleModal(false)}
-          onConfirm={(data) => {
-            /* In production: call /api/interviews to create calendar event */
+          onConfirm={async (data) => {
             try {
               const existing = JSON.parse(localStorage.getItem("flor-scheduled-interviews") || "[]");
               existing.push({
@@ -376,7 +504,7 @@ export default function JobDetailClient({ job }: { job: JobListing }) {
               });
               localStorage.setItem("flor-scheduled-interviews", JSON.stringify(existing));
             } catch { /* ignore */ }
-            setInterviewScheduled(true);
+            await submitApplication();
           }}
         />
       )}
