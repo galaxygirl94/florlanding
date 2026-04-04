@@ -5,12 +5,21 @@ import Link from "next/link";
 
 /* ── Constants ────────────────────────────────────────────────────────── */
 
-const NURSE_TYPES = ["RN", "LPN", "CNA"] as const;
+const NURSE_TYPES = [
+  "RN", "LPN", "CNA", "APRN", "NP",
+  "DNP", "CRNA", "CNM", "FNP", "PNP", "PMHNP", "WHNP", "CNS",
+  "Nurse Educator", "Nursing Student", "New Grad",
+] as const;
 
 const SPECIALTIES = [
   "Med Surg", "ICU", "ED", "OR", "L&D", "NICU", "Peds", "Psych",
   "Home Health", "Oncology", "Rehab", "School Nurse", "Telemetry",
   "Cardiac", "Outpatient/Clinic", "SNF/LTC",
+  "Aesthetics", "Infusions", "Dialysis/Renal", "Neuro/Stroke", "Chemotherapy",
+  "Respiratory", "Mother-Baby", "Dementia Care", "PICU", "PACU",
+  "Step-Down", "Women's Health", "Community Health", "Occupational Health",
+  "Nurse Administrator", "MDS Coordination", "Case Management",
+  "Ambulatory Care", "Outpatient Care", "Hospice/Palliative", "School Nursing",
 ];
 
 const SHIFT_OPTIONS = ["Days", "Nights", "Rotating", "Flexible"] as const;

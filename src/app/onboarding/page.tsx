@@ -11,6 +11,11 @@ const SPECIALTIES = [
   "Med Surg", "ICU", "ED", "OR", "L&D", "NICU", "Peds", "Psych",
   "Home Health", "Oncology", "Rehab", "School Nurse", "Telemetry",
   "Cardiac", "Outpatient/Clinic", "SNF/LTC",
+  "Aesthetics", "Infusions", "Dialysis/Renal", "Neuro/Stroke", "Chemotherapy",
+  "Respiratory", "Mother-Baby", "Dementia Care", "PICU", "PACU",
+  "Step-Down", "Women's Health", "Community Health", "Occupational Health",
+  "Nurse Administrator", "MDS Coordination", "Case Management",
+  "Ambulatory Care", "Outpatient Care", "Hospice/Palliative", "School Nursing",
 ];
 
 const CERTIFICATIONS = [
@@ -33,6 +38,8 @@ const COMMUTE_OPTIONS = [5, 10, 15, 25, 50];
 
 const EHR_SYSTEMS = [
   "Epic", "Cerner/Oracle Health", "Meditech", "PointClickCare", "Athenahealth",
+  "LifeChart", "Allscripts", "Kinnser", "Axxess", "HCHB (HomeCare HomeBase)",
+  "CareHub", "Matrix", "OASIS (documentation framework)", "Other",
 ];
 
 const US_STATES = [
