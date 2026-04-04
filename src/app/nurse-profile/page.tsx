@@ -5,16 +5,33 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
-const SPECIALTIES = [
-  "Medical-Surgical", "ICU/Critical Care", "Emergency", "OR/Perioperative",
-  "Labor & Delivery", "Pediatrics", "Behavioral Health", "Home Health",
-  "Long-Term Care", "Oncology", "Rehabilitation", "CNA",
-  "Aesthetics", "Infusions", "Dialysis/Renal", "Neuro/Stroke", "Chemotherapy",
-  "Respiratory", "Mother-Baby", "NICU", "Dementia Care", "PICU", "PACU",
-  "Step-Down", "Women's Health", "Community Health", "Occupational Health",
-  "Nurse Administrator", "MDS Coordination", "Case Management",
-  "Ambulatory Care", "Outpatient Care", "Hospice/Palliative", "School Nursing",
+const SPECIALTY_GROUPS = [
+  {
+    label: "Acute Care",
+    items: ["Medical-Surgical", "ICU/Critical Care", "Emergency", "OR/Perioperative", "Step-Down", "PACU"],
+  },
+  {
+    label: "Critical & Specialty",
+    items: ["Oncology", "Chemotherapy", "Neuro/Stroke", "Respiratory", "Dialysis/Renal", "Infusions"],
+  },
+  {
+    label: "Women's & Pediatric",
+    items: ["Labor & Delivery", "Pediatrics", "Mother-Baby", "NICU", "PICU", "Women's Health"],
+  },
+  {
+    label: "Behavioral & Community",
+    items: ["Behavioral Health", "Community Health", "Occupational Health", "School Nursing"],
+  },
+  {
+    label: "Home & Long-Term Care",
+    items: ["Home Health", "Long-Term Care", "Rehabilitation", "Dementia Care", "Hospice/Palliative"],
+  },
+  {
+    label: "Administrative & Other",
+    items: ["CNA", "Aesthetics", "Nurse Administrator", "MDS Coordination", "Case Management", "Ambulatory Care", "Outpatient Care"],
+  },
 ];
+const SPECIALTIES = SPECIALTY_GROUPS.flatMap((g) => g.items);
 
 const CERTIFICATIONS = [
   "BLS/CPR", "ACLS", "PALS", "TNCC", "CCRN", "CEN", "CNOR",
@@ -496,6 +513,12 @@ export default function NurseProfilePage() {
             <div className="mb-16 sm:mb-20">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
                 <div className="lg:col-span-7">
+                  <div className="mb-3 flex items-center gap-2.5 bg-amber/8 border border-amber/20 rounded-xl px-4 py-2.5 w-fit">
+                    <svg className="w-4 h-4 text-amber flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                    </svg>
+                    <span className="text-xs font-bold text-amber-dark uppercase tracking-wider">Example Profile — not a real nurse</span>
+                  </div>
                   <NightingaleProfile />
                 </div>
                 <div className="lg:col-span-5 lg:sticky lg:top-24">
@@ -543,7 +566,7 @@ export default function NurseProfilePage() {
               <div className="flex-1 h-px bg-periwinkle-100/40" />
             </div>
 
-            <div className="hidden sm:flex items-center justify-center gap-3 mb-12">
+            <div className="hidden sm:flex items-center justify-center gap-3 sticky top-16 z-20 bg-white/95 backdrop-blur-sm border-b border-periwinkle-100/30 py-4 px-6 -mx-6 sm:-mx-10 lg:-mx-16 mb-12 shadow-sm">
               {[
                 { num: "1", label: "Account" },
                 { num: "2", label: "Personal Info" },
@@ -553,12 +576,12 @@ export default function NurseProfilePage() {
               ].map((step, i) => (
                 <div key={step.num} className="flex items-center">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-periwinkle flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-periwinkle flex items-center justify-center shadow-sm shadow-periwinkle/30">
                       <span className="text-xs font-bold text-white">{step.num}</span>
                     </div>
                     <span className="text-sm font-semibold text-text">{step.label}</span>
                   </div>
-                  {i < 4 && <div className="w-12 lg:w-20 h-px bg-periwinkle-100 mx-4" />}
+                  {i < 4 && <div className="w-10 lg:w-16 h-px bg-periwinkle-100 mx-3" />}
                 </div>
               ))}
             </div>
@@ -826,20 +849,29 @@ export default function NurseProfilePage() {
             </div>
 
             <div className="mb-7">
-              <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-3">Specialties</label>
-              <div className="flex flex-wrap gap-2">
-                {SPECIALTIES.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => toggleItem(s, selectedSpecialties, setSelectedSpecialties)}
-                    className={`px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 min-h-[40px] ${
-                      selectedSpecialties.includes(s)
-                        ? "bg-periwinkle text-white shadow-sm"
-                        : "bg-periwinkle-50/40 text-text-light border border-periwinkle-100/60 hover:border-periwinkle/40"
-                    }`}
-                  >
-                    {s}
-                  </button>
+              <label className="text-xs font-bold text-text-muted uppercase tracking-wider block mb-4">Specialties</label>
+              <div className="space-y-5">
+                {SPECIALTY_GROUPS.map((group) => (
+                  <div key={group.label}>
+                    <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-2 pb-1.5 border-b border-periwinkle-100/40">
+                      {group.label}
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {group.items.map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => toggleItem(s, selectedSpecialties, setSelectedSpecialties)}
+                          className={`px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 min-h-[40px] ${
+                            selectedSpecialties.includes(s)
+                              ? "bg-periwinkle text-white shadow-sm"
+                              : "bg-periwinkle-50/40 text-text-light border border-periwinkle-100/60 hover:border-periwinkle/40"
+                          }`}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

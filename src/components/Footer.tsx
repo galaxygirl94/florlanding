@@ -36,6 +36,7 @@ export default function Footer() {
               <Link href="/facility/facility-1" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Facility Reviews</Link>
               <Link href="/how-fit-works" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">How Flor Fit Works</Link>
               <Link href="/pay-transparency" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Pay Transparency</Link>
+              <Link href="/community-health" className="text-sm text-white/50 hover:text-periwinkle-light transition-colors">Community Health Careers</Link>
             </div>
           </div>
 

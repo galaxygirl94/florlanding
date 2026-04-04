@@ -36,20 +36,20 @@ function ExclusiveBadge() {
 function FilterSection({ title, defaultOpen = false, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-periwinkle/15 last:border-b-0">
+    <div className="border-b border-periwinkle-100/50 last:border-b-0 py-1">
       <button
         className="w-full flex items-center justify-between py-4 text-sm font-bold text-text hover:text-periwinkle transition-colors"
         onClick={() => setOpen(!open)}
       >
-        <span className="flex items-center gap-2">
-          <span className="w-1 h-4 rounded-full bg-periwinkle/30" />
+        <span className="flex items-center gap-2.5">
+          <span className="w-1.5 h-5 rounded-full bg-periwinkle/40" />
           {title}
         </span>
         <svg className={`w-4 h-4 text-text-muted transition-transform ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
         </svg>
       </button>
-      {open && <div className="pb-4">{children}</div>}
+      {open && <div className="pb-5 space-y-1">{children}</div>}
     </div>
   );
 }
@@ -437,9 +437,12 @@ export default function JobListingsPage() {
 
           {/* Main content */}
           <div className="flex-1 min-w-0">
-            {/* Results count */}
-            <div className="mb-8 flex items-center gap-3">
-              <span className="text-base font-bold text-text">
+            {/* Results count — pill badge */}
+            <div className="mb-8 flex items-center gap-3 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 bg-periwinkle text-white text-sm font-bold px-4 py-2 rounded-full shadow-sm shadow-periwinkle/20">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 {filteredJobs.length} {filteredJobs.length === 1 ? "job" : "jobs"} found
               </span>
               <span className="h-px flex-1 bg-periwinkle-100/40" />

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 /* ── accordion data ────────────────────────────────────────────── */
 
@@ -45,13 +47,10 @@ const SECTIONS: Section[] = [
         body: (
           <>
             <p className="mb-3">
-              This depends on the unit. <strong>OR / procedural areas:</strong> Scrubs are usually provided on-site — just show up in clean, professional clothes and expect to change. Don&apos;t buy a brand new pair of scrubs for an OR interview; they&apos;ll give you theirs.
+              <strong>New grad tip:</strong> Business casual or scrubs are both appropriate — you won&apos;t go wrong with either.
             </p>
-            <p className="mb-3">
-              <strong>Floor nursing / outpatient / clinic:</strong> Business casual. Think nice pants or a skirt, a clean blouse or button-down, and closed-toe shoes you can actually walk in. You might get a unit tour, so skip the heels.
-            </p>
-            <p>
-              <strong>Admin / management / leadership roles:</strong> Go professional. Blazer, dress pants or a professional dress. You&apos;re interviewing with directors and executives — match the energy.
+            <p className="text-sm italic text-text-muted">
+              When in doubt, just wear nice scrubs.
             </p>
           </>
         ),
@@ -67,7 +66,7 @@ const SECTIONS: Section[] = [
             </li>
             <li className="flex items-start gap-2">
               <span className="text-periwinkle font-bold mt-0.5">2.</span>
-              <span><strong>&ldquo;What&apos;s the float pool policy?&rdquo;</strong> — Will you get floated to units you&apos;ve never worked? How often?</span>
+              <span><strong>&ldquo;What&apos;s the float policy?&rdquo;</strong> — Will you get floated to units you&apos;ve never worked? How often?</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-periwinkle font-bold mt-0.5">3.</span>
@@ -102,9 +101,6 @@ const SECTIONS: Section[] = [
             </p>
             <p className="mb-3">
               Watch how the charge nurse greets you. Do they seem genuinely happy to meet a potential colleague, or is it an interruption? That energy is what you&apos;ll get at 3 AM on a hard shift.
-            </p>
-            <p>
-              Check the break room. Is it functional — stocked, clean, with actual seating? Or is it a supply closet with a microwave from 2006? The break room tells you exactly how much the facility values staff well-being.
             </p>
           </>
         ),
@@ -432,6 +428,17 @@ function AccordionSection({ section, sectionIndex }: { section: Section; section
 /* ── page ───────────────────────────────────────────────────── */
 
 export default function InterviewIntelPage() {
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/login?redirect=/interview-intel");
+    }
+  }, [isLoggedIn, router]);
+
+  if (!isLoggedIn) return null;
+
   return (
     <div className="bg-[#F4F4FB] min-h-screen">
       {/* Hero */}

@@ -2,11 +2,25 @@ import Link from "next/link";
 import Image from "next/image";
 import JobCard from "@/components/JobCard";
 import { seedJobs } from "@/data/seed-jobs";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
-export default function HomePage() {
-  const riJobCount = seedJobs.filter(
-    (j) => j.location.state === "RI" && (!j.status || j.status === "active") && !j.isScraped
-  ).length;
+async function getRiJobCount(): Promise<number | null> {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const { count, error } = await supabase
+      .from("jobs")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "active")
+      .eq("location_state", "RI");
+    if (error || count === null) return null;
+    return count;
+  } catch {
+    return null;
+  }
+}
+
+export default async function HomePage() {
+  const riJobCount = await getRiJobCount();
 
   return (
     <div>
@@ -72,17 +86,36 @@ export default function HomePage() {
       {/* ========== STATS BAR — social proof strip ========== */}
       <section className="bg-[#F4F4FB] relative -mt-8 z-10">
         <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
-          <div className="bg-white rounded-2xl section-shadow border border-periwinkle-100/30 grid grid-cols-2 lg:grid-cols-4 divide-x divide-periwinkle-100/30">
+          <div className="bg-white rounded-2xl section-shadow border border-periwinkle-100/30 grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-periwinkle-100/30">
             {[
-              { stat: "4.2M", label: "registered nurses in the U.S.", sub: "Bureau of Labor Statistics" },
-              { stat: "73%", label: "say job searching is broken", sub: "2025 Nurse Survey" },
-              { stat: "$24K", label: "avg. agency markup per hire", sub: "Industry average" },
-              { stat: "$0", label: "cost for nurses on Flor", sub: "Free forever" },
+              {
+                stat: "4.2M", label: "registered nurses in the U.S.", sub: "Bureau of Labor Statistics",
+                icon: "M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z",
+              },
+              {
+                stat: "73%", label: "say job searching is broken", sub: "2025 Nurse Survey",
+                icon: "M13.181 8.68a4.503 4.503 0 011.903 6.405m-9.768-3.782l3.322 4.08m0 0l3.236-5.586m-6.558 1.506a4.5 4.5 0 009.535-1.395M13.5 7.5l1.5 1.5",
+              },
+              {
+                stat: "$24K", label: "avg. agency markup per hire", sub: "Industry average",
+                icon: "M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+              },
+              {
+                stat: "$0", label: "cost for nurses on Flor", sub: "Free forever",
+                icon: "M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z",
+              },
             ].map((item) => (
-              <div key={item.stat} className="px-6 py-6 sm:py-8 text-center">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-periwinkle leading-none">{item.stat}</div>
-                <p className="text-sm text-text font-medium mt-2 leading-snug">{item.label}</p>
-                <p className="text-[11px] text-text-muted mt-1">{item.sub}</p>
+              <div key={item.stat} className="px-5 py-7 sm:py-9 text-center flex flex-col items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-periwinkle-50 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-periwinkle" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-periwinkle leading-none">{item.stat}</div>
+                  <p className="text-sm text-text font-medium mt-2 leading-snug">{item.label}</p>
+                  <p className="text-[11px] text-text-muted mt-1">{item.sub}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -233,33 +266,34 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Ethics pledge — compact inline */}
-          <div className="mt-10 bg-white rounded-2xl section-shadow p-6 sm:p-8 max-w-4xl mx-auto animate-fade-in-up">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
-              <div className="flex-shrink-0">
-                <div className="w-14 h-14 rounded-2xl bg-success-light flex items-center justify-center">
-                  <svg className="w-7 h-7 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          {/* Ethics pledge — covenant style */}
+          <div className="mt-14 sm:mt-16 animate-fade-in-up">
+            <div className="bg-gradient-to-br from-success-light/60 via-white to-periwinkle-50/40 rounded-3xl border border-success/15 p-8 sm:p-12 max-w-4xl mx-auto">
+              <div className="text-center mb-10">
+                <div className="w-16 h-16 rounded-2xl bg-success-light flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-9 h-9 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                   </svg>
                 </div>
+                <h3 className="text-xl sm:text-2xl font-extrabold text-text mb-1">The Flor Ethics Pledge</h3>
+                <p className="text-sm text-text-muted">Every employer on Flor commits to these standards. No exceptions.</p>
               </div>
-              <div>
-                <h3 className="text-lg font-extrabold text-text mb-2">The Flor Ethics Pledge</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {[
-                    "Every job is real — no ghost posts",
-                    "Every pay range is visible upfront",
-                    "Direct applications only — no middlemen",
-                    "Free forever — we'll never charge nurses",
-                  ].map((item) => (
-                    <div key={item} className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {[
+                  { text: "Every job is real — no ghost posts", icon: "M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+                  { text: "Every pay range is visible upfront", icon: "M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+                  { text: "Direct applications only — no middlemen", icon: "M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" },
+                  { text: "Free forever — we'll never charge nurses", icon: "M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" },
+                ].map((item) => (
+                  <div key={item.text} className="flex items-start gap-4 bg-white/70 rounded-2xl p-5 border border-success/10">
+                    <div className="w-10 h-10 rounded-xl bg-success-light flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                       </svg>
-                      <span className="text-sm font-medium text-text">{item}</span>
                     </div>
-                  ))}
-                </div>
+                    <span className="text-sm sm:text-base font-semibold text-text leading-snug pt-1.5">{item.text}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -291,11 +325,15 @@ export default function HomePage() {
                   <div className="text-3xl lg:text-4xl font-extrabold text-white">100%</div>
                   <p className="text-sm text-white/60 mt-1">nurse-owned</p>
                 </div>
-                <div className="w-px h-12 bg-white/20" />
-                <div className="text-center">
-                  <div className="text-3xl lg:text-4xl font-extrabold text-white">{riJobCount}</div>
-                  <p className="text-sm text-white/60 mt-1">RI jobs live now</p>
-                </div>
+                {riJobCount !== null && (
+                  <>
+                    <div className="w-px h-12 bg-white/20" />
+                    <div className="text-center">
+                      <div className="text-3xl lg:text-4xl font-extrabold text-white">{riJobCount}</div>
+                      <p className="text-sm text-white/60 mt-1">RI jobs live now</p>
+                    </div>
+                  </>
+                )}
                 <div className="w-px h-12 bg-white/20" />
                 <div className="text-center">
                   <div className="text-3xl lg:text-4xl font-extrabold text-periwinkle-light">$0</div>
@@ -434,11 +472,11 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
             {[
               {
-                img: "/nurse-community.jpg",
-                alt: "Three nurses outside making heart shapes with their hands",
-                quote: "I became a nurse to make a difference — not to spend my evenings fighting through job boards and recruiter emails.",
-                name: "Sarah M.",
-                title: "Registered Nurse, 8 years",
+                img: "/nurse-hands.jpg",
+                alt: "Close-up of nurse holding a patient's hands",
+                quote: "Finding a job that actually fit my schedule and my patients — not just a paycheck — felt impossible until I stopped using the same job boards everyone else was using.",
+                name: "Jennifer K.",
+                title: "Community Health RN, 9 years",
               },
               {
                 img: "/nurse-group.jpg",

@@ -88,7 +88,7 @@ function PayDisplay({ job, accentColor }: { job: JobListing; accentColor: string
           display: "inline-flex", flexDirection: "column", alignItems: "center",
           background: accent, borderRadius: 10, padding: "6px 12px", minWidth: 90,
         }}>
-          <span style={{ fontSize: 16, fontWeight: 600, color: "#fff", fontFamily: "'Manrope', system-ui, sans-serif", lineHeight: 1.1 }}>
+          <span style={{ fontSize: 18, fontWeight: 800, color: "#fff", fontFamily: "'Manrope', system-ui, sans-serif", lineHeight: 1.1 }}>
             Pay Available
           </span>
           <span style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.75)", textTransform: "uppercase" as const, letterSpacing: "0.07em", marginTop: 2 }}>
@@ -118,7 +118,7 @@ function PayDisplay({ job, accentColor }: { job: JobListing; accentColor: string
           display: "inline-flex", flexDirection: "column", alignItems: "center",
           background: accent, borderRadius: 10, padding: "6px 12px", minWidth: 90,
         }}>
-          <span style={{ fontSize: 16, fontWeight: 600, color: "#fff", fontFamily: "'Manrope', system-ui, sans-serif", letterSpacing: "0px", lineHeight: 1.1 }}>
+          <span style={{ fontSize: 18, fontWeight: 800, color: "#fff", fontFamily: "'Manrope', system-ui, sans-serif", letterSpacing: "-0.01em", lineHeight: 1.1 }}>
             {payText}
           </span>
           <span style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.75)", textTransform: "uppercase" as const, letterSpacing: "0.07em", marginTop: 2 }}>
@@ -207,12 +207,15 @@ export default function JobCard({ job, index = 0, isSaved, onToggleSave, showExa
         borderRadius: 18,
         overflow: "hidden",
         boxShadow: hovered
-          ? `0 12px 40px ${accentColor}28, 0 2px 8px rgba(0,0,0,0.08)`
+          ? `0 14px 44px ${accentColor}2E, 0 2px 8px rgba(0,0,0,0.08)`
           : "0 2px 12px rgba(0,0,0,0.06)",
-        transform: hovered ? "translateY(-3px)" : "translateY(0)",
+        transform: hovered ? "translateY(-4px)" : "translateY(0)",
         transition: "all 0.22s cubic-bezier(0.34,1.56,0.64,1)",
         cursor: "pointer",
-        border: `1px solid ${hovered ? accentColor + "40" : C.border}`,
+        borderTop: `1px solid ${hovered ? accentColor + "40" : C.border}`,
+        borderRight: `1px solid ${hovered ? accentColor + "40" : C.border}`,
+        borderBottom: `1px solid ${hovered ? accentColor + "40" : C.border}`,
+        borderLeft: `3px solid ${hovered ? accentColor : accentColor + "80"}`,
         fontFamily: "'Manrope', system-ui, sans-serif",
       }}
     >
@@ -224,14 +227,14 @@ export default function JobCard({ job, index = 0, isSaved, onToggleSave, showExa
         }}>
           <FacilityImage src={job.facilityImage} specialty={job.specialty} accentColor={accentColor} />
 
-          {/* Shift badge — frosted pill top-left */}
+          {/* Shift badge — periwinkle filled pill top-left */}
           <div style={{
             position: "absolute", top: 10, left: 12,
-            background: "rgba(255,255,255,0.92)", backdropFilter: "blur(6px)",
-            borderRadius: 20, padding: "3px 10px",
-            fontSize: 10, fontWeight: 700, color: C.navy,
-            boxShadow: "0 1px 6px rgba(0,0,0,0.10)",
-            letterSpacing: "0.04em",
+            background: accentColor + "E6", backdropFilter: "blur(6px)",
+            borderRadius: 20, padding: "4px 11px",
+            fontSize: 10, fontWeight: 700, color: "#fff",
+            boxShadow: `0 2px 8px ${accentColor}40`,
+            letterSpacing: "0.05em",
           }}>
             {job.scheduleType}
           </div>
@@ -345,16 +348,17 @@ export default function JobCard({ job, index = 0, isSaved, onToggleSave, showExa
         <div style={{ flex: 1 }} />
 
         {/* CTA */}
-        <Link href={`/jobs/${job.id}`} className="block" style={{ marginTop: 10, textDecoration: "none" }}>
+        <Link href={`/jobs/${job.id}`} className="block" style={{ marginTop: 12, textDecoration: "none" }}>
           <button style={{
-            width: "100%", padding: "10px",
-            background: hovered ? accentColor : "transparent",
+            width: "100%", padding: "11px",
+            background: hovered ? accentColor : accentColor + "12",
             color: hovered ? C.white : accentColor,
-            border: `1.5px solid ${accentColor}`,
-            borderRadius: 10, fontSize: 13, fontWeight: 700,
+            border: `1.5px solid ${accentColor + (hovered ? "FF" : "60")}`,
+            borderRadius: 12, fontSize: 13, fontWeight: 700,
             cursor: "pointer", transition: "all 0.18s ease",
             fontFamily: "'Manrope', system-ui, sans-serif",
             letterSpacing: "0.01em",
+            boxShadow: hovered ? `0 4px 12px ${accentColor}30` : "none",
           }}>
             View Position →
           </button>
