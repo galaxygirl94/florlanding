@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Flor - Nursing jobs with transparent pay, no spam, perfect matches. Launching 2026.">
+    <title>Flor - Coming 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        .logo {
+            margin-bottom: 20px;
+        }
+        
+        .logo img {
+            max-width: 200px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .logo-fallback {
+            font-size: 80px;
+            display: none;
+        }
+        
+        h1 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+        
+        .tagline {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            font-style: italic;
+        }
+        
+        .description {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .coming-soon {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 180px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .social-link {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        
+        .social-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        .investor-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .investor-section p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+        
+        .investor-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .investor-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+        }
+        
+        .investor-link:hover {
+            opacity: 1;
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .logo img {
+                max-width: 150px;
+            }
+            
+            .logo-fallback {
+                font-size: 60px;
+            }
+            
+            h1 {
+                font-size: 42px;
+            }
+            
+            .tagline {
+                font-size: 18px;
+            }
+            
+            .description {
+                font-size: 16px;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="flor_logo.jpeg" alt="Flor Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="logo-fallback">🌸</div>
+        </div>
+        <h1>Flor</h1>
+        <p class="tagline">Built for nurses, by nurses</p>
+        
+        <p class="description">
+            Find your next nursing job with complete transparency.<br>
+            Real pay ranges. No recruiter spam. Direct connections.
+        </p>
+        
+        <div class="coming-soon">🚀 Launching 2026</div>
+        
+        <div class="cta-buttons">
+            <a href="for_nurses.html" class="cta-button">For Nurses</a>
+            <a href="https://employersurvey.tiiny.site" class="cta-button" target="_blank">For Employers</a>
+        </div>
+        
+        <div class="social-links">
+            <a href="https://www.instagram.com/florfornurses" target="_blank" class="social-link">📸 Instagram</a>
+            <a href="https://www.tiktok.com/@florfornurses" target="_blank" class="social-link">🎵 TikTok</a>
+            <a href="mailto:hello@florfornurses.com" class="social-link">✉️ Email</a>
+        </div>
+        
+        <div class="investor-section">
+            <p>Investor Inquiries</p>
+            <div class="investor-links">
+                <a href="https://tr.ee/lzJv5JtKmU" target="_blank" class="investor-link">View Pitch Deck</a>
+                <a href="https://appendix.tiiny.site" target="_blank" class="investor-link">View Appendix</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
